@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="PraktikantenVerwaltung.View.DozentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1200"
+             DataContext="{Binding DozentVM, Source={StaticResource Locator}}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="txtSearch" Grid.Column="0"  Text="Search Dozent" Width="300" Padding="5" Margin="10" 
+                          HorizontalAlignment="Left"/>
+                <Button x:Name="btnAdd" Grid.Column="1" Content="Add Dozent" Command="{Binding ShowAddDozentCommand}"  Margin="10" 
+                          Width="80" IsDefault="True" HorizontalAlignment="Right"/>
+            </Grid>
+
+            <DataGrid Name="dozentlist" ItemsSource="{Binding DozentList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" 
+                  Grid.Column="0" SelectedItem="{Binding SelectedDozent, Mode=OneWayToSource}" IsSynchronizedWithCurrentItem="True"  >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding DozentNachname, UpdateSourceTrigger=PropertyChanged}"  Width="*"/>
+                    <DataGridTextColumn Header="Vorname" Binding="{Binding DozentVorname, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                    <DataGridTextColumn Header="AkadGrad" Binding="{Binding AkadGrad, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <Grid Grid.Column="1">
+            <GroupBox Margin="10" Height="250"  BorderBrush="#142F5A" VerticalAlignment="Top">
+                <GroupBox.Header>
+                    Dozenten Daten bearbeiten
+                </GroupBox.Header>
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center" />
+                    <TextBox x:Name="txtName" Grid.Row="0" Grid.Column="1" Margin="10" Text="{Binding TempSelectedDozent.DozentNachname, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                    <TextBox x:Name="txtVorname" Grid.Row="1" Grid.Column="1" Margin="10" Text="{Binding TempSelectedDozent.DozentVorname, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                    <TextBox x:Name="txtAkadGrad" Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding TempSelectedDozent.AkadGrad, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                    <Button x:Name="btnSave" Grid.Row="4" Grid.Column="1" Margin="100,10,10,10" Width="80" HorizontalAlignment="Center" Content="Speichern" Command="{Binding SaveDozentCommand}"/>
+                    <Button x:Name="btnDelete" Grid.Row="4" Grid.Column="1" Margin="10" Width="80" HorizontalAlignment="Right" Content="Löschen" Command="{Binding DeleteDozentCommand}"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+        <!--<Grid Grid.Column="1" VerticalAlignment="Bottom">
+            <DataGrid ItemsSource="{Binding DozentList, UpdateSourceTrigger=PropertyChanged}">
+                
+            </DataGrid>
+        </Grid>-->
+    </Grid>
+</UserControl>
