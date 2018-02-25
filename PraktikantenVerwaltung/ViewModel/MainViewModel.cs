@@ -10,7 +10,9 @@ namespace PraktikantenVerwaltung.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<ViewModelBase> _vmCollection; // A Collection of Child ViewModels
-        private DozentViewModel _dozentviewmodel; // Child View Model
+        private DozentViewModel _dozentviewmodel; // Dozent ViewModel
+        private StudentViewModel _studentviewmodel; // Student ViewModel
+        private FirmenViewModel _firmenviewmodel; // Firmen ViewModel
         private int _selectedTab = 0; // opens with Tab Dozenten-Daten bearbeiten by default
 
         public ObservableCollection<ViewModelBase> VmCollection 
@@ -19,7 +21,6 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _vmCollection, value);
-                RaisePropertyChanged("VmCollection");
             }
         }
 
@@ -32,24 +33,46 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
+        public StudentViewModel Studentviewmodel
+        {
+            get { return _studentviewmodel; }
+            set
+            {
+                Set(ref _studentviewmodel, value);
+            }
+        }
+
+        public FirmenViewModel Firmenviewmodel
+        {
+            get { return _firmenviewmodel; }
+            set
+            {
+                Set(ref _firmenviewmodel, value);
+            }
+        }
+
+
         public int SelectedTab
         {
             get { return _selectedTab; }
             set
             {
                 Set(ref _selectedTab, value);
-                RaisePropertyChanged("SelectedTab");
             }
         }
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel(DozentViewModel dozentViewModel)
+        public MainViewModel(DozentViewModel dozentViewModel, StudentViewModel studentViewModel, FirmenViewModel firmenViewModel)
         {
-            _dozentviewmodel = dozentViewModel;
+            Dozentviewmodel = dozentViewModel;
+            Studentviewmodel = studentViewModel;
+            Firmenviewmodel = firmenViewModel;
             VmCollection = new ObservableCollection<ViewModelBase>();
-            VmCollection.Add(_dozentviewmodel);
+            VmCollection.Add(Dozentviewmodel);
+            VmCollection.Add(Studentviewmodel);
+            VmCollection.Add(Firmenviewmodel);
 
         }
 

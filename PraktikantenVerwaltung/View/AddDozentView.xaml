@@ -6,16 +6,36 @@
         xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
         mc:Ignorable="d"
         Title="Neuer Dozent hinzufügen" Height="500" Width="500"
-        DataContext="{Binding AddDozentVM, Source={StaticResource Locator}}">
+        DataContext="{Binding Main.Dozentviewmodel.AddDozentViewModel, Source={StaticResource Locator}}">
 
     <Grid>
+        <Grid.Resources>
+            <ControlTemplate x:Key="MyErrorTemplate">
+                <DockPanel>
+                    <Border BorderBrush="Orange" BorderThickness="1">
+                        <AdornedElementPlaceholder />
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource MyErrorTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
         <GroupBox Grid.Row="1" Margin="10" Height="250"  BorderBrush="Gray">
             <GroupBox.Header>
                 Neuer Dozent
             </GroupBox.Header>
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -27,11 +47,11 @@
                 <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center" />
                 <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
                 <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="10" Text="{Binding NachName, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="10" Text="{Binding VorName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding AkadGrad, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="AddDozent" Grid.Row="4" Grid.Column="1" Margin="10" Width="80" HorizontalAlignment="Center" Command="{Binding AddCommand}" Content="Hinzufügen"/>
-                <Button x:Name="Cancel" Grid.Row="4" Grid.Column="1" Margin="10" Width="80" HorizontalAlignment="Right" Command="{Binding CancelCommand}" Content="Cancel"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NachName, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding VorName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding AkadGrad, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <Button x:Name="AddDozent" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Command="{Binding AddCommand}" Content="Hinzufügen"/>
+                <Button x:Name="Cancel" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" Command="{Binding CancelCommand}" Content="Cancel"/>
             </Grid>
         </GroupBox>
 

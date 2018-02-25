@@ -6,6 +6,8 @@
             <Style TargetType="{x:Type Button}">
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="Background" Value="#142F5A" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Width" Value="80" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -30,6 +32,37 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+            </Style>
+
+            <Style TargetType="Label">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+            <Style TargetType="GroupBox">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontWeight="Bold" FontSize="16" Foreground="#142F5A"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="DatePickerTextBox">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBox x:Name="PART_TextBox" 
+                                    Text="{Binding Path=SelectedDate, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, StringFormat={}{0:dd/MM/yyyy}}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Width" Value="100"/>
             </Style>
         </ResourceDictionary>
   </Application.Resources>

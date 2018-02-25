@@ -71,8 +71,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -95,22 +97,44 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Core\DIManager.cs" />
     <Compile Include="Core\IDialogService.cs" />
     <Compile Include="Core\IDozentDB.cs" />
+    <Compile Include="Core\IFirmenDB.cs" />
+    <Compile Include="Core\IStudentDB.cs" />
     <Compile Include="DB\DozentDB.cs" />
+    <Compile Include="DB\FirmenDB.cs" />
     <Compile Include="DB\PraktikantenVerwaltungContext.cs" />
+    <Compile Include="DB\StudentDB.cs" />
+    <Compile Include="Migrations\201712151632197_InitialCreate.cs" />
+    <Compile Include="Migrations\201712151632197_InitialCreate.Designer.cs">
+      <DependentUpon>201712151632197_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802151557211_AddStudentFirmenModel.cs" />
+    <Compile Include="Migrations\201802151557211_AddStudentFirmenModel.Designer.cs">
+      <DependentUpon>201802151557211_AddStudentFirmenModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Dozent.cs" />
+    <Compile Include="Model\Firmen.cs" />
+    <Compile Include="Model\Student.cs" />
     <Compile Include="Service\DialogService.cs" />
     <Compile Include="ViewModel\AddDozentViewModel.cs" />
     <Compile Include="ViewModel\DozentViewModel.cs" />
+    <Compile Include="ViewModel\FirmenViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\StudentViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AddDozentView.xaml.cs">
       <DependentUpon>AddDozentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DozentView.xaml.cs">
       <DependentUpon>DozentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FirmenView.xaml.cs">
+      <DependentUpon>FirmenView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StudentView.xaml.cs">
+      <DependentUpon>StudentView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -132,6 +156,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\FirmenView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StudentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -147,6 +179,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Migrations\201712151632197_InitialCreate.resx">
+      <DependentUpon>201712151632197_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802151557211_AddStudentFirmenModel.resx">
+      <DependentUpon>201802151557211_AddStudentFirmenModel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -10,9 +10,9 @@ namespace PraktikantenVerwaltung.Model
     public class Dozent : ViewModelBase
     {
         private int _dozentId;
-        private string _dozentVorname;
-        private string _dozentNachname;
-        private string _akadGrad;
+        private string _dozentVorname ;
+        private string _dozentNachname ;
+        private string _akadGrad ;
 
 
         public Dozent()

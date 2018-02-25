@@ -19,12 +19,18 @@ namespace PraktikantenVerwaltung.ViewModel
         /// </summary>
         public ViewModelLocator()
         {
-            DIManager.Instance.Register<MainViewModel, MainViewModel>(LifeCycle.Singletone);
-            DIManager.Instance.Register<DozentViewModel, DozentViewModel>(LifeCycle.Singletone);
-            DIManager.Instance.Register<AddDozentViewModel, AddDozentViewModel>(LifeCycle.Transient);
-            DIManager.Instance.Register<PraktikantenVerwaltungContext, PraktikantenVerwaltungContext>(LifeCycle.Singletone);
-            DIManager.Instance.Register<IDialogService, DialogService>(LifeCycle.Singletone);
-            DIManager.Instance.Register<IDozentDB, DozentDB>(LifeCycle.Singletone);
+            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+
+            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<DozentViewModel>();
+            SimpleIoc.Default.Register<StudentViewModel>();
+            SimpleIoc.Default.Register<FirmenViewModel>();
+            SimpleIoc.Default.Register<AddDozentViewModel>();
+            SimpleIoc.Default.Register<PraktikantenVerwaltungContext>();
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IDozentDB, DozentDB>();
+            SimpleIoc.Default.Register<IStudentDB, StudentDB>();
+            SimpleIoc.Default.Register<IFirmenDB, FirmenDB>();
 
         }
 
@@ -32,23 +38,16 @@ namespace PraktikantenVerwaltung.ViewModel
         {
             get
             {
-                return DIManager.Instance.Resolve<MainViewModel>();
+                return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
 
-        public DozentViewModel DozentVM
-        {
-            get
-            {
-                return DIManager.Instance.Resolve<DozentViewModel>();
-            }
-        }
 
         public DozentDB DozentDB
         {
             get
             {
-                return DIManager.Instance.Resolve<DozentDB>();
+                return ServiceLocator.Current.GetInstance<DozentDB>();
             }
         }
 
@@ -56,21 +55,34 @@ namespace PraktikantenVerwaltung.ViewModel
         {
             get
             {
-                return DIManager.Instance.Resolve<PraktikantenVerwaltungContext>();
-            }
-        }
-
-        public AddDozentViewModel AddDozentVM
-        {
-            get
-            {
-                return DIManager.Instance.Resolve<AddDozentViewModel>();
+                return ServiceLocator.Current.GetInstance<PraktikantenVerwaltungContext>();
             }
         }
 
         public static void Cleanup()
         {
-            DIManager.Instance.Dispose();
+            //SimpleIoc.Default.Reset();
+            SimpleIoc.Default.Unregister<MainViewModel>();
+            SimpleIoc.Default.Unregister<DozentViewModel>();
+            SimpleIoc.Default.Unregister<StudentViewModel>();
+            SimpleIoc.Default.Unregister<FirmenViewModel>();
+            SimpleIoc.Default.Unregister<AddDozentViewModel>();
+            SimpleIoc.Default.Unregister<PraktikantenVerwaltungContext>();
+            SimpleIoc.Default.Unregister<DialogService>();
+            SimpleIoc.Default.Unregister<DozentDB>();
+            SimpleIoc.Default.Unregister<StudentDB>();
+            SimpleIoc.Default.Unregister<FirmenDB>();
+
+            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<DozentViewModel>();
+            SimpleIoc.Default.Register<StudentViewModel>();
+            SimpleIoc.Default.Register<FirmenViewModel>();
+            SimpleIoc.Default.Register<AddDozentViewModel>();
+            SimpleIoc.Default.Register<PraktikantenVerwaltungContext>();
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IDozentDB, DozentDB>();
+            SimpleIoc.Default.Register<IStudentDB, StudentDB>();
+            SimpleIoc.Default.Register<IFirmenDB, FirmenDB>();
         }
     }
 }

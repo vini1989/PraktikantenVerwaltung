@@ -9,67 +9,72 @@ using PraktikantenVerwaltung.Core;
 using PraktikantenVerwaltung.Model;
 using GalaSoft.MvvmLight.Messaging;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace PraktikantenVerwaltung.ViewModel
 {
     /// <summary>
     /// This class contains properties that the AddDozentView can data bind to.
     /// </summary>
-    public class AddDozentViewModel : ViewModelBase
+    public class AddDozentViewModel : ViewModelBase, IDataErrorInfo
     {
-        private readonly DozentViewModel _parent;
-        private IDozentDB _dozentDB; // Connection to dozents table in database
-        private IDialogService _dialogService;
+        #region AddDozentViewModel members
+
         private string _nachName;
-        private string _vorName;
+        private string _vorName ;
         private string _akadGrad;
+
+        
         public RelayCommand AddCommand { get; set; } //Command to add new dozent into dozents table
         public RelayCommand CancelCommand { get; set; } //Command to cancel/close window
 
         //Dozent Lastname
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Nachname ist erforderlich")]
+        [RegularExpression("^[a-zA-ZÄäÖöÜüß ]*$", ErrorMessage = "Bitte geben Sie nur Alphabete ein")]
         public string NachName
         {
             get { return _nachName; }
             set
             {
                 Set(ref _nachName, value);
-                //RaisePropertyChanged("NachName");
-                AddCommand.RaiseCanExecuteChanged();
+                //AddCommand.RaiseCanExecuteChanged();
 
             }
         }
 
         //Dozent Firstname
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Vorname ist erforderlich")]
+        [RegularExpression("^[a-zA-ZÄäÖöÜüß ]*$", ErrorMessage = "Bitte geben Sie nur Alphabete ein")]
         public string VorName
         {
             get { return _vorName; }
             set
             {
                 Set(ref _vorName, value);
-                //RaisePropertyChanged("VorName");
-                AddCommand.RaiseCanExecuteChanged();
+                //AddCommand.RaiseCanExecuteChanged();
             }
         }
 
         //Dozent Akadamischer Grad
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Akademischer Grad ist erforderlich")]
         public string AkadGrad
         {
             get { return _akadGrad; }
             set
             {
                 Set(ref _akadGrad, value);
-                //RaisePropertyChanged("AkadGrad");
-                AddCommand.RaiseCanExecuteChanged();
+                //AddCommand.RaiseCanExecuteChanged();
 
             }
         }
 
         // Initializes a new instance of the AddDozentViewModel class.
-        public AddDozentViewModel(DozentViewModel parent,IDozentDB dozentDB,IDialogService dialogService)
+        public AddDozentViewModel()
         {
-            _parent = parent;
-            _dozentDB = dozentDB;
-            _dialogService = dialogService;
            
             // Command to Add Dozent details to Dozent DB 
             AddCommand = new RelayCommand(AddDozent, CanAddDozent);
@@ -85,48 +90,22 @@ namespace PraktikantenVerwaltung.ViewModel
             dozent.DozentVorname = this.VorName;
             dozent.AkadGrad = this.AkadGrad;
 
-            //Check if dozent already exists in DB
-            bool DozentExists = _dozentDB.DozentExists(dozent);
 
-            if (DozentExists) 
-            {
-                var createDuplicate = _dialogService.ShowQuestion("Dozent already exists. Do you wish to continue?", "Confirmation");
-                if (createDuplicate)
-                {
-                    CreateDozent(dozent);
-                }
-
-            }
-            else
-            {
-                CreateDozent(dozent);
-            }
-
+            //Send a message with Dozent object to DozentViewModel
+            Messenger.Default.Send<Dozent>(dozent);
 
             //Closes window
             Messenger.Default.Send(new NotificationMessage("CloseAddDozentView"));
 
-            _parent.AddDozentViewModel = null; // this will dispose off the AddDozentViewModel
 
-        }
-
-        //To add dozent to DB and ObservableCollection
-        private void CreateDozent(Dozent dozent)
-        {
-            //Add new dozent to DB and retreive it
-            Dozent DozentAdded = _dozentDB.CreateDozent(dozent);
-
-            //Add new dozent to DozentList ObservableCollection
-            _parent.DozentList.Add(DozentAdded);
-
-            _dialogService.ShowMessage("Dozent successfully added !", "Success");
+            this.Cleanup();
 
         }
 
         //To enable Add button
         private bool CanAddDozent()
         {
-            return (!string.IsNullOrEmpty(NachName)) && (!string.IsNullOrEmpty(VorName)) && (!string.IsNullOrEmpty(AkadGrad));
+            return IsOk;
         }
 
         //To close window
@@ -134,13 +113,85 @@ namespace PraktikantenVerwaltung.ViewModel
         {
             //Closes window
             Messenger.Default.Send(new NotificationMessage("CloseAddDozentView"));
+            this.Cleanup();
         }
 
         public override void Cleanup()
         {
-   
+
             base.Cleanup();
+
+            ViewModelLocator.Cleanup();
         }
+
+        #endregion
+
+        #region IDataErrorInfo members
+
+        public string Error => string.Empty;
+        public string this[string propertyName]
+        {
+            get
+            {
+                CollectErrors();
+                return Errors.ContainsKey(propertyName) ? Errors[propertyName] : string.Empty;
+            }
+        }
+        #endregion
+
+        #region DataValidation members
+
+        //A Dictionary to store errors with Property name as key
+        private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
+
+        private static List<PropertyInfo> _propertyInfos;
+        protected List<PropertyInfo> PropertyInfos
+        {
+            get
+            {
+                return _propertyInfos ?? (_propertyInfos =
+                                GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                             .Where(prop => 
+                                prop.IsDefined(typeof(RequiredAttribute), true) || 
+                                prop.IsDefined(typeof(RegularExpressionAttribute), true))
+                             .ToList());
+            }
+        }
+
+        private bool TryValidateProperty(PropertyInfo propertyInfo, List<string> propertyErrors)
+        {
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(this) { MemberName = propertyInfo.Name };
+            var propertyValue = propertyInfo.GetValue(this);
+
+            // Validate the property
+            var isValid = Validator.TryValidateProperty(propertyValue, context, results);
+
+            if (results.Any()) { propertyErrors.AddRange(results.Select(c => c.ErrorMessage)); }
+
+            return isValid;
+        }
+
+        private void CollectErrors()
+        {
+            Errors.Clear();
+            PropertyInfos.ForEach(prop =>
+                                {
+                                    //Validate generically
+                                    var errors = new List<string>();
+                                    var isValid = TryValidateProperty(prop, errors);
+                                    if (!isValid)
+                                        //A dictionary to store the errors and the key is the name of the property, then add only the first error encountered. 
+                                        Errors.Add(prop.Name, errors.First());
+                                });
+            AddCommand.RaiseCanExecuteChanged();
+        }
+
+        
+        public bool HasErrors => Errors.Any();
+        public bool IsOk => !HasErrors;
+
+        #endregion
 
     }
 }

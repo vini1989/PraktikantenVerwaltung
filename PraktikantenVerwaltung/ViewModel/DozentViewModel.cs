@@ -29,7 +29,6 @@ namespace PraktikantenVerwaltung.ViewModel
 
         public RelayCommand ShowAddDozentCommand { get; private set; } //Command to open new Window to add new dozent
         public RelayCommand SaveDozentCommand { get; private set; } // Command to save edited Dozent changes
-
         public RelayCommand DeleteDozentCommand { get; private set; } // Command to delete Dozent
 
         //Dozent collection
@@ -39,7 +38,6 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _dozentList, value);
-                //RaisePropertyChanged("DozentList");
             }
 
         }
@@ -51,7 +49,6 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _addDozentViewModel, value);
-                //RaisePropertyChanged("AddDozentViewModel");
             }
         }
 
@@ -69,11 +66,12 @@ namespace PraktikantenVerwaltung.ViewModel
         }
 
         // Initializes a new instance of the DozentViewModel class.
-        public DozentViewModel(IDozentDB dozentDB, IDialogService dialogservice)
+        public DozentViewModel(IDozentDB dozentDB, IDialogService dialogservice, AddDozentViewModel adddozentviewmodel)
         {
 
             _dozentDB = dozentDB;
             _dialogservice = dialogservice;
+            AddDozentViewModel = adddozentviewmodel;
             TempSelectedDozent = new Dozent();
 
             // To get list of all Dozents from dozents table
@@ -89,12 +87,64 @@ namespace PraktikantenVerwaltung.ViewModel
 
         private void ShowAddDozentViewExecute()
         {
+            //Registers for incoming Dozent object messages
+            Messenger.Default.Register<Dozent>(this, CheckDozentExists);
+
+            //Opens the Add Dozent View
             _dialogservice.AddDozentView();
+        }
+
+        private void CheckDozentExists(Dozent dozent)
+        {
+            //Check if dozent already exists in DB
+            bool DozentExists = _dozentDB.DozentExists(dozent);
+
+            if (DozentExists)
+            {
+                var createDuplicate = _dialogservice.ShowQuestion("Dozent existiert bereits. Trotzdem hinzufügen?", "Bestätigung");
+                if (createDuplicate)
+                {
+                    CreateDozent(dozent);
+                }
+
+            }
+            else
+            {
+                CreateDozent(dozent);
+            }
+
+            this.Cleanup();
+        }
+
+        //To add dozent to DB and ObservableCollection
+        private void CreateDozent(Dozent dozent)
+        {
+            //Add new dozent to DB and retreive it
+            Dozent DozentAdded = _dozentDB.CreateDozent(dozent);
+
+            //Add new dozent to DozentList ObservableCollection
+            DozentList.Add(DozentAdded);
+
+            _dialogservice.ShowMessage("Dozent wurde erfolgreich hinzufügt!", "Erfolg");
+
         }
 
         private void SaveDozentExecute()
         {
-            Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+            bool DozentExists = _dozentDB.DozentExists(TempSelectedDozent);
+            if (DozentExists)
+            {
+                var createDuplicate = _dialogservice.ShowQuestion("Dozent existiert bereits. Trotzdem editieren?", "Bestätigung");
+                if (createDuplicate)
+                {
+                    Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+                }
+            }
+            else
+            {
+                Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+            }
+                
         }
 
         private void DeleteDozentExecute()
@@ -108,13 +158,12 @@ namespace PraktikantenVerwaltung.ViewModel
             return (TempSelectedDozent != null);
         }
 
-        //public override void Cleanup()
-        //{
-        //    base.Cleanup();
-
-
-        //    ViewModelLocator.Cleanup();
-        //}
+        public override void Cleanup()
+        {
+            Messenger.Default.Unregister(this);
+            //base.Cleanup();
+            //ViewModelLocator.Cleanup();
+        }
 
 
     }

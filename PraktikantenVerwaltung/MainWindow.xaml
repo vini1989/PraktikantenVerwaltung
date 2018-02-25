@@ -7,12 +7,12 @@
         mc:Ignorable="d"
         xmlns:views="clr-namespace:PraktikantenVerwaltung.View"
         xmlns:vm="clr-namespace:PraktikantenVerwaltung.ViewModel"
-        Title="MainWindow" Height="1000" Width="1200" SizeToContent="Manual" WindowState="Maximized"
+        Title="MainWindow" Height="700" Width="1200" SizeToContent="Manual" WindowState="Maximized"
         DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
 
     <DockPanel HorizontalAlignment="Stretch" Name="dockPanel1" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" DockPanel.Dock="Top" BorderThickness="2">
-            <Grid Background="#142F5A" Height="70" TextBlock.FontFamily="Arial" >
+            <Grid Background="#142F5A" Height="70" TextBlock.FontFamily="Verdana" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="*"/>
@@ -86,8 +86,12 @@
                     <TabItem Header="Dozenten-Daten bearbeiten" x:Name="Dozenten" DataContext="{Binding VmCollection[0]}" >
                         <views:DozentView />
                     </TabItem>
-                    <TabItem Header="Studierende-Daten bearbeiten"  />
-                    <TabItem Header="Firmen-Daten bearbeiten" />
+                    <TabItem Header="Studierende-Daten bearbeiten" x:Name="Studierende" DataContext="{Binding VmCollection[1]}">
+                        <views:StudentView />
+                    </TabItem>
+                    <TabItem Header="Firmen-Daten bearbeiten" x:Name="Firmen" DataContext="{Binding VmCollection[2]}">
+                        <views:FirmenView />
+                    </TabItem>
                     <TabItem Header="Studierende eines Dozent"/>
                     <TabItem Header="Studierende einer Firma"/>
                     <TabItem Header="Offene oder überfällige Praktika"/>
