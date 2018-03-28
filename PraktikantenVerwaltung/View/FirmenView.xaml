@@ -4,10 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
+             xmlns:converter="clr-namespace:PraktikantenVerwaltung.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1200"
              DataContext="{Binding Main.Firmenviewmodel, Source={StaticResource Locator}}">
-    <Grid>
+
+    <UserControl.Resources>
+        <converter:BoolInverterConverter x:Key="BoolInverterConverter" />
+    </UserControl.Resources>
+
+<Grid>
         <!--Heading and Content-->
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -22,240 +28,134 @@
                    FontFamily="Verdana" FontSize="20" FontWeight="Bold" Foreground="#142F5A"/>
         </Grid>
 
-        <!--Content-->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!--Firmen suchen and list firma details-->
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <!--Suchen-->
-                    <Label x:Name="lblSuchen" Content="Suchen: "/>
-                    <ComboBox x:Name="cmbFirSuchen" Width="200" Height="30" Margin="10" IsEditable="True" />
-                    <Button x:Name="btnAddFirmen" Content="Firmen Hinzufügen" Margin="10" Width="120" />
-                </StackPanel>
-                <GroupBox x:Name="grpboxstammdaten" Grid.Row="1" Margin="10" BorderBrush="#142F5A">
-                    <GroupBox.Header>
-                        Stammdaten
-                    </GroupBox.Header>
-                    <Grid Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+        <!--Firmen suchen and list firma details-->
+        <Grid Grid.Row="1" Width="800" HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <!--Suchen-->
+                <Label x:Name="lblSuchen" Content="Suchen: "/>
+                <ComboBox x:Name="cmbFirSuchen" Width="200" Height="30" Margin="10"  
+                          ItemsSource="{Binding FirmenList,UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding SelectedFirmen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} - {1}">
+                                        <Binding Path="Firma"/>
+                                        <Binding Path="Ort"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button x:Name="btnAddFirmen" Content="Neue Firma" Margin="10" Width="120"
+                        Command="{Binding AddFirmenCommand}"/>
+            </StackPanel>
+            <GroupBox x:Name="grpboxstammdaten" Grid.Row="1" Margin="10" BorderBrush="#142F5A">
+                <GroupBox.Header>
+                    Stammdaten
+                </GroupBox.Header>
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                        <!--Firmen-Nr-->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <Label  Content="Firmen-Nr :" Width="100"/>
-                            <TextBlock x:Name="txtblkFirmenNr" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       FontSize="12" Margin="5" />
-                        </StackPanel>
+                    <!--Firmen-Nr-->
+                    <Label Grid.Column="0" Grid.Row="0" Content="Firmen-Nr :"/>
+                    <TextBlock x:Name="txtFirmenNr" Grid.Column="1" Grid.Row="0" Width="100"  HorizontalAlignment="Left" Margin="10"
+                               Text="{Binding TempSelectedFirmen.FirmenId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <!--Firma-->
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Label  Content="Firma :" Width="100"/>
-                            <TextBlock x:Name="txtblkFirma" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                        </StackPanel>
+                    <!--Firma-->
+                    <Label Grid.Column="0" Grid.Row="1" Content="Firma :"/>
+                    <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Width="200" HorizontalAlignment="Left" Margin="10"
+                             Text="{Binding TempSelectedFirmen.Firma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <!--Straße und Hausnummer-->
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <Label Width="100">
-                                <Label.Content>
-                                <AccessText TextWrapping="Wrap" Text="Straße und Hausnummer :"/>
-                                </Label.Content>
-                            </Label>
-                            <TextBlock x:Name="txtblkStr" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                        </StackPanel>
+                    <!--Strasse und Hausnummer-->
+                    <Label Grid.Column="0" Grid.Row="2">
+                        <Label.Content>
+                            <AccessText TextWrapping="Wrap" Text="Straße und Hausnummer :" />
+                        </Label.Content>
+                    </Label>
+                    <TextBox x:Name="txtStraßeHausnum" Grid.Column="1" Grid.Row="2" Margin="10" Width="300" HorizontalAlignment="Left"
+                             Text="{Binding TempSelectedFirmen.StrHausnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <!--PLZ and Ort-->
-                        <Grid Grid.Row="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <!--PLZ-->
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <Label  Content="PLZ :" Width="100"/>
-                                <TextBlock x:Name="txtblkPlz" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                            </StackPanel>
-                            <!--Ort-->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Label  Content="Ort :" Width="100"/>
-                                <TextBlock x:Name="txtblkOrt" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                            </StackPanel>
-                        </Grid>
-
-                        <!--Telefon and Fax-->
-                        <Grid Grid.Row="4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <!--Telefon-->
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <Label  Content="Telefon :" Width="100"/>
-                                <TextBlock x:Name="txtblkTel" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                           TextWrapping="Wrap" FontSize="12" Margin="5" />
-                            </StackPanel>
-                            <!--Fax-Nr-->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Label  Content="Fax-Nr :" Width="100"/>
-                                <TextBlock x:Name="txtblkFax" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                            </StackPanel>
-                        </Grid>
-                        
-                        <!--eMail-->
-                        <StackPanel Grid.Row="5" Orientation="Horizontal">
-                            <Label  Content="eMail :" Width="100"/>
-                            <TextBlock x:Name="txtblkEmail" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                        </StackPanel>
-
-                        <!--WWW-->
-                        <StackPanel Grid.Row="6" Orientation="Horizontal">
-                            <Label  Content="WWW :" Width="100"/>
-                            <TextBlock x:Name="txtblkWww" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       TextWrapping="Wrap" FontSize="12" Margin="5" />
-                        </StackPanel>
-
-                        <!--National and International-->
-                        <Grid Grid.Row="7">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!--National-->
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <Label x:Name="lblNatStamm" Content="National :" />
-                                <CheckBox x:Name="chkNatStamm" VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <!--International-->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Label x:Name="lblIntStamm" Content="International :" />
-                                <CheckBox x:Name="chkIntStamm" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Grid>
-                       
-                    </Grid>
-                </GroupBox>
-            </Grid>
-            
-            <!--Firmen daten hinzufugen und bearbeiten-->
-            <Grid Grid.Column="1">
-                <GroupBox x:Name="grpboxfirmenbearbeiten" Margin="10" BorderBrush="#142F5A">
-                    <GroupBox.Header>
-                        Firmendaten bearbeiten
-                    </GroupBox.Header>
-                    <Grid Margin="10">
+                    <!--PLZ und Ort-->
+                    <Label Grid.Column="0" Grid.Row="3" Content="PLZ :"/>
+                    <Grid Grid.Column="1" Grid.Row="3">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        
-                        <!--Firmen-Nr-->
-                        <Label Grid.Column="0" Grid.Row="0" Content="Firmen-Nr :"/>
-                        <TextBox x:Name="txtFirmenNr" Grid.Column="1" Grid.Row="0" Width="100" HorizontalAlignment="Left" Margin="10"/>
-
-                        <!--Firma-->
-                        <Label Grid.Column="0" Grid.Row="1" Content="Firma :"/>
-                        <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Margin="10"/>
-
-                        <!--Strasse und Hausnummer-->
-                        <Label Grid.Column="0" Grid.Row="2">
-                            <Label.Content>
-                                <AccessText TextWrapping="Wrap" Text="Straße und Hausnummer :"/>
-                            </Label.Content>
-                        </Label>
-                        <TextBox x:Name="txtStraßeHausnum" Grid.Column="1" Grid.Row="2" Margin="10"/>
-
-                        <!--PLZ-->
-                        <Label Grid.Column="0" Grid.Row="3" Content="PLZ :"/>
-                        <TextBox x:Name="txtPlz" Grid.Column="1" Grid.Row="3" Width="200" HorizontalAlignment="Left" Margin="10"/>
-
-                        <!--Ort-->
-                        <Label Grid.Column="0" Grid.Row="4" Content="Ort :"/>
-                        <TextBox x:Name="txtOrt" Grid.Column="1" Grid.Row="4" Width="200" HorizontalAlignment="Left" Margin="10"/>
-
-                        <!--Telefon-->
-                        <Label Grid.Column="0" Grid.Row="5" Content="Telefon :"/>
-                        <TextBox x:Name="txtTel" Grid.Column="1" Grid.Row="5" Width="200" HorizontalAlignment="Left" Margin="10"/>
-
-                        <!--Fax-Nr-->
-                        <Label Grid.Column="0" Grid.Row="6" Content="Fax-Nr :"/>
-                        <TextBox x:Name="txtFax" Grid.Column="1" Grid.Row="6" Width="200" HorizontalAlignment="Left" Margin="10"/>
-
-                        <!--eMail-->
-                        <Label Grid.Column="0" Grid.Row="7" Content="eMail :"/>
-                        <TextBox x:Name="txtEmail" Grid.Column="1" Grid.Row="7" Margin="10"/>
-
-                        <!--WWW-->
-                        <Label Grid.Column="0" Grid.Row="8" Content="WWW :"/>
-                        <TextBox x:Name="txtWww" Grid.Column="1" Grid.Row="8" Margin="10"/>
-
-                        <!--National and International-->
-                        <Grid Grid.Column="1" Grid.Row="9">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <!--National-->
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <Label x:Name="lblNational" Content="National :" />
-                                <CheckBox x:Name="chkNat" VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <!--International-->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Label x:Name="lblInternational" Content="International :" />
-                                <CheckBox x:Name="chkInt" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Grid>
-                        
-                        <!--Buttons-->
-                        <Grid Grid.Column="1" Grid.Row="10">
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="btnSave" Content="Speichern" Margin="10" Width="100" />
-                                <Button x:Name="btnCancel" Content="Cancel" Margin="10" Width="100"  />
-                                <Button x:Name="btnDelete" Content="Löschen" Margin="10" Width="100"  />
-                            </StackPanel>
-                        </Grid>
+                        <TextBox x:Name="txtPlz" Grid.Column="0"  Width="200" HorizontalAlignment="Left" Margin="10"
+                                 Text="{Binding TempSelectedFirmen.Plz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Grid.Column="1" Content="Ort :" HorizontalAlignment="Right"/>
+                        <TextBox x:Name="txtOrt" Grid.Column="2"  Width="200" HorizontalAlignment="Left" Margin="10"
+                                 Text="{Binding TempSelectedFirmen.Ort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
-                </GroupBox>
-            </Grid>
+
+                    <!--Telefon und Fax-->
+                    <Label Grid.Column="0" Grid.Row="4" Content="Telefon :"/>
+                    <Grid Grid.Column="1" Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtTel" Grid.Column="0"  Width="200" HorizontalAlignment="Left" Margin="10"
+                                 Text="{Binding TempSelectedFirmen.Telefon,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label Grid.Column="1" Content="Fax :" HorizontalAlignment="Right"/>
+                        <TextBox x:Name="txtFax" Grid.Column="2"  Width="200" HorizontalAlignment="Left" Margin="10"
+                                 Text="{Binding TempSelectedFirmen.FaxNr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <!--eMail-->
+                    <Label Grid.Column="0" Grid.Row="5" Content="eMail :"/>
+                    <TextBox x:Name="txtEmail" Grid.Column="1" Grid.Row="5" Margin="10"  Width="300" HorizontalAlignment="Left"
+                             Text="{Binding TempSelectedFirmen.Email,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <!--WWW-->
+                    <Label Grid.Column="0" Grid.Row="6" Content="WWW :"/>
+                    <TextBox x:Name="txtWww" Grid.Column="1" Grid.Row="6" Margin="10"  Width="300" HorizontalAlignment="Left"
+                             Text="{Binding TempSelectedFirmen.WWW,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <!--National and International-->
+                    <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal" >
+                        <RadioButton x:Name="RadNat" Content="National" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,10,0"
+                                     IsChecked="{Binding TempSelectedFirmen.National, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton x:Name="RadInt" Content="International" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,10,0" 
+                                     IsChecked="{Binding TempSelectedFirmen.National, Converter={StaticResource BoolInverterConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    
+
+
+                    <!--Buttons-->
+                    <Grid Grid.Column="1" Grid.Row="8">
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="btnSave" Content="Speichern" Margin="10" Width="100" Command="{Binding SaveFirmenCommand}"/>
+                            <Button x:Name="btnCancel" Content="Cancel" Margin="10" Width="100" Command="{Binding CancelFirmenCommand}" />
+                            <Button x:Name="btnDelete" Content="Löschen" Margin="10" Width="100" Command="{Binding DeleteFirmenCommand}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </GroupBox>
         </Grid>
     </Grid>
 </UserControl>

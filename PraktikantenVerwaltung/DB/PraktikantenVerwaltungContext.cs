@@ -12,7 +12,7 @@ namespace PraktikantenVerwaltung.DB
     {
         public DbSet<Dozent> Dozents { get; set; }
 
-        //public DbSet<Student> Students { get; set; }
+        public DbSet<Student> Students { get; set; }
 
         public DbSet<Firmen> Firmens { get; set; }
 

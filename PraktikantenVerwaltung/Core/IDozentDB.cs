@@ -16,7 +16,7 @@ namespace PraktikantenVerwaltung.Core
         Dozent GetDozent(int id);
 
         ObservableCollection<Dozent> GetAllDozents();
-
+        List<DozentNames> GetAllDozentNames();
         Dozent UpdateDozent(Dozent editedDozent);
 
         Dozent DeleteDozent(Dozent dozent);

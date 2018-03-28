@@ -10,11 +10,12 @@ namespace PraktikantenVerwaltung.Model
     public class Student : ViewModelBase
     {
         private int _studentId;
-        private int _matrikelNr;
+        private Nullable<int> _matrikelNr;
         private string _studentVorname;
         private string _studentNachname;
         private string _studiengang;
         private string _immatrikuliert;
+        private List<Praktika> _praktikaList;
 
         public Student()
         {
@@ -27,7 +28,7 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _studentId, value); }
         }
 
-        public int MatrikelNr
+        public Nullable<int> MatrikelNr
         {
             get { return _matrikelNr; }
             set { Set(ref _matrikelNr, value); }
@@ -55,6 +56,12 @@ namespace PraktikantenVerwaltung.Model
         {
             get { return _immatrikuliert; }
             set { Set(ref _immatrikuliert, value); }
+        }
+
+        public List<Praktika> PraktikaList
+        {
+            get { return _praktikaList; }
+            set { Set(ref _praktikaList, value); }
         }
     }
 }

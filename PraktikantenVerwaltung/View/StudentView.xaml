@@ -72,11 +72,11 @@
                         <!--Search Name box-->
                         <ComboBox x:Name="cmbSrchName" Grid.Row="0" Grid.Column="1" Margin="10"
                                   IsTextSearchEnabled="False" IsEditable="True" ItemsSource="{Binding}"
-                                  Width="150" HorizontalAlignment="Left" IsDropDownOpen="True"/>
+                                  Width="150" HorizontalAlignment="Left" />
                         <!--Search MatrikelNr box-->
                         <ComboBox x:Name="cmbSrchMatr" Grid.Row="0" Grid.Column="1" Margin="10"
                                   IsTextSearchEnabled="False" IsEditable="True" ItemsSource="{Binding}"
-                                  Width="100" HorizontalAlignment="Right" IsDropDownOpen="True"/>
+                                  Width="100" HorizontalAlignment="Right" />
                         <!--Matrikel Nr-->
                         <TextBox x:Name="txtMatrikelNr" Grid.Row="1" Grid.Column="1" Margin="10"
                                  Text="{Binding Path= MatrikelNr, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
@@ -192,7 +192,7 @@
                             </Grid.ColumnDefinitions>
                             <Label x:Name="lblDozent" Content="Dozent :" Grid.Column="0" />
                             <ComboBox x:Name="cmboxDozent" Grid.Column="1" Margin="7" Width="400" HorizontalAlignment="Left" VerticalContentAlignment="Center"
-                                      SelectedItem="{Binding Dozent}" ItemsSource="{Binding}"/>
+                                      SelectedItem="{Binding Dozent}" ItemsSource="{Binding DozentNames}" DisplayMemberPath="DozentFullName"/>
 
                         </Grid>
                         
@@ -333,7 +333,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                <Button x:Name="btnSave" Content="Speichern" Margin="10" Width="100" />
+                                <Button x:Name="btnSave" Content="Speichern" Margin="10" Width="100"
+                                        Command="{Binding Path = SaveCommand}"/>
                                 <Button x:Name="btnCancel" Content="Cancel" Margin="10" Width="100"  />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">

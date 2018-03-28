@@ -11,13 +11,13 @@ namespace PraktikantenVerwaltung.DB
 {
     public class StudentDB : IStudentDB
     {
-        //private PraktikantenVerwaltungContext _db;
+        private PraktikantenVerwaltungContext _db;
 
-        //public StudentDB(PraktikantenVerwaltungContext Db)
-        //{
-        //    _db = Db;
+        public StudentDB(PraktikantenVerwaltungContext Db)
+        {
+            _db = Db;
 
-        //}
+        }
 
         //public bool StudentExists(Student student)
         //{
@@ -26,11 +26,11 @@ namespace PraktikantenVerwaltung.DB
         //    return studentExists;
         //}
 
-        //public Student CreateStudent(Student student)
-        //{
-        //    var studentnew = _db.Students.Add(student);
-        //    _db.SaveChanges();
-        //    return studentnew;
-        //}
+        public void CreateStudent(Student student)
+        {
+            var studentnew = _db.Students.Add(student);
+            _db.SaveChanges();
+            //return studentnew;
+        }
     }
 }

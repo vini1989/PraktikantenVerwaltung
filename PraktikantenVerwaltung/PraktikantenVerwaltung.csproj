@@ -97,6 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\BoolInverterConverter.cs" />
     <Compile Include="Core\IDialogService.cs" />
     <Compile Include="Core\IDozentDB.cs" />
     <Compile Include="Core\IFirmenDB.cs" />
@@ -113,9 +114,23 @@
     <Compile Include="Migrations\201802151557211_AddStudentFirmenModel.Designer.cs">
       <DependentUpon>201802151557211_AddStudentFirmenModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803041124195_PraktikaModel.cs" />
+    <Compile Include="Migrations\201803041124195_PraktikaModel.Designer.cs">
+      <DependentUpon>201803041124195_PraktikaModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803161926548_RemoveFirmenNr.cs" />
+    <Compile Include="Migrations\201803161926548_RemoveFirmenNr.Designer.cs">
+      <DependentUpon>201803161926548_RemoveFirmenNr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803172130445_AddPLZTelefonFax.cs" />
+    <Compile Include="Migrations\201803172130445_AddPLZTelefonFax.Designer.cs">
+      <DependentUpon>201803172130445_AddPLZTelefonFax.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Dozent.cs" />
+    <Compile Include="Model\DozentNames.cs" />
     <Compile Include="Model\Firmen.cs" />
+    <Compile Include="Model\Praktika.cs" />
     <Compile Include="Model\Student.cs" />
     <Compile Include="Service\DialogService.cs" />
     <Compile Include="ViewModel\AddDozentViewModel.cs" />
@@ -184,6 +199,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802151557211_AddStudentFirmenModel.resx">
       <DependentUpon>201802151557211_AddStudentFirmenModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803041124195_PraktikaModel.resx">
+      <DependentUpon>201803041124195_PraktikaModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803161926548_RemoveFirmenNr.resx">
+      <DependentUpon>201803161926548_RemoveFirmenNr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803172130445_AddPLZTelefonFax.resx">
+      <DependentUpon>201803172130445_AddPLZTelefonFax.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -68,21 +68,27 @@ namespace PraktikantenVerwaltung.ViewModel
         // Initializes a new instance of the DozentViewModel class.
         public DozentViewModel(IDozentDB dozentDB, IDialogService dialogservice, AddDozentViewModel adddozentviewmodel)
         {
+            try
+            {
 
-            _dozentDB = dozentDB;
-            _dialogservice = dialogservice;
-            AddDozentViewModel = adddozentviewmodel;
-            TempSelectedDozent = new Dozent();
+                _dozentDB = dozentDB;
+                _dialogservice = dialogservice;
+                AddDozentViewModel = adddozentviewmodel;
+                TempSelectedDozent = new Dozent();
 
-            // To get list of all Dozents from dozents table
-            DozentList = new ObservableCollection<Dozent>(); 
-            DozentList = _dozentDB.GetAllDozents();
+                // To get list of all Dozents from dozents table
+                DozentList = new ObservableCollection<Dozent>();
+                DozentList = _dozentDB.GetAllDozents();
 
-            //To open new window to add dozent
-            ShowAddDozentCommand = new RelayCommand(ShowAddDozentViewExecute);
-            SaveDozentCommand = new RelayCommand(SaveDozentExecute);
-            DeleteDozentCommand = new RelayCommand(DeleteDozentExecute, CanDeleteDozent);
-
+                //To open new window to add dozent
+                ShowAddDozentCommand = new RelayCommand(ShowAddDozentViewExecute);
+                SaveDozentCommand = new RelayCommand(SaveDozentExecute);
+                DeleteDozentCommand = new RelayCommand(DeleteDozentExecute, CanDeleteDozent);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         private void ShowAddDozentViewExecute()

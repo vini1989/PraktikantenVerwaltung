@@ -10,13 +10,12 @@ namespace PraktikantenVerwaltung.Model
     public class Firmen : ViewModelBase
     {
         private int _firmenId;
-        private int _firmenNr;
         private string _firma;
         private string _strHausnum;
-        private int _plz;
+        private Nullable<int> _plz;
         private string _ort;
-        private int _telefon;
-        private int _faxNr;
+        private Nullable<int> _telefon;
+        private Nullable<int> _faxNr;
         private string _email;
         private string _www;
         private bool _national;
@@ -30,11 +29,6 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _firmenId, value); }
         }
 
-        public int FirmenNr
-        {
-            get { return _firmenNr; }
-            set { Set(ref _firmenNr, value); }
-        }
 
         public string Firma
         {
@@ -48,7 +42,7 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _strHausnum, value); }
         }
 
-        public int Plz
+        public Nullable<int> Plz
         {
             get { return _plz; }
             set { Set(ref _plz, value); }
@@ -60,13 +54,13 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _ort, value); }
         }
 
-        public int Telefon
+        public Nullable<int> Telefon
         {
             get { return _telefon; }
             set { Set(ref _telefon, value); }
         }
 
-        public int FaxNr
+        public Nullable<int> FaxNr
         {
             get { return _faxNr; }
             set { Set(ref _faxNr, value); }
@@ -89,5 +83,23 @@ namespace PraktikantenVerwaltung.Model
             get { return _national; }
             set { Set(ref _national, value); }
         }
+
+        public void CopyTo(Firmen target)
+        {
+            if (target == null)
+                throw new ArgumentNullException();
+
+            target.FirmenId = this.FirmenId;
+            target.Firma = this.Firma;
+            target.StrHausnum = this.StrHausnum;
+            target.Plz = this.Plz;
+            target.Ort = this.Ort;
+            target.Telefon = this.Telefon;
+            target.FaxNr = this.FaxNr;
+            target.Email = this.Email;
+            target.WWW = this.WWW;
+            target.National = this.National;
+        }
+
     }
 }

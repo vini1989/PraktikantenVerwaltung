@@ -33,5 +33,55 @@ namespace PraktikantenVerwaltung.DB
             _db.SaveChanges();
             return firmennew;
         }
+
+
+        public ObservableCollection<Firmen> GetAllFirmen()
+        {
+
+            var firmens = from f in _db.Firmens
+                          orderby f.Firma ascending
+                          select f;
+            ObservableCollection<Firmen> AllFirmen = new ObservableCollection<Firmen>(firmens);
+            return AllFirmen;
+
+        }
+
+        public Firmen GetFirmen(int id)
+        {
+            var getfirmen = from f in _db.Firmens
+                            where f.FirmenId == id
+                            select f;
+            var firma = getfirmen.Any() ? getfirmen.Single() : null;
+            return firma;
+        }
+
+        public Firmen UpdateFirmen(Firmen editedFirmen)
+        {
+            var updatedFirmen = (from f in _db.Firmens
+                                 where f.FirmenId == editedFirmen.FirmenId
+                                 select f).Single();
+            updatedFirmen.Firma = editedFirmen.Firma;
+            updatedFirmen.StrHausnum = editedFirmen.StrHausnum;
+            updatedFirmen.Plz = editedFirmen.Plz;
+            updatedFirmen.Ort = editedFirmen.Ort;
+            updatedFirmen.Telefon = editedFirmen.Telefon;
+            updatedFirmen.FaxNr = editedFirmen.FaxNr;
+            updatedFirmen.Email = editedFirmen.Email;
+            updatedFirmen.WWW = editedFirmen.WWW;
+            updatedFirmen.National = editedFirmen.National;
+
+            _db.SaveChanges();
+            return updatedFirmen;
+        }
+
+        public Firmen DeleteFirmen(Firmen firmen)
+        {
+            var delFirmen = (from f in _db.Firmens
+                             where f.FirmenId == firmen.FirmenId
+                             select f).Single();
+            _db.Firmens.Remove(delFirmen);
+            _db.SaveChanges();
+            return delFirmen;
+        }
     }
 }

@@ -4,6 +4,7 @@ using PraktikantenVerwaltung.Model;
 using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
 using System;
+using PraktikantenVerwaltung.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,12 @@ namespace PraktikantenVerwaltung.ViewModel
     public class StudentViewModel : ViewModelBase
     {
         private IStudentDB _studentDB;
+        private IDozentDB _dozentDB;
         private IDialogService _dialogservice;
         public RelayCommand AddStudentCommand { get; private set; } // Command to add new Student detail
+        public RelayCommand SaveCommand { get; set; }
         public ObservableCollection<string> StudiengangItems { get; private set; } // Studiengang combobox items
+        public List<DozentNames> DozentNames { get; private set; }
 
         ////AddStudentViewModel
         //private IAddStudentViewModel _addStudentViewModel;
@@ -211,12 +215,15 @@ namespace PraktikantenVerwaltung.ViewModel
         }
 
         // Initializes a new instance of the Studentviewmodel class.
-        public StudentViewModel(IStudentDB studentDB, IDialogService dialogservice)
+        public StudentViewModel(IStudentDB studentDB, IDozentDB dozentDB, IDialogService dialogservice)
         {
             _studentDB = studentDB;
+            _dozentDB = dozentDB;
             _dialogservice = dialogservice;
 
             AddStudentCommand = new RelayCommand(AddStudentExecute);
+
+            SaveCommand = new RelayCommand(SaveNewStudent, CanSaveNewStudent);
 
             StudiengangItems = new ObservableCollection<string>
             {
@@ -228,6 +235,10 @@ namespace PraktikantenVerwaltung.ViewModel
                 "MA BWL non-konsekutiv"
             };
 
+            DozentNames = new List<DozentNames>();
+            DozentNames =  _dozentDB.GetAllDozentNames();
+               
+            
         }
 
         private void AddStudentExecute()
@@ -255,6 +266,54 @@ namespace PraktikantenVerwaltung.ViewModel
             BetreuerVorname = string.Empty;
             BetreuerNachname = string.Empty;
             BetreuerEmail = string.Empty;
+
+            
+
+        }
+
+        private void SaveNewStudent()
+        {
+            Student student = new Student();
+            Praktika praktika = new Praktika();
+
+            student.MatrikelNr = this.MatrikelNr;
+            student.StudentNachname = this.StudentNachname;
+            student.StudentVorname = this.StudentVorname;
+            student.Studiengang = this.Studiengang;
+            student.Immatrikuliert = this.Immatrikuliert;
+            praktika.TeilPraktikumNr = this.TeilPraktikumNr;
+            praktika.Antrag = this.Antrag;
+            praktika.Genehmigung = this.Genehmigung;
+            praktika.FirmenNr = this.FirmenNr;
+            praktika.Firma = this.Firma;
+            praktika.Ort = this.Ort;
+            praktika.Dozent = this.Dozent;
+            praktika.Beginn = this.Beginn;
+            praktika.Ende = this.Ende;
+            praktika.Bemerkungen = this.Bemerkungen;
+            praktika.Dozentchk = this.Dozentchk;
+            praktika.Unternehmenchk = this.Unternehmenchk;
+            praktika.Berichtchk = this.Berichtchk;
+            praktika.Auslandsprak = this.Auslandsprak;
+            praktika.PraktikumAbsolvt = this.PraktikumAbsolvt;
+            praktika.BetreuerNachname = this.BetreuerNachname;
+            praktika.BetreuerVorname = this.BetreuerVorname;
+            praktika.BetreuerEmail = this.BetreuerEmail;
+            student.PraktikaList.Add(praktika);
+
+            CreateNewStudent(student);
+            
+        }
+
+        private bool CanSaveNewStudent()
+        {
+            return true;
+        }
+
+        private void CreateNewStudent(Student student)
+        {
+            _studentDB.CreateStudent(student);
+            _dialogservice.ShowMessage("Student wurde erfolgreich hinzufügt!", "Erfolg");
         }
 
         private int GeneratePrakNr()

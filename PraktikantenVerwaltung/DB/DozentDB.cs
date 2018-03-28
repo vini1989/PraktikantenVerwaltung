@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PraktikantenVerwaltung.Model;
 using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight;
 
 namespace PraktikantenVerwaltung.DB
 {
@@ -55,6 +56,18 @@ namespace PraktikantenVerwaltung.DB
 
         }
 
+        public List<DozentNames> GetAllDozentNames()
+        {
+            var getdozentnames = (from d in _db.Dozents
+                                  select new DozentNames
+                                  {
+                                      DozentFullName = d.DozentNachname + " " + d.DozentVorname
+
+                                  }).ToList();
+            return getdozentnames;
+        }
+
+
         public Dozent UpdateDozent(Dozent editedDozent)
         {
             var updatedDozent = (from d in _db.Dozents
@@ -78,4 +91,6 @@ namespace PraktikantenVerwaltung.DB
             return delDozent;
         }
     }
+
+
 }

@@ -12,5 +12,9 @@ namespace PraktikantenVerwaltung.Core
     {
         bool FirmenExists(Firmen firmen);
         Firmen CreateFirmen(Firmen firmen);
+        ObservableCollection<Firmen> GetAllFirmen();
+        Firmen GetFirmen(int id);
+        Firmen UpdateFirmen(Firmen editedFirmen);
+        Firmen DeleteFirmen(Firmen firmen);
     }
 }
