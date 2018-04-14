@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using System.ComponentModel.DataAnnotations;
 
 namespace PraktikantenVerwaltung.Model
 {
@@ -12,10 +13,10 @@ namespace PraktikantenVerwaltung.Model
         private int _firmenId;
         private string _firma;
         private string _strHausnum;
-        private Nullable<int> _plz;
+        private int? _plz;
         private string _ort;
-        private Nullable<int> _telefon;
-        private Nullable<int> _faxNr;
+        private int? _telefon;
+        private int? _faxNr;
         private string _email;
         private string _www;
         private bool _national;
@@ -29,7 +30,7 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _firmenId, value); }
         }
 
-
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Firma ist erforderlich")]
         public string Firma
         {
             get { return _firma; }
@@ -42,25 +43,26 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _strHausnum, value); }
         }
 
-        public Nullable<int> Plz
+        public int? Plz
         {
             get { return _plz; }
             set { Set(ref _plz, value); }
         }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Ort ist erforderlich")]
         public string Ort
         {
             get { return _ort; }
             set { Set(ref _ort, value); }
         }
 
-        public Nullable<int> Telefon
+        public int? Telefon
         {
             get { return _telefon; }
             set { Set(ref _telefon, value); }
         }
 
-        public Nullable<int> FaxNr
+        public int? FaxNr
         {
             get { return _faxNr; }
             set { Set(ref _faxNr, value); }

@@ -23,9 +23,10 @@ namespace PraktikantenVerwaltung.ViewModel
         private IDozentDB _dozentDB; // Connection to dozents table in database
         private ObservableCollection<Dozent> _dozentList; // Collection of all dozents from database
         private Dozent _selectedDozent;
+        private Dozent _tempselectedDozent;
         private IDialogService _dialogservice;
 
-        public Dozent TempSelectedDozent { get; private set; }
+        
 
         public RelayCommand ShowAddDozentCommand { get; private set; } //Command to open new Window to add new dozent
         public RelayCommand SaveDozentCommand { get; private set; } // Command to save edited Dozent changes
@@ -58,10 +59,18 @@ namespace PraktikantenVerwaltung.ViewModel
             get { return _selectedDozent; }
             set
             {
-                if (value != null)
-                    value.CopyTo(TempSelectedDozent);
+                Set(ref _selectedDozent, value);
+                if(value != null)
+                    value.CopyTo(TempSelectedDozent);                
+            }
+        }
 
-                RaisePropertyChanged("SelectedDozent");
+        public Dozent TempSelectedDozent
+        {
+            get { return _tempselectedDozent; }
+            set
+            {
+                Set(ref _tempselectedDozent, value);
             }
         }
 
@@ -80,10 +89,14 @@ namespace PraktikantenVerwaltung.ViewModel
                 DozentList = new ObservableCollection<Dozent>();
                 DozentList = _dozentDB.GetAllDozents();
 
+                SelectedDozent = DozentList[0];
+
                 //To open new window to add dozent
                 ShowAddDozentCommand = new RelayCommand(ShowAddDozentViewExecute);
                 SaveDozentCommand = new RelayCommand(SaveDozentExecute);
                 DeleteDozentCommand = new RelayCommand(DeleteDozentExecute, CanDeleteDozent);
+
+                //Cleanup();
             }
             catch(Exception e)
             {
@@ -119,7 +132,7 @@ namespace PraktikantenVerwaltung.ViewModel
                 CreateDozent(dozent);
             }
 
-            this.Cleanup();
+            Cleanup();
         }
 
         //To add dozent to DB and ObservableCollection
@@ -133,6 +146,8 @@ namespace PraktikantenVerwaltung.ViewModel
 
             _dialogservice.ShowMessage("Dozent wurde erfolgreich hinzufügt!", "Erfolg");
 
+            SelectedDozent = DozentAdded;
+
         }
 
         private void SaveDozentExecute()
@@ -140,17 +155,27 @@ namespace PraktikantenVerwaltung.ViewModel
             bool DozentExists = _dozentDB.DozentExists(TempSelectedDozent);
             if (DozentExists)
             {
-                var createDuplicate = _dialogservice.ShowQuestion("Dozent existiert bereits. Trotzdem editieren?", "Bestätigung");
+                var createDuplicate = _dialogservice.ShowQuestion("Dozent existiert bereits. Trotzdem hinzufügen?", "Bestätigung");
                 if (createDuplicate)
                 {
-                    Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+                    Dozent dupDozent = new Dozent();
+                    dupDozent.DozentNachname = TempSelectedDozent.DozentNachname;
+                    dupDozent.DozentVorname = TempSelectedDozent.DozentVorname;
+                    dupDozent.AkadGrad = TempSelectedDozent.AkadGrad;
+                    CreateDozent(dupDozent);
+                }
+                else
+                {
+                    TempSelectedDozent = SelectedDozent;
                 }
             }
             else
             {
                 Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+                SelectedDozent = updatedDozent;
             }
-                
+
+            Cleanup();   
         }
 
         private void DeleteDozentExecute()
@@ -167,7 +192,8 @@ namespace PraktikantenVerwaltung.ViewModel
         public override void Cleanup()
         {
             Messenger.Default.Unregister(this);
-            //base.Cleanup();
+            base.Cleanup();
+
             //ViewModelLocator.Cleanup();
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PraktikantenVerwaltung.Model
 {
@@ -15,6 +16,22 @@ namespace PraktikantenVerwaltung.Model
         {
             get { return _praktikaId; }
             set { Set(ref _praktikaId, value); }
+        }
+
+        //Student MatrikelNr
+        private int _studentRefId;
+        [ForeignKey("Student")]
+        public int StudentRefId
+        {
+            get { return _studentRefId; }
+            set { Set(ref _studentRefId, value); }
+        }
+
+        private Student _student;
+        public Student Student
+        {
+            get { return _student; }
+            set { Set(ref _student, value); }
         }
 
         //TeilPraktikum Nr
@@ -42,27 +59,27 @@ namespace PraktikantenVerwaltung.Model
         }
 
         //Firmen Nr
-        private Nullable<int> _firmenNr;
-        public Nullable<int> FirmenNr
+        private int _firmenNr;
+        public int FirmenNr
         {
             get { return _firmenNr; }
             set { Set(ref _firmenNr, value); }
         }
 
         //Firma
-        private string _firma;
-        public string Firma
+        private string _firmaName;
+        public string FirmaName
         {
-            get { return _firma; }
-            set { Set(ref _firma, value); }
+            get { return _firmaName; }
+            set { Set(ref _firmaName, value); }
         }
 
         //Ort
-        private string _ort;
-        public string Ort
+        private string _ortName;
+        public string OrtName
         {
-            get { return _ort; }
-            set { Set(ref _ort, value); }
+            get { return _ortName; }
+            set { Set(ref _ortName, value); }
         }
 
         //Dozent

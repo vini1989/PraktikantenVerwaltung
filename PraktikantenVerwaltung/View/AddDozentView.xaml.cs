@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GalaSoft.MvvmLight.Messaging;
+using PraktikantenVerwaltung.ViewModel;
 
 namespace PraktikantenVerwaltung.View
 {
@@ -25,7 +26,10 @@ namespace PraktikantenVerwaltung.View
             InitializeComponent();
 
             Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
-            this.Unloaded += (o, e) => { Messenger.Default.Unregister(this); };
+            this.Unloaded += (o, e) => {
+                Messenger.Default.Unregister(this);
+                
+            };
         }
 
         private void NotificationMessageReceived(NotificationMessage msg)

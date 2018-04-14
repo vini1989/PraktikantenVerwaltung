@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using System.Collections.ObjectModel;
 
 namespace PraktikantenVerwaltung.Model
 {
     public class Student : ViewModelBase
     {
         private int _studentId;
-        private Nullable<int> _matrikelNr;
+        private int _matrikelNr;
         private string _studentVorname;
         private string _studentNachname;
         private string _studiengang;
         private string _immatrikuliert;
-        private List<Praktika> _praktikaList;
+        private ObservableCollection<Praktika> _praktikaList;
 
         public Student()
         {
@@ -28,7 +29,7 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _studentId, value); }
         }
 
-        public Nullable<int> MatrikelNr
+        public int MatrikelNr
         {
             get { return _matrikelNr; }
             set { Set(ref _matrikelNr, value); }
@@ -58,10 +59,25 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _immatrikuliert, value); }
         }
 
-        public List<Praktika> PraktikaList
+        virtual public ObservableCollection<Praktika> PraktikaList
         {
             get { return _praktikaList; }
             set { Set(ref _praktikaList, value); }
+        }
+
+        public void CopyTo(Student tempStudent)
+        {
+            if (tempStudent == null)
+                throw new ArgumentNullException();
+
+            tempStudent.StudentId = StudentId;
+            tempStudent.MatrikelNr = MatrikelNr;
+            tempStudent.StudentVorname = StudentVorname;
+            tempStudent.StudentNachname = StudentNachname;
+            tempStudent.Studiengang = Studiengang;
+            tempStudent.Immatrikuliert = Immatrikuliert;
+            tempStudent.PraktikaList = PraktikaList;
+
         }
     }
 }

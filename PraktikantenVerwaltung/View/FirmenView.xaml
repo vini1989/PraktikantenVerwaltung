@@ -37,9 +37,10 @@
             <StackPanel Orientation="Horizontal" Grid.Row="0">
                 <!--Suchen-->
                 <Label x:Name="lblSuchen" Content="Suchen: "/>
-                <ComboBox x:Name="cmbFirSuchen" Width="200" Height="30" Margin="10"  
+                <ComboBox x:Name="cmbFirSuchen" Width="200" Height="30" Margin="10" IsEnabled="{Binding ViewMode}" 
                           ItemsSource="{Binding FirmenList,UpdateSourceTrigger=PropertyChanged}"
-                          SelectedItem="{Binding SelectedFirmen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True">
+                          SelectedItem="{Binding SelectedFirmen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
+                          IsTextSearchEnabled="True" TextSearch.TextPath="Firma">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
@@ -80,12 +81,12 @@
                     <!--Firmen-Nr-->
                     <Label Grid.Column="0" Grid.Row="0" Content="Firmen-Nr :"/>
                     <TextBlock x:Name="txtFirmenNr" Grid.Column="1" Grid.Row="0" Width="100"  HorizontalAlignment="Left" Margin="10"
-                               Text="{Binding TempSelectedFirmen.FirmenId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                               Text="{Binding SelectedFirmen.FirmenId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--Firma-->
                     <Label Grid.Column="0" Grid.Row="1" Content="Firma :"/>
                     <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Width="200" HorizontalAlignment="Left" Margin="10"
-                             Text="{Binding TempSelectedFirmen.Firma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding SelectedFirmen.Firma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--Strasse und Hausnummer-->
                     <Label Grid.Column="0" Grid.Row="2">
@@ -94,7 +95,7 @@
                         </Label.Content>
                     </Label>
                     <TextBox x:Name="txtStraßeHausnum" Grid.Column="1" Grid.Row="2" Margin="10" Width="300" HorizontalAlignment="Left"
-                             Text="{Binding TempSelectedFirmen.StrHausnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding SelectedFirmen.StrHausnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--PLZ und Ort-->
                     <Label Grid.Column="0" Grid.Row="3" Content="PLZ :"/>
@@ -105,10 +106,10 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="txtPlz" Grid.Column="0"  Width="200" HorizontalAlignment="Left" Margin="10"
-                                 Text="{Binding TempSelectedFirmen.Plz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding SelectedFirmen.Plz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Grid.Column="1" Content="Ort :" HorizontalAlignment="Right"/>
                         <TextBox x:Name="txtOrt" Grid.Column="2"  Width="200" HorizontalAlignment="Left" Margin="10"
-                                 Text="{Binding TempSelectedFirmen.Ort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding SelectedFirmen.Ort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
 
                     <!--Telefon und Fax-->
@@ -120,28 +121,28 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="txtTel" Grid.Column="0"  Width="200" HorizontalAlignment="Left" Margin="10"
-                                 Text="{Binding TempSelectedFirmen.Telefon,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding SelectedFirmen.Telefon,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Grid.Column="1" Content="Fax :" HorizontalAlignment="Right"/>
                         <TextBox x:Name="txtFax" Grid.Column="2"  Width="200" HorizontalAlignment="Left" Margin="10"
-                                 Text="{Binding TempSelectedFirmen.FaxNr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding SelectedFirmen.FaxNr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
 
                     <!--eMail-->
                     <Label Grid.Column="0" Grid.Row="5" Content="eMail :"/>
                     <TextBox x:Name="txtEmail" Grid.Column="1" Grid.Row="5" Margin="10"  Width="300" HorizontalAlignment="Left"
-                             Text="{Binding TempSelectedFirmen.Email,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding SelectedFirmen.Email,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--WWW-->
                     <Label Grid.Column="0" Grid.Row="6" Content="WWW :"/>
                     <TextBox x:Name="txtWww" Grid.Column="1" Grid.Row="6" Margin="10"  Width="300" HorizontalAlignment="Left"
-                             Text="{Binding TempSelectedFirmen.WWW,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding SelectedFirmen.WWW,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--National and International-->
                     <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal" >
                         <RadioButton x:Name="RadNat" Content="National" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,10,0"
-                                     IsChecked="{Binding TempSelectedFirmen.National, UpdateSourceTrigger=PropertyChanged}"/>
+                                     IsChecked="{Binding SelectedFirmen.National, UpdateSourceTrigger=PropertyChanged}"/>
                         <RadioButton x:Name="RadInt" Content="International" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,10,0" 
-                                     IsChecked="{Binding TempSelectedFirmen.National, Converter={StaticResource BoolInverterConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                                     IsChecked="{Binding SelectedFirmen.National, Converter={StaticResource BoolInverterConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                     
 

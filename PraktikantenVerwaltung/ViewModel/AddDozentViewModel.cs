@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace PraktikantenVerwaltung.ViewModel
 {
@@ -41,7 +42,6 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _nachName, value);
-                //AddCommand.RaiseCanExecuteChanged();
 
             }
         }
@@ -55,19 +55,16 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _vorName, value);
-                //AddCommand.RaiseCanExecuteChanged();
             }
         }
 
         //Dozent Akadamischer Grad
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Akademischer Grad ist erforderlich")]
         public string AkadGrad
         {
             get { return _akadGrad; }
             set
             {
                 Set(ref _akadGrad, value);
-                //AddCommand.RaiseCanExecuteChanged();
 
             }
         }
@@ -98,7 +95,7 @@ namespace PraktikantenVerwaltung.ViewModel
             Messenger.Default.Send(new NotificationMessage("CloseAddDozentView"));
 
 
-            this.Cleanup();
+            Cleanup();
 
         }
 
@@ -113,15 +110,15 @@ namespace PraktikantenVerwaltung.ViewModel
         {
             //Closes window
             Messenger.Default.Send(new NotificationMessage("CloseAddDozentView"));
-            this.Cleanup();
+            Cleanup();
         }
 
         public override void Cleanup()
         {
-
+            
             base.Cleanup();
-
-            ViewModelLocator.Cleanup();
+            ViewModelLocator.UnregisterAddDozentVM();
+            //ViewModelLocator.Cleanup();
         }
 
         #endregion

@@ -83,13 +83,13 @@
                         </Style>
                     </TabControl.Resources>
 
-                    <TabItem Header="Dozenten-Daten bearbeiten" x:Name="Dozenten" DataContext="{Binding VmCollection[0]}" >
+                    <TabItem Header="Dozenten-Daten bearbeiten" x:Name="Dozenten"  >
                         <views:DozentView />
                     </TabItem>
-                    <TabItem Header="Studierende-Daten bearbeiten" x:Name="Studierende" DataContext="{Binding VmCollection[1]}">
+                    <TabItem Header="Studierende-Daten bearbeiten" x:Name="Studierende" DataContext="{Binding Studentviewmodel}">
                         <views:StudentView />
                     </TabItem>
-                    <TabItem Header="Firmen-Daten bearbeiten" x:Name="Firmen" DataContext="{Binding VmCollection[2]}">
+                    <TabItem Header="Firmen-Daten bearbeiten" x:Name="Firmen" DataContext="{Binding Firmenviewmodel}">
                         <views:FirmenView />
                     </TabItem>
                     <TabItem Header="Studierende eines Dozent"/>

@@ -31,6 +31,7 @@ namespace PraktikantenVerwaltung.ViewModel
             SimpleIoc.Default.Register<IDozentDB, DozentDB>();
             SimpleIoc.Default.Register<IStudentDB, StudentDB>();
             SimpleIoc.Default.Register<IFirmenDB, FirmenDB>();
+            SimpleIoc.Default.Register<IPraktikaDB, PraktikaDB>();
 
         }
 
@@ -42,7 +43,21 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
+        public DozentViewModel DozentViewModel
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<DozentViewModel>();
+            }
+        }
 
+        public AddDozentViewModel AddDozentViewModel
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddDozentViewModel>();
+            }
+        }
         public DozentDB DozentDB
         {
             get
@@ -59,6 +74,17 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
+        public static void UnregisterAddDozentVM()
+        {
+            SimpleIoc.Default.Unregister<AddDozentViewModel>();
+            SimpleIoc.Default.Register<AddDozentViewModel>();
+        }
+
+        public static void UnregisterDozentVM()
+        {
+            SimpleIoc.Default.Unregister<DozentViewModel>();
+            SimpleIoc.Default.Register<DozentViewModel>();
+        }
         public static void Cleanup()
         {
             //SimpleIoc.Default.Reset();
@@ -72,6 +98,7 @@ namespace PraktikantenVerwaltung.ViewModel
             SimpleIoc.Default.Unregister<DozentDB>();
             SimpleIoc.Default.Unregister<StudentDB>();
             SimpleIoc.Default.Unregister<FirmenDB>();
+            SimpleIoc.Default.Unregister<PraktikaDB>();
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<DozentViewModel>();
@@ -83,6 +110,7 @@ namespace PraktikantenVerwaltung.ViewModel
             SimpleIoc.Default.Register<IDozentDB, DozentDB>();
             SimpleIoc.Default.Register<IStudentDB, StudentDB>();
             SimpleIoc.Default.Register<IFirmenDB, FirmenDB>();
+            SimpleIoc.Default.Register<IPraktikaDB, PraktikaDB>();
         }
     }
 }

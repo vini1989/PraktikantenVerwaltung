@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
         mc:Ignorable="d"
         Title="Neuer Dozent hinzufügen" Height="500" Width="500"
-        DataContext="{Binding Main.Dozentviewmodel.AddDozentViewModel, Source={StaticResource Locator}}">
+        DataContext="{Binding AddDozentViewModel, Source={StaticResource Locator}}">
 
     <Grid>
         <Grid.Resources>

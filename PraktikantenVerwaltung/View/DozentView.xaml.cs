@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GalaSoft.MvvmLight.Messaging;
+using PraktikantenVerwaltung.ViewModel;
 
 namespace PraktikantenVerwaltung.View
 {
@@ -24,6 +25,10 @@ namespace PraktikantenVerwaltung.View
         public DozentView()
         {
             InitializeComponent();
+            this.Unloaded += (o, e) => {
+                ViewModelLocator.UnregisterDozentVM();
+
+            };
             //Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
         }
 

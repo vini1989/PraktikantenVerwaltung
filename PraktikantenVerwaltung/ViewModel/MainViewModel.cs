@@ -58,6 +58,7 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _selectedTab, value);
+                ViewModelLocator.Cleanup();
             }
         }
 
@@ -79,6 +80,7 @@ namespace PraktikantenVerwaltung.ViewModel
         public override void Cleanup()
         {
             base.Cleanup();
+            ViewModelLocator.Cleanup();
         }
     }
 }

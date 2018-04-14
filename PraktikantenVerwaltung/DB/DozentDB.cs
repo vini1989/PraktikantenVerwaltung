@@ -31,6 +31,7 @@ namespace PraktikantenVerwaltung.DB
 
         public Dozent CreateDozent(Dozent dozent)
         {
+
             var dozentnew = _db.Dozents.Add(dozent);
             _db.SaveChanges();
             return dozentnew;

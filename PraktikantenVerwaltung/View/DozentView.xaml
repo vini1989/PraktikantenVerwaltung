@@ -7,7 +7,7 @@
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1200"
-             DataContext="{Binding Main.Dozentviewmodel, Source={StaticResource Locator}}">
+             DataContext="{Binding DozentViewModel, Source={StaticResource Locator}}">
 
     <Grid>
         <!--Heading and Content-->
@@ -45,7 +45,7 @@
 
 
                 <DataGrid Name="dozentlist" Grid.Row="1" VerticalAlignment="Top" ItemsSource="{Binding DozentList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" 
-                      Grid.Column="0" SelectedItem="{Binding SelectedDozent, Mode=OneWayToSource}" IsSynchronizedWithCurrentItem="True" 
+                      Grid.Column="0" SelectedItem="{Binding SelectedDozent, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" 
                       ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding DozentNachname, UpdateSourceTrigger=PropertyChanged}"  Width="*"/>

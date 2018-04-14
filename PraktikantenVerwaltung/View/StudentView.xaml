@@ -5,9 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1200"
              DataContext="{Binding Main.Studentviewmodel, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="StudentNamesViewSource" Source="{Binding Path=StudentList}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="StudentNachname" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <CollectionViewSource x:Key="StudentMatrikelsViewSource" Source="{Binding Path=StudentList}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="MatrikelNr" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
 
     <Grid>
         <!--Heading and Content-->
@@ -21,18 +34,14 @@
             <!--Title Daten des Studierende-->
             <Label x:Name="lblheading" Content="Daten des Studierende" HorizontalAlignment="Center" VerticalAlignment="Center"
                    FontFamily="Verdana" FontSize="20" FontWeight="Bold" Foreground="#142F5A"/>
-            
-            <!--Button Add New-->
-            <Button x:Name="btnAddNew" Content="Neu Hinzufügen" Margin="10" Width="100" HorizontalAlignment="Left" 
-                    Command="{Binding Path = AddStudentCommand}"/>
-            
+
             <!--Button Bericht drucken-->
             <Button x:Name="btnprint" Content="Bericht drucken" Margin="10" Width="100" HorizontalAlignment="Right"  />
         </Grid>
 
         <!--Content-->
         <Grid Grid.Row="1">
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="500"/>
                 <ColumnDefinition Width="*"/>
@@ -44,7 +53,7 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
+
                 <!--Stammdaten-->
                 <GroupBox x:Name="grpboxstammdaten" Grid.Row="0" Margin="10" BorderBrush="#142F5A">
                     <GroupBox.Header>
@@ -62,41 +71,71 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Suchen :" />
-                        <Label Grid.Row="1" Grid.Column="0" Content="Matrikel-Nr :" />
-                        <Label Grid.Row="2" Grid.Column="0" Content="Name :" />
-                        <Label Grid.Row="3" Grid.Column="0" Content="Vorname :" />
-                        <Label Grid.Row="4" Grid.Column="0" Content="Studiengang :"/>
-                        <Label Grid.Row="5" Grid.Column="0" Content="Immatrikuliert :"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Suchen :" />
+                        <Label Grid.Row="2" Grid.Column="0" Content="Matrikel-Nr :" />
+                        <Label Grid.Row="3" Grid.Column="0" Content="Name :" />
+                        <Label Grid.Row="4" Grid.Column="0" Content="Vorname :" />
+                        <Label Grid.Row="5" Grid.Column="0" Content="Studiengang :"/>
+                        <Label Grid.Row="6" Grid.Column="0" Content="Immatrikuliert :"/>
+
+                        <!--Button Add New-->
+                        <Button x:Name="btnAddNew" Content="Student Hinzufügen" Grid.Row="0" Grid.Column="1" Margin="10" Width="130" 
+                                HorizontalAlignment="Right"
+                                Command="{Binding Path = AddStudentCommand}"/>
                         <!--Search Name box-->
-                        <ComboBox x:Name="cmbSrchName" Grid.Row="0" Grid.Column="1" Margin="10"
-                                  IsTextSearchEnabled="False" IsEditable="True" ItemsSource="{Binding}"
-                                  Width="150" HorizontalAlignment="Left" />
+                        <ComboBox x:Name="cmbSrchName" Grid.Row="1" Grid.Column="1" Margin="10"
+                                  ItemsSource="{Binding Source= {StaticResource StudentNamesViewSource}, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedStudent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsSynchronizedWithCurrentItem="True"
+                                  Width="150" HorizontalAlignment="Left" IsEnabled="{Binding ViewMode}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="StudentNachname"/>
+                                                <Binding Path="StudentVorname"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <!--Search MatrikelNr box-->
-                        <ComboBox x:Name="cmbSrchMatr" Grid.Row="0" Grid.Column="1" Margin="10"
-                                  IsTextSearchEnabled="False" IsEditable="True" ItemsSource="{Binding}"
-                                  Width="100" HorizontalAlignment="Right" />
+                        <ComboBox x:Name="cmbSrchMatr" Grid.Row="1" Grid.Column="1" Margin="10"
+                                  ItemsSource="{Binding Source= {StaticResource StudentMatrikelsViewSource}, UpdateSourceTrigger=PropertyChanged}"
+                                  DisplayMemberPath="MatrikelNr"
+                                  SelectedItem="{Binding SelectedStudent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  IsSynchronizedWithCurrentItem="True"
+                                  Width="100" HorizontalAlignment="Right" IsEnabled="{Binding ViewMode}" />
                         <!--Matrikel Nr-->
-                        <TextBox x:Name="txtMatrikelNr" Grid.Row="1" Grid.Column="1" Margin="10"
-                                 Text="{Binding Path= MatrikelNr, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <TextBox x:Name="txtMatrikelNr" Grid.Row="2" Grid.Column="1" Margin="10"
+                                 Text="{Binding SelectedStudent.MatrikelNr, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         <!--Student Nachname-->
-                        <TextBox x:Name="txtStName" Grid.Row="2" Grid.Column="1" Margin="10"
-                                 Text="{Binding Path= StudentNachname, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <TextBox x:Name="txtStName" Grid.Row="3" Grid.Column="1" Margin="10"
+                                 Text="{Binding SelectedStudent.StudentNachname, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         <!--Student Vorname-->
-                        <TextBox x:Name="txtStVorname" Grid.Row="3" Grid.Column="1" Margin="10"
-                                 Text="{Binding Path= StudentVorname, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <TextBox x:Name="txtStVorname" Grid.Row="4" Grid.Column="1" Margin="10"
+                                 Text="{Binding SelectedStudent.StudentVorname, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         <!--Studiengang-->
-                        <ComboBox x:Name="cmboxStudiengang" Grid.Row="4" Grid.Column="1" Margin="10" VerticalContentAlignment="Center"
-                                  SelectedItem="{Binding Studiengang}" ItemsSource="{Binding StudiengangItems}"/>
+                        <ComboBox x:Name="cmboxStudiengang" Grid.Row="5" Grid.Column="1" Margin="10" VerticalContentAlignment="Center"
+                                  SelectedItem="{Binding SelectedStudent.Studiengang}" ItemsSource="{Binding StudiengangItems}" SelectedIndex="0"/>
                         <!--Immatrikuliert-->
-                        <TextBox x:Name="txtImmatrikuliert" Grid.Row="5" Grid.Column="1" Margin="10" VerticalContentAlignment="Center"
-                                 Text="{Binding Path= Immatrikuliert, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <TextBox x:Name="txtImmatrikuliert" Grid.Row="6" Grid.Column="1" Margin="10" VerticalContentAlignment="Center"
+                                 Text="{Binding SelectedStudent.Immatrikuliert, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        <Button x:Name="btnAdd" Content="Speichern" Margin="10" Width="100" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left"
+                                        Command="{Binding Path = SaveStudentCommand}"/>
+                        <Button x:Name="btnCancl" Content="Cancel" Margin="10" Width="100" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Right"
+                                        Command="{Binding Path = CancelStudentCommand}"/>
+
                     </Grid>
                 </GroupBox>
 
             </Grid>
-            
+
 
 
             <!--Praktika-->
@@ -120,17 +159,17 @@
                             <RowDefinition Height="5"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        
+
                         <!--Teilpraktikum-Nr-->
                         <Grid Grid.Row="0">
                             <StackPanel Orientation="Horizontal">
                                 <Label x:Name="lblprakNr" Content="Teilpraktikum-Nr :"/>
                                 <TextBox x:Name="txtprakNr" Width="50" Margin="10"
-                                         Text="{Binding Path= TeilPraktikumNr}"/>
+                                         Text="{Binding TempSelectedPraktika.TeilPraktikumNr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
-                            <Button x:Name="btnAddPrak" Content="Praktikum Hinzufügen" Margin="10" Width="130" HorizontalAlignment="Right"  /> 
+                            <Button x:Name="btnAddPrak" Content="Praktikum Hinzufügen" Margin="10" Width="130" HorizontalAlignment="Right"  />
                         </Grid>
-                        
+
                         <!--Antrag and Genehmigung-->
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -142,25 +181,26 @@
                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label x:Name="lblAntrag" Content="Antrag :" />
                                 <DatePicker x:Name="dtAntrag" SelectedDate="{x:Static sys:DateTime.Now}" VerticalAlignment="Center"
-                                            Text="{Binding Path = Antrag , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                            Text="{Binding TempSelectedPraktika.Antrag , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                             </StackPanel>
 
                             <!--Genehmigung-->
                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label x:Name="lblGeneh" Content="Genehmigung :" />
                                 <DatePicker x:Name="dtGeneh" SelectedDate="{x:Static sys:DateTime.Now}" VerticalAlignment="Center"
-                                            Text="{Binding Path = Genehmigung , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                            Text="{Binding TempSelectedPraktika.Genehmigung , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                             </StackPanel>
                         </Grid>
-                        
+
                         <!--Firmen-Nr-->
                         <Grid Grid.Row="2">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label x:Name="lblFirNr" Content="Firmen-Nr :" />
-                                <TextBlock x:Name="txtblFirNr" VerticalAlignment="Center" Text="{Binding FirmenNr}"/>
+                                <TextBlock x:Name="txtblFirNr" VerticalAlignment="Center" 
+                                           Text="{Binding TempSelectedPraktika.FirmenNr, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
-                        
+
                         <!--Firma-->
                         <Grid Grid.Row="3">
                             <Grid.ColumnDefinitions>
@@ -169,7 +209,9 @@
                             </Grid.ColumnDefinitions>
                             <Label x:Name="lblFirma" Content="Firma :" Grid.Column="0" />
                             <ComboBox x:Name="cmboxFirma" Grid.Column="1" Margin="7" Width="400" HorizontalAlignment="Left" VerticalContentAlignment="Center"
-                                      SelectedItem="{Binding Firma}" ItemsSource="{Binding}" />
+                                      ItemsSource="{Binding FirmenList,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Firma"
+                                      SelectedValuePath="Firma"
+                                      SelectedValue="{Binding Path = TempSelectedPraktika.FirmaName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"  />
                         </Grid>
 
                         <!--Ort-->
@@ -180,7 +222,9 @@
                             </Grid.ColumnDefinitions>
                             <Label x:Name="lblOrt" Content="Ort :" Grid.Column="0" />
                             <ComboBox x:Name="cmboxOrt" Grid.Column="1" Margin="7" Width="400" HorizontalAlignment="Left" VerticalContentAlignment="Center" 
-                                      SelectedItem="{Binding Ort}" ItemsSource="{Binding}"/>
+                                      ItemsSource="{Binding FirmenList,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Ort"
+                                      SelectedValuePath="Ort"
+                                      SelectedValue="{Binding Path= TempSelectedPraktika.OrtName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"/>
 
                         </Grid>
 
@@ -192,32 +236,46 @@
                             </Grid.ColumnDefinitions>
                             <Label x:Name="lblDozent" Content="Dozent :" Grid.Column="0" />
                             <ComboBox x:Name="cmboxDozent" Grid.Column="1" Margin="7" Width="400" HorizontalAlignment="Left" VerticalContentAlignment="Center"
-                                      SelectedItem="{Binding Dozent}" ItemsSource="{Binding DozentNames}" DisplayMemberPath="DozentFullName"/>
+                                      ItemsSource="{Binding DozentList,UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValue="{Binding TempSelectedPraktika.Dozent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="DozentNachname"/>
+                                                    <Binding Path="DozentVorname"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
                         </Grid>
-                        
+
                         <!--Beginn and Ende-->
                         <Grid Grid.Row="6">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            
+
                             <!--Beginn-->
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
                                 <Label x:Name="lblbeginn" Content="Beginn :"  />
                                 <DatePicker x:Name="dtbeginn" SelectedDate="{x:Static sys:DateTime.Now}" VerticalAlignment="Center"
-                                            Text="{Binding Path = Beginn , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                            Text="{Binding TempSelectedPraktika.Beginn , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                             </StackPanel>
-                            
+
                             <!--Ende-->
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
                                 <Label x:Name="lblende" Content="Ende :" />
                                 <DatePicker x:Name="dtende" SelectedDate="{x:Static sys:DateTime.Now}" VerticalAlignment="Center"
-                                            Text="{Binding Path = Ende , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                            Text="{Binding TempSelectedPraktika.Ende , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                             </StackPanel>
                         </Grid>
-                        
+
                         <!--Bemerkungen-->
                         <Grid Grid.Row="7">
                             <Grid.ColumnDefinitions>
@@ -226,21 +284,21 @@
                             </Grid.ColumnDefinitions>
                             <Label x:Name="lblBemerk" Content="Bemerkungen :" Grid.Column="0" />
                             <TextBox x:Name="txtBemerk" Grid.Column="1" Width="400" HorizontalAlignment="Left" Margin="7"
-                                     Text="{Binding Path = Bemerkungen , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                     Text="{Binding TempSelectedPraktika.Bemerkungen , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         </Grid>
 
                         <!--Separator-->
                         <Grid Grid.Row="8">
                             <Separator/>
                         </Grid>
-                        
+
                         <!--More Praktika info and Firmen betreuer-->
                         <Grid Grid.Row="9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.75*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            
+
                             <!--More Praktika information-->
                             <Grid Grid.Column="0">
                                 <Grid.RowDefinitions>
@@ -256,19 +314,19 @@
                                         <!--Dozent-->
                                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                                             <Label x:Name="lblDozentchk" Content="Dozent :" />
-                                            <CheckBox x:Name="chkDozent"  VerticalAlignment="Center" IsChecked="{Binding Dozentchk}" />
+                                            <CheckBox x:Name="chkDozent"  VerticalAlignment="Center" IsChecked="{Binding TempSelectedPraktika.Dozentchk}" />
                                         </StackPanel>
 
                                         <!--Unternehmen-->
                                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                                             <Label x:Name="lblUnternhmnchk" Content="Unternehmen :" />
-                                            <CheckBox x:Name="chkUnternhmn"  VerticalAlignment="Center" IsChecked="{Binding Unternehmenchk}" />
+                                            <CheckBox x:Name="chkUnternhmn"  VerticalAlignment="Center" IsChecked="{Binding TempSelectedPraktika.Unternehmenchk}" />
                                         </StackPanel>
 
                                         <!--Bericht abgegeben-->
                                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                                             <Label x:Name="lblBerichtchk" Content="Bericht :" />
-                                            <CheckBox x:Name="chkBericht"  VerticalAlignment="Center" IsChecked="{Binding Berichtchk}" />
+                                            <CheckBox x:Name="chkBericht"  VerticalAlignment="Center" IsChecked="{Binding TempSelectedPraktika.Berichtchk}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </Grid>
@@ -277,7 +335,7 @@
                                 <Grid Grid.Row="1">
                                     <StackPanel Orientation="Horizontal">
                                         <Label x:Name="lblAuslands" Content="AuslandsPraktikum :" />
-                                        <CheckBox x:Name="chkAuslands"  VerticalAlignment="Center" IsChecked="{Binding Auslandsprak}"/>
+                                        <CheckBox x:Name="chkAuslands"  VerticalAlignment="Center" IsChecked="{Binding TempSelectedPraktika.Auslandsprak}"/>
                                     </StackPanel>
                                 </Grid>
 
@@ -286,7 +344,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Label x:Name="lblPrakAbsol" Content="Praktikum absolviert :" Grid.Column="0" />
                                         <TextBox x:Name="txtPrakAbsol" Grid.Column="1" Margin="7" Width="100"
-                                                 Text="{Binding Path = PraktikumAbsolvt , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                                 Text="{Binding TempSelectedPraktika.PraktikumAbsolvt , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
@@ -311,16 +369,16 @@
                                         <Label Grid.Row="1" Grid.Column="0" Content="Name :"  />
                                         <Label Grid.Row="2" Grid.Column="0" Content="eMail-Adresse :"  />
                                         <TextBox x:Name="txtFrVorname" Grid.Row="0" Grid.Column="1" Margin="5"
-                                                 Text="{Binding Path = BetreuerVorname , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                                 Text="{Binding TempSelectedPraktika.BetreuerVorname , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                                         <TextBox x:Name="txtFrName" Grid.Row="1" Grid.Column="1" Margin="5" 
-                                                 Text="{Binding Path = BetreuerNachname , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                                 Text="{Binding TempSelectedPraktika.BetreuerNachname , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                                         <TextBox x:Name="txtFrEmail" Grid.Row="2" Grid.Column="1" Margin="5" 
-                                                 Text="{Binding Path = BetreuerEmail , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                                 Text="{Binding TempSelectedPraktika.BetreuerEmail , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                                     </Grid>
                                 </GroupBox>
                             </Grid>
                         </Grid>
-                        
+
                         <!--Separator-->
                         <Grid Grid.Row="10">
                             <Separator/>
@@ -342,7 +400,7 @@
                                 <Button x:Name="btnNext" Content="Next" Margin="10" Width="100"  />
                             </StackPanel>
                         </Grid>
-                        
+
                     </Grid>
                 </GroupBox>
             </Grid>

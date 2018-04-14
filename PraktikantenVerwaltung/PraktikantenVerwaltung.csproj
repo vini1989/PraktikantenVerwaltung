@@ -101,9 +101,11 @@
     <Compile Include="Core\IDialogService.cs" />
     <Compile Include="Core\IDozentDB.cs" />
     <Compile Include="Core\IFirmenDB.cs" />
+    <Compile Include="Core\IPraktikaDB.cs" />
     <Compile Include="Core\IStudentDB.cs" />
     <Compile Include="DB\DozentDB.cs" />
     <Compile Include="DB\FirmenDB.cs" />
+    <Compile Include="DB\PraktikaDB.cs" />
     <Compile Include="DB\PraktikantenVerwaltungContext.cs" />
     <Compile Include="DB\StudentDB.cs" />
     <Compile Include="Migrations\201712151632197_InitialCreate.cs" />
@@ -125,6 +127,22 @@
     <Compile Include="Migrations\201803172130445_AddPLZTelefonFax.cs" />
     <Compile Include="Migrations\201803172130445_AddPLZTelefonFax.Designer.cs">
       <DependentUpon>201803172130445_AddPLZTelefonFax.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804071117483_AddMatrNrPraktika.cs" />
+    <Compile Include="Migrations\201804071117483_AddMatrNrPraktika.Designer.cs">
+      <DependentUpon>201804071117483_AddMatrNrPraktika.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804121238584_FirmenReqdProp.cs" />
+    <Compile Include="Migrations\201804121238584_FirmenReqdProp.Designer.cs">
+      <DependentUpon>201804121238584_FirmenReqdProp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804130746288_DozentDataValidation.cs" />
+    <Compile Include="Migrations\201804130746288_DozentDataValidation.Designer.cs">
+      <DependentUpon>201804130746288_DozentDataValidation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804130828327_DozentNoDataValidation.cs" />
+    <Compile Include="Migrations\201804130828327_DozentNoDataValidation.Designer.cs">
+      <DependentUpon>201804130828327_DozentNoDataValidation.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Dozent.cs" />
@@ -208,6 +226,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803172130445_AddPLZTelefonFax.resx">
       <DependentUpon>201803172130445_AddPLZTelefonFax.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804071117483_AddMatrNrPraktika.resx">
+      <DependentUpon>201804071117483_AddMatrNrPraktika.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804121238584_FirmenReqdProp.resx">
+      <DependentUpon>201804121238584_FirmenReqdProp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804130746288_DozentDataValidation.resx">
+      <DependentUpon>201804130746288_DozentDataValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804130828327_DozentNoDataValidation.resx">
+      <DependentUpon>201804130828327_DozentNoDataValidation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -16,5 +16,7 @@ namespace PraktikantenVerwaltung.DB
 
         public DbSet<Firmen> Firmens { get; set; }
 
+        public DbSet<Praktika> Praktikas { get; set; }
+
     }
 }

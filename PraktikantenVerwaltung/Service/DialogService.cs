@@ -45,7 +45,7 @@ namespace PraktikantenVerwaltung.Service
         public void AddDozentView()
         {
             AddDozentView adddozentview = new AddDozentView();
-            adddozentview.Show(); 
+            adddozentview.ShowDialog(); 
         }
 
     }
