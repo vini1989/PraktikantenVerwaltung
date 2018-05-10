@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PraktikantenVerwaltung.Model;
+using System.Collections.ObjectModel;
 
 namespace PraktikantenVerwaltung.Core
 {
     public interface IPraktikaDB
     {
-        Praktika CreatePraktika(Praktika praktika);
-        Praktika GetPraktika(int id);
-        bool PraktikaExists(Student student);
+        Praktika UpdatePraktika(Praktika editedPraktika);
     }
 }

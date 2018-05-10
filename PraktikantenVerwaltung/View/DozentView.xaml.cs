@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GalaSoft.MvvmLight.Messaging;
 using PraktikantenVerwaltung.ViewModel;
+using PraktikantenVerwaltung.Core;
 
 namespace PraktikantenVerwaltung.View
 {
@@ -25,22 +26,15 @@ namespace PraktikantenVerwaltung.View
         public DozentView()
         {
             InitializeComponent();
-            this.Unloaded += (o, e) => {
-                ViewModelLocator.UnregisterDozentVM();
+            DataContext = DIManager.Instance.Resolve<DozentViewModel>();
 
-            };
-            //Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
         }
 
-        //private void NotificationMessageReceived(NotificationMessage msg)
-        //{
-        //    if (msg.Notification == "ShowAddDozentView")
-        //    {
-        //        var AddDozentView = new AddDozentView();
-        //        AddDozentView.ShowDialog();
-        //    }
-        //}
+        private void dozentlist_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(dozentlist.SelectedItem != null)
+                dozentlist.ScrollIntoView(dozentlist.SelectedItem);
+        }
 
-      
     }
 }

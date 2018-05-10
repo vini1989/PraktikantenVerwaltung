@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
         mc:Ignorable="d"
-        Title="Neuer Dozent hinzufügen" Height="500" Width="500"
-        DataContext="{Binding AddDozentViewModel, Source={StaticResource Locator}}">
+        Title="Neuer Dozent hinzufügen" Height="500" Width="500" WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.Resources>
@@ -47,9 +46,9 @@
                 <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center" />
                 <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
                 <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NachName, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding VorName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding AkadGrad, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Dozent.DozentNachname, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Dozent.DozentVorname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Dozent.AkadGrad, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                 <Button x:Name="AddDozent" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Command="{Binding AddCommand}" Content="Hinzufügen"/>
                 <Button x:Name="Cancel" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" Command="{Binding CancelCommand}" Content="Cancel"/>
             </Grid>

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using PraktikantenVerwaltung.Core;
 using System.Windows;
 using PraktikantenVerwaltung.View;
+using PraktikantenVerwaltung.Model;
 
 namespace PraktikantenVerwaltung.Service
 {
@@ -46,6 +47,18 @@ namespace PraktikantenVerwaltung.Service
         {
             AddDozentView adddozentview = new AddDozentView();
             adddozentview.ShowDialog(); 
+        }
+
+        public void AddStudentView()
+        {
+            AddStudentView addstudentview = new AddStudentView();
+            addstudentview.ShowDialog();
+        }
+
+        public void AddPraktikaView()
+        {
+            AddPraktikaView addPraktikaView = new AddPraktikaView();
+            addPraktikaView.ShowDialog();
         }
 
     }

@@ -16,5 +16,6 @@ namespace PraktikantenVerwaltung.Core
         Student GetStudent(int id);
         Student UpdateStudent(Student editedStudent);
         Student DeleteStudent(Student student);
+        Student AddPraktika(Praktika praktika);
     }
 }

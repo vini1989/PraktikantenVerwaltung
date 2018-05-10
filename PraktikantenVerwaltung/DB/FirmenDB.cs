@@ -83,5 +83,23 @@ namespace PraktikantenVerwaltung.DB
             _db.SaveChanges();
             return delFirmen;
         }
+
+        public ObservableCollection<string> GetAllFirmaNames()
+        {
+            var FirmaNames = (from f in _db.Firmens
+                                select f.Firma).Distinct();
+            ObservableCollection<string> AllFirmaNames = new ObservableCollection<string>(FirmaNames);
+            return AllFirmaNames;
+        }
+
+        public ObservableCollection<string> GetAllOrtNames(string SelectedFirma)
+        {
+            var OrtNames = (from f in _db.Firmens
+                            where f.Firma == SelectedFirma
+                            select f.Ort).Distinct();
+            ObservableCollection<string> AllOrtNames = new ObservableCollection<string>(OrtNames);
+            return AllOrtNames;
+        }
+
     }
 }

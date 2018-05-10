@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using PraktikantenVerwaltung.Core;
+using PraktikantenVerwaltung.ViewModel;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -23,6 +25,7 @@ namespace PraktikantenVerwaltung.View
         public FirmenView()
         {
             InitializeComponent();
+            DataContext = DIManager.Instance.Resolve<FirmenViewModel>();
         }
     }
 }

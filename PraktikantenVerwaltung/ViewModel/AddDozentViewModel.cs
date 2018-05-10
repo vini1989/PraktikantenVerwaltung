@@ -20,80 +20,53 @@ namespace PraktikantenVerwaltung.ViewModel
     /// <summary>
     /// This class contains properties that the AddDozentView can data bind to.
     /// </summary>
-    public class AddDozentViewModel : ViewModelBase, IDataErrorInfo
+    public class AddDozentViewModel : ViewModelBase
     {
-        #region AddDozentViewModel members
+        #region AddDozentViewModel properties
 
-        private string _nachName;
-        private string _vorName ;
-        private string _akadGrad;
-
+        private Dozent _dozent;
+        public Dozent Dozent
+        {
+            get { return _dozent; }
+            set { Set(ref _dozent, value); }
+        }
         
         public RelayCommand AddCommand { get; set; } //Command to add new dozent into dozents table
         public RelayCommand CancelCommand { get; set; } //Command to cancel/close window
 
-        //Dozent Lastname
+        #endregion
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Nachname ist erforderlich")]
-        [RegularExpression("^[a-zA-ZÄäÖöÜüß ]*$", ErrorMessage = "Bitte geben Sie nur Alphabete ein")]
-        public string NachName
-        {
-            get { return _nachName; }
-            set
-            {
-                Set(ref _nachName, value);
-
-            }
-        }
-
-        //Dozent Firstname
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Vorname ist erforderlich")]
-        [RegularExpression("^[a-zA-ZÄäÖöÜüß ]*$", ErrorMessage = "Bitte geben Sie nur Alphabete ein")]
-        public string VorName
-        {
-            get { return _vorName; }
-            set
-            {
-                Set(ref _vorName, value);
-            }
-        }
-
-        //Dozent Akadamischer Grad
-        public string AkadGrad
-        {
-            get { return _akadGrad; }
-            set
-            {
-                Set(ref _akadGrad, value);
-
-            }
-        }
+        #region Ctor
 
         // Initializes a new instance of the AddDozentViewModel class.
         public AddDozentViewModel()
         {
-           
-            // Command to Add Dozent details to Dozent DB 
-            AddCommand = new RelayCommand(AddDozent, CanAddDozent);
-            CancelCommand = new RelayCommand(Cancel);
+            try
+            {
+                Dozent = new Dozent();
 
-         }
+                // Command to Add Dozent details to Dozent DB 
+                AddCommand = new RelayCommand(AddDozent, CanAddDozent);
+                CancelCommand = new RelayCommand(Cancel);
+
+                Dozent.IsOkChanged += OnDozentPropertyChanged;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        #endregion
+
+        #region AddDozentViewModel members
 
         //To add new dozent to DB and ObservableCollection
         private void AddDozent()
         {
-            Dozent dozent = new Dozent();
-            dozent.DozentNachname = this.NachName;
-            dozent.DozentVorname = this.VorName;
-            dozent.AkadGrad = this.AkadGrad;
-
-
             //Send a message with Dozent object to DozentViewModel
-            Messenger.Default.Send<Dozent>(dozent);
-
-            //Closes window
-            Messenger.Default.Send(new NotificationMessage("CloseAddDozentView"));
-
+            Messenger.Default.Send(Dozent);
 
             Cleanup();
 
@@ -102,91 +75,25 @@ namespace PraktikantenVerwaltung.ViewModel
         //To enable Add button
         private bool CanAddDozent()
         {
-            return IsOk;
+            return Dozent.IsOk;
         }
 
         //To close window
         private void Cancel()
         {
-            //Closes window
             Messenger.Default.Send(new NotificationMessage("CloseAddDozentView"));
             Cleanup();
         }
 
-        public override void Cleanup()
+        private void OnDozentPropertyChanged(bool IsOk)
         {
-            
-            base.Cleanup();
-            ViewModelLocator.UnregisterAddDozentVM();
-            //ViewModelLocator.Cleanup();
-        }
-
-        #endregion
-
-        #region IDataErrorInfo members
-
-        public string Error => string.Empty;
-        public string this[string propertyName]
-        {
-            get
-            {
-                CollectErrors();
-                return Errors.ContainsKey(propertyName) ? Errors[propertyName] : string.Empty;
-            }
-        }
-        #endregion
-
-        #region DataValidation members
-
-        //A Dictionary to store errors with Property name as key
-        private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
-
-        private static List<PropertyInfo> _propertyInfos;
-        protected List<PropertyInfo> PropertyInfos
-        {
-            get
-            {
-                return _propertyInfos ?? (_propertyInfos =
-                                GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                             .Where(prop => 
-                                prop.IsDefined(typeof(RequiredAttribute), true) || 
-                                prop.IsDefined(typeof(RegularExpressionAttribute), true))
-                             .ToList());
-            }
-        }
-
-        private bool TryValidateProperty(PropertyInfo propertyInfo, List<string> propertyErrors)
-        {
-            var results = new List<ValidationResult>();
-            var context = new ValidationContext(this) { MemberName = propertyInfo.Name };
-            var propertyValue = propertyInfo.GetValue(this);
-
-            // Validate the property
-            var isValid = Validator.TryValidateProperty(propertyValue, context, results);
-
-            if (results.Any()) { propertyErrors.AddRange(results.Select(c => c.ErrorMessage)); }
-
-            return isValid;
-        }
-
-        private void CollectErrors()
-        {
-            Errors.Clear();
-            PropertyInfos.ForEach(prop =>
-                                {
-                                    //Validate generically
-                                    var errors = new List<string>();
-                                    var isValid = TryValidateProperty(prop, errors);
-                                    if (!isValid)
-                                        //A dictionary to store the errors and the key is the name of the property, then add only the first error encountered. 
-                                        Errors.Add(prop.Name, errors.First());
-                                });
             AddCommand.RaiseCanExecuteChanged();
         }
 
-        
-        public bool HasErrors => Errors.Any();
-        public bool IsOk => !HasErrors;
+        public override void Cleanup()
+        {            
+            base.Cleanup();
+        }
 
         #endregion
 

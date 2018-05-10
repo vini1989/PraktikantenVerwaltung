@@ -26,6 +26,7 @@ namespace PraktikantenVerwaltung.DB
             return studentExists;
         }
 
+
         public Student CreateStudent(Student student)
         {
             var studentnew = _db.Students.Add(student);
@@ -64,7 +65,7 @@ namespace PraktikantenVerwaltung.DB
             updatedStudent.StudentVorname = editedStudent.StudentVorname;
             updatedStudent.Studiengang = editedStudent.Studiengang;
             updatedStudent.Immatrikuliert = editedStudent.Immatrikuliert;
-            updatedStudent.PraktikaList = editedStudent.PraktikaList;
+            //updatedStudent.PraktikaList = editedStudent.PraktikaList;
             _db.SaveChanges();
             return updatedStudent;
         }
@@ -78,5 +79,17 @@ namespace PraktikantenVerwaltung.DB
             _db.SaveChanges();
             return delStudent;
         }
+
+        public Student AddPraktika(Praktika praktika)
+        {
+            var student = (from s in _db.Students
+                               where s.StudentId == praktika.StudentId
+                               select s).Single();
+            student.Praktikas.Add(praktika);
+            _db.SaveChanges();
+            return student;
+        }
+
+        
     }
 }

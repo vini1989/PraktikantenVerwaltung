@@ -24,6 +24,10 @@ namespace PraktikantenVerwaltung.ViewModel
         private IFirmenDB _firmenDB;
         private IDialogService _dialogservice;
 
+        public string TabName
+        {
+            get { return "Firmen-Daten bearbeiten"; }
+        }
         public RelayCommand AddFirmenCommand { get; private set; } //Command to add new Firma details
         public RelayCommand SaveFirmenCommand { get; private set; } //Command to save Firma into Firmen table
         public RelayCommand CancelFirmenCommand { get; private set; } //Command to cancel action

@@ -16,5 +16,7 @@ namespace PraktikantenVerwaltung.Core
         Firmen GetFirmen(int id);
         Firmen UpdateFirmen(Firmen editedFirmen);
         Firmen DeleteFirmen(Firmen firmen);
+        ObservableCollection<string> GetAllFirmaNames();
+        ObservableCollection<string> GetAllOrtNames(string SelectedFirma);
     }
 }

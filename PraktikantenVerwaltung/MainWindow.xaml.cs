@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using PraktikantenVerwaltung.Core;
+using PraktikantenVerwaltung.ViewModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -23,6 +25,7 @@ namespace PraktikantenVerwaltung
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = DIManager.Instance.Resolve<MainViewModel>();
         }
 
     }

@@ -1,0 +1,295 @@
+﻿<Window x:Class="PraktikantenVerwaltung.View.AddPraktikaView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
+        mc:Ignorable="d"
+        Title="Neuer Praktikum hinzufügen" Height="600" Width="600" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <!--Firma List CollectionViewSource-->
+        <CollectionViewSource Source="{Binding FirmaList, UpdateSourceTrigger=PropertyChanged}" x:Key="Firmascvs">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Ort" Direction="Ascending"  />
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <dat:PropertyGroupDescription PropertyName="Firma"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.Resources>
+            <ControlTemplate x:Key="MyErrorTemplate">
+                <DockPanel>
+                    <Border BorderBrush="Orange" BorderThickness="1">
+                        <AdornedElementPlaceholder />
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource MyErrorTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+        <GroupBox x:Name="grpboxpraktika" Margin="10" BorderBrush="#142F5A">
+            <GroupBox.Header>
+                Neuer Praktikum
+            </GroupBox.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--Teilpraktikum-Nr-->
+                <Grid Grid.Row="0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Label x:Name="lblprakNr" Content="Teilpraktikum-Nr :"/>
+                        <TextBox x:Name="txtprakNr" Width="50" Margin="3"
+                                         Text="{Binding NewPraktika.TeilPraktikumNr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!--Antrag and Genehmigung-->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Antrag-->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Label x:Name="lblAntrag" Content="Antrag :" />
+                        <DatePicker x:Name="dtAntrag" VerticalAlignment="Center" 
+                                            SelectedDate="{Binding NewPraktika.Antrag , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </StackPanel>
+
+                    <!--Genehmigung-->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label x:Name="lblGeneh" Content="Genehmigung :" />
+                        <DatePicker x:Name="dtGeneh"  VerticalAlignment="Center" 
+                                            SelectedDate="{Binding NewPraktika.Genehmigung , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    </StackPanel>
+                </Grid>
+
+                <!--Firmen-Nr-->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lblFirNr" Content="Firmen-Nr :" Grid.Column="0" />
+                    <TextBlock x:Name="txtblFirNr" VerticalAlignment="Center"  HorizontalAlignment="Left" Grid.Column="1"
+                                           Text="{Binding NewPraktika.FirmenNr, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <!--Firma-->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lblFirma" Content="Firma :" Grid.Column="0" />
+                    <ComboBox x:Name="cmbFirmas" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                                  ItemsSource="{Binding Source={StaticResource Firmascvs}, Path=Groups}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Name"
+                                  SelectedValue="{Binding NewPraktika.FirmaName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                                  IsSynchronizedWithCurrentItem="True"
+                                  />
+                </Grid>
+
+                <!--Ort-->
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lblOrt" Content="Ort :" Grid.Column="0" />
+                    <ComboBox x:Name="cmbOrts" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                                  ItemsSource="{Binding ElementName=cmbFirmas, Path=SelectedItem.Items}"
+                                  DisplayMemberPath="Ort" SelectedValuePath="Ort"
+                                  SelectedValue="{Binding NewPraktika.OrtName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                                  SelectedItem="{Binding SelectedOrtItem, UpdateSourceTrigger=PropertyChanged}"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  />
+                </Grid>
+
+                <!--Dozent-->
+                <Grid Grid.Row="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lblDozent" Content="Dozent :" Grid.Column="0" />
+                    <ComboBox x:Name="cmboxDozent" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                                      ItemsSource="{Binding DozentList}" DisplayMemberPath="DozentFullName" SelectedValuePath="DozentFullName"
+                                      SelectedValue="{Binding NewPraktika.Dozent, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" IsSynchronizedWithCurrentItem="True">
+                    </ComboBox>
+
+                </Grid>
+
+                <!--Beginn and Ende-->
+                <Grid Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Beginn-->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Label x:Name="lblbeginn" Content="Beginn :"  />
+                        <DatePicker x:Name="dtbeginn"  VerticalAlignment="Center" 
+                                            SelectedDate="{Binding NewPraktika.Beginn , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </StackPanel>
+
+                    <!--Ende-->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Label x:Name="lblende" Content="Ende :" />
+                        <DatePicker x:Name="dtende" VerticalAlignment="Center" 
+                                            SelectedDate="{Binding NewPraktika.Ende , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!--Bemerkungen-->
+                <Grid Grid.Row="7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lblBemerk" Content="Bemerkungen :" Grid.Column="0" />
+                    <TextBox x:Name="txtBemerk" Grid.Column="1" Width="300" HorizontalAlignment="Left" Margin="3"
+                                     Text="{Binding NewPraktika.Bemerkungen , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                </Grid>
+
+                <!--Separator-->
+                <Grid Grid.Row="8">
+                    <Separator/>
+                </Grid>
+
+                <!--More Praktika info and Firmen betreuer-->
+                <Grid Grid.Row="9">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.9*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--More Praktika information-->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!--Dozent, Unternehmen, Bericht abgegeben-->
+                        <Grid Grid.Row="0">
+                            <StackPanel Orientation="Horizontal">
+
+                                <!--Dozent-->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                    <Label x:Name="lblDozentchk" Content="Dozent :" />
+                                    <CheckBox x:Name="chkDozent"  VerticalAlignment="Center" IsChecked="{Binding NewPraktika.Dozentchk}" />
+                                </StackPanel>
+
+                                <!--Unternehmen-->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Label x:Name="lblUnternhmnchk" Content="Unternehmen :" />
+                                    <CheckBox x:Name="chkUnternhmn"  VerticalAlignment="Center" IsChecked="{Binding NewPraktika.Unternehmenchk}" />
+                                </StackPanel>
+
+                                <!--Bericht abgegeben-->
+                                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                    <Label x:Name="lblBerichtchk" Content="Bericht :" />
+                                    <CheckBox x:Name="chkBericht"  VerticalAlignment="Center" IsChecked="{Binding NewPraktika.Berichtchk}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
+                        <!--AuslandPraktikum-->
+                        <Grid Grid.Row="1">
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="lblAuslands" Content="AuslandsPraktikum :" />
+                                <CheckBox x:Name="chkAuslands"  VerticalAlignment="Center" IsChecked="{Binding NewPraktika.Auslandsprak}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!--Praktikum Absolviert-->
+                        <Grid Grid.Row="13">
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="lblPrakAbsol" Content="Praktikum absolviert :" Grid.Column="0" />
+                                <TextBox x:Name="txtPrakAbsol" Grid.Column="1" Margin="7" Width="100"
+                                                 Text="{Binding NewPraktika.PraktikumAbsolvt , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+
+                    <!--Firmenbetreuer-->
+                    <Grid Grid.Column="1">
+                        <GroupBox x:Name="grpboxfirmenbetreuer" BorderBrush="#142F5A">
+                            <GroupBox.Header>
+                                Firmenbetreuer
+                            </GroupBox.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Content="Vorname :"  />
+                                <Label Grid.Row="1" Grid.Column="0" Content="Name :"  />
+                                <Label Grid.Row="2" Grid.Column="0" Content="eMail-Adresse :"  />
+                                <TextBox x:Name="txtFrVorname" Grid.Row="0" Grid.Column="1" Margin="5"
+                                                 Text="{Binding NewPraktika.BetreuerVorname , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                <TextBox x:Name="txtFrName" Grid.Row="1" Grid.Column="1" Margin="5" 
+                                                 Text="{Binding NewPraktika.BetreuerNachname , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                <TextBox x:Name="txtFrEmail" Grid.Row="2" Grid.Column="1" Margin="5" 
+                                                 Text="{Binding NewPraktika.BetreuerEmail , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+
+                <!--Separator-->
+                <Grid Grid.Row="10">
+                    <Separator/>
+                </Grid>
+
+                <!--Buttons-->
+                <Grid Grid.Row="11">
+                    <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
+                        <Button x:Name="btnAdd" Content="Hinzufügen" Margin="2" Width="100"
+                                        Command="{Binding Path = AddCommand}"/>
+                        <Button x:Name="btnCancel" Content="Cancel" Margin="2" Width="100"  
+                                Command="{Binding Path = CancelCommand}"/>
+                    </StackPanel>
+                </Grid>
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

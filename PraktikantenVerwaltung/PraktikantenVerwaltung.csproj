@@ -98,6 +98,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converter\BoolInverterConverter.cs" />
+    <Compile Include="Core\DIManager.cs" />
     <Compile Include="Core\IDialogService.cs" />
     <Compile Include="Core\IDozentDB.cs" />
     <Compile Include="Core\IFirmenDB.cs" />
@@ -144,21 +145,89 @@
     <Compile Include="Migrations\201804130828327_DozentNoDataValidation.Designer.cs">
       <DependentUpon>201804130828327_DozentNoDataValidation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804221157567_RemovedPraktikaList.cs" />
+    <Compile Include="Migrations\201804221157567_RemovedPraktikaList.Designer.cs">
+      <DependentUpon>201804221157567_RemovedPraktikaList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804301133204_StudentDataValidation.cs" />
+    <Compile Include="Migrations\201804301133204_StudentDataValidation.Designer.cs">
+      <DependentUpon>201804301133204_StudentDataValidation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805010937136_StudentHasErrors.cs" />
+    <Compile Include="Migrations\201805010937136_StudentHasErrors.Designer.cs">
+      <DependentUpon>201805010937136_StudentHasErrors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805011020188_StudentIsOk.cs" />
+    <Compile Include="Migrations\201805011020188_StudentIsOk.Designer.cs">
+      <DependentUpon>201805011020188_StudentIsOk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805011033018_DozentDataValidation1.cs" />
+    <Compile Include="Migrations\201805011033018_DozentDataValidation1.Designer.cs">
+      <DependentUpon>201805011033018_DozentDataValidation1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805041023589_StudentPraktikaNavigation.cs" />
+    <Compile Include="Migrations\201805041023589_StudentPraktikaNavigation.Designer.cs">
+      <DependentUpon>201805041023589_StudentPraktikaNavigation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805041049580_StudentPraktikaNavigation1.cs" />
+    <Compile Include="Migrations\201805041049580_StudentPraktikaNavigation1.Designer.cs">
+      <DependentUpon>201805041049580_StudentPraktikaNavigation1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805041053154_FKStudentIdNotNull.cs" />
+    <Compile Include="Migrations\201805041053154_FKStudentIdNotNull.Designer.cs">
+      <DependentUpon>201805041053154_FKStudentIdNotNull.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805041059151_FKStudentIdNotNull1.cs" />
+    <Compile Include="Migrations\201805041059151_FKStudentIdNotNull1.Designer.cs">
+      <DependentUpon>201805041059151_FKStudentIdNotNull1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805051044136_MatrikelNrPK.cs" />
+    <Compile Include="Migrations\201805051044136_MatrikelNrPK.Designer.cs">
+      <DependentUpon>201805051044136_MatrikelNrPK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805051057366_dboPraktikaMatrikelNrFK.cs" />
+    <Compile Include="Migrations\201805051057366_dboPraktikaMatrikelNrFK.Designer.cs">
+      <DependentUpon>201805051057366_dboPraktikaMatrikelNrFK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805051124129_dboStudentMatrikelNrNotAutoIncremented.cs" />
+    <Compile Include="Migrations\201805051124129_dboStudentMatrikelNrNotAutoIncremented.Designer.cs">
+      <DependentUpon>201805051124129_dboStudentMatrikelNrNotAutoIncremented.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805051241446_StudentIdPK.cs" />
+    <Compile Include="Migrations\201805051241446_StudentIdPK.Designer.cs">
+      <DependentUpon>201805051241446_StudentIdPK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805100857400_PraktikaDataVAlidation.cs" />
+    <Compile Include="Migrations\201805100857400_PraktikaDataVAlidation.Designer.cs">
+      <DependentUpon>201805100857400_PraktikaDataVAlidation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805100922546_PraktikaValidation.cs" />
+    <Compile Include="Migrations\201805100922546_PraktikaValidation.Designer.cs">
+      <DependentUpon>201805100922546_PraktikaValidation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Dozent.cs" />
     <Compile Include="Model\DozentNames.cs" />
     <Compile Include="Model\Firmen.cs" />
     <Compile Include="Model\Praktika.cs" />
     <Compile Include="Model\Student.cs" />
+    <Compile Include="Model\StudentDetail.cs" />
     <Compile Include="Service\DialogService.cs" />
     <Compile Include="ViewModel\AddDozentViewModel.cs" />
+    <Compile Include="ViewModel\AddPraktikaViewModel.cs" />
+    <Compile Include="ViewModel\AddStudentViewModel.cs" />
     <Compile Include="ViewModel\DozentViewModel.cs" />
     <Compile Include="ViewModel\FirmenViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\StudentViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AddDozentView.xaml.cs">
       <DependentUpon>AddDozentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddPraktikaView.xaml.cs">
+      <DependentUpon>AddPraktikaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddStudentView.xaml.cs">
+      <DependentUpon>AddStudentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DozentView.xaml.cs">
       <DependentUpon>DozentView.xaml</DependentUpon>
@@ -182,6 +251,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\AddDozentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddPraktikaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddStudentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -239,6 +316,51 @@
     <EmbeddedResource Include="Migrations\201804130828327_DozentNoDataValidation.resx">
       <DependentUpon>201804130828327_DozentNoDataValidation.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804221157567_RemovedPraktikaList.resx">
+      <DependentUpon>201804221157567_RemovedPraktikaList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804301133204_StudentDataValidation.resx">
+      <DependentUpon>201804301133204_StudentDataValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805010937136_StudentHasErrors.resx">
+      <DependentUpon>201805010937136_StudentHasErrors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805011020188_StudentIsOk.resx">
+      <DependentUpon>201805011020188_StudentIsOk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805011033018_DozentDataValidation1.resx">
+      <DependentUpon>201805011033018_DozentDataValidation1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805041023589_StudentPraktikaNavigation.resx">
+      <DependentUpon>201805041023589_StudentPraktikaNavigation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805041049580_StudentPraktikaNavigation1.resx">
+      <DependentUpon>201805041049580_StudentPraktikaNavigation1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805041053154_FKStudentIdNotNull.resx">
+      <DependentUpon>201805041053154_FKStudentIdNotNull.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805041059151_FKStudentIdNotNull1.resx">
+      <DependentUpon>201805041059151_FKStudentIdNotNull1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805051044136_MatrikelNrPK.resx">
+      <DependentUpon>201805051044136_MatrikelNrPK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805051057366_dboPraktikaMatrikelNrFK.resx">
+      <DependentUpon>201805051057366_dboPraktikaMatrikelNrFK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805051124129_dboStudentMatrikelNrNotAutoIncremented.resx">
+      <DependentUpon>201805051124129_dboStudentMatrikelNrNotAutoIncremented.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805051241446_StudentIdPK.resx">
+      <DependentUpon>201805051241446_StudentIdPK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805100857400_PraktikaDataVAlidation.resx">
+      <DependentUpon>201805100857400_PraktikaDataVAlidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805100922546_PraktikaValidation.resx">
+      <DependentUpon>201805100922546_PraktikaValidation.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -253,7 +375,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Messenger Models\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Pictures\Logo.png" />
   </ItemGroup>

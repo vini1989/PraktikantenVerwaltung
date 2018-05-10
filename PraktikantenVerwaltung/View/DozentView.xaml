@@ -6,10 +6,30 @@
              xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1200"
-             DataContext="{Binding DozentViewModel, Source={StaticResource Locator}}">
+             d:DesignHeight="600" d:DesignWidth="1000">
 
     <Grid>
+        <Grid.Resources>
+            <ControlTemplate x:Key="MyErrorTemplate">
+                <DockPanel>
+                    <Border BorderBrush="Orange" BorderThickness="1">
+                        <AdornedElementPlaceholder />
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource MyErrorTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+        
         <!--Heading and Content-->
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -45,8 +65,9 @@
 
 
                 <DataGrid Name="dozentlist" Grid.Row="1" VerticalAlignment="Top" ItemsSource="{Binding DozentList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" 
-                      Grid.Column="0" SelectedItem="{Binding SelectedDozent, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" 
-                      ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                      Grid.Column="0" SelectedItem="{Binding SelectedDozent, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" 
+                      ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          SelectionChanged="dozentlist_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding DozentNachname, UpdateSourceTrigger=PropertyChanged}"  Width="*"/>
                         <DataGridTextColumn Header="Vorname" Binding="{Binding DozentVorname, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
@@ -75,9 +96,11 @@
                     <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center"/>
                     <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
                     <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center" />
-                    <TextBox x:Name="txtName" Grid.Row="0" Grid.Column="1" Margin="10" Text="{Binding TempSelectedDozent.DozentNachname, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-                    <TextBox x:Name="txtVorname" Grid.Row="1" Grid.Column="1" Margin="10" Text="{Binding TempSelectedDozent.DozentVorname, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-                    <TextBox x:Name="txtAkadGrad" Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding TempSelectedDozent.AkadGrad, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                    <TextBox x:Name="txtName" Grid.Row="0" Grid.Column="1"  
+                             Text="{Binding TempSelectedDozent.DozentNachname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                    <TextBox x:Name="txtVorname" Grid.Row="1" Grid.Column="1" 
+                             Text="{Binding TempSelectedDozent.DozentVorname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <TextBox x:Name="txtAkadGrad" Grid.Row="2" Grid.Column="1" Text="{Binding TempSelectedDozent.AkadGrad, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <Grid Grid.Row="4" Grid.Column="1">
                         <StackPanel Orientation="Horizontal">
                             <Button x:Name="btnSave" Content="Speichern" Command="{Binding SaveDozentCommand}"/>

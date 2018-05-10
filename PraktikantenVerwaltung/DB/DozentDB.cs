@@ -22,10 +22,14 @@ namespace PraktikantenVerwaltung.DB
 
         public bool DozentExists(Dozent dozent)
         {
-            var dozentExists = _db.Dozents.Any(d =>
-                                d.DozentNachname == dozent.DozentNachname
-                             && d.DozentVorname == dozent.DozentVorname
-                             && d.AkadGrad == dozent.AkadGrad);
+            var getdozent = from d in _db.Dozents
+                            where d.DozentNachname == dozent.DozentNachname &&
+                                d.DozentVorname == dozent.DozentVorname &&
+                                (d.AkadGrad == dozent.AkadGrad) 
+                                //(d.AkadGrad.Equals(string.Empty)) == (dozent.AkadGrad.Equals(string.Empty))
+                            select d;
+            var dozentExists = getdozent.Any() ? true : false;
+
             return dozentExists;
         }
 
@@ -57,15 +61,17 @@ namespace PraktikantenVerwaltung.DB
 
         }
 
-        public List<DozentNames> GetAllDozentNames()
+        public ObservableCollection<DozentNames> GetAllDozentNames()
         {
             var getdozentnames = (from d in _db.Dozents
+                                  orderby d.DozentNachname ascending
                                   select new DozentNames
                                   {
                                       DozentFullName = d.DozentNachname + " " + d.DozentVorname
 
                                   }).ToList();
-            return getdozentnames;
+            ObservableCollection<DozentNames> AllDozentNames = new ObservableCollection<DozentNames>(getdozentnames);
+            return AllDozentNames;
         }
 
 

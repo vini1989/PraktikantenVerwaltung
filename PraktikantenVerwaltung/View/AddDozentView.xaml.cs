@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GalaSoft.MvvmLight.Messaging;
+using PraktikantenVerwaltung.Core;
+using PraktikantenVerwaltung.ViewModel;
 using PraktikantenVerwaltung.ViewModel;
 
 namespace PraktikantenVerwaltung.View
@@ -24,6 +26,7 @@ namespace PraktikantenVerwaltung.View
         public AddDozentView()
         {
             InitializeComponent();
+            DataContext = DIManager.Instance.Resolve<AddDozentViewModel>();
 
             Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
             this.Unloaded += (o, e) => {

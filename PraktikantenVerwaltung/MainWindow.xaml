@@ -7,8 +7,7 @@
         mc:Ignorable="d"
         xmlns:views="clr-namespace:PraktikantenVerwaltung.View"
         xmlns:vm="clr-namespace:PraktikantenVerwaltung.ViewModel"
-        Title="MainWindow" Height="700" Width="1200" SizeToContent="Manual" WindowState="Maximized"
-        DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
+        Title="MainWindow" Height="700" Width="1200" WindowStartupLocation="CenterScreen">
 
     <DockPanel HorizontalAlignment="Stretch" Name="dockPanel1" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" DockPanel.Dock="Top" BorderThickness="2">
@@ -31,19 +30,30 @@
         </Border>
         <Grid>
             <Border BorderBrush="Black" DockPanel.Dock="Top" BorderThickness="2,0,2,2">
+
                 <TabControl x:Name="NavigationTabControl" 
                             TabStripPlacement="Left" BorderThickness="5" BorderBrush="#142F5A" 
                             Background="WhiteSmoke" Margin="2" 
-                             SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
+                             SelectedIndex="{Binding SelectedTab, Mode=TwoWay}" ItemsSource="{Binding VmCollection}">
                     <TabControl.Resources>
-                        <Style TargetType="TabItem">
+                        <DataTemplate DataType="{x:Type vm:DozentViewModel}">
+                            <views:DozentView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:StudentViewModel}">
+                            <views:StudentView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:FirmenViewModel}">
+                            <views:FirmenView />
+                        </DataTemplate>
+                        <!--<Style TargetType="TabItem">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TabItem" >
                                         <Grid>
                                             <Border Name="Border" BorderThickness="1,1,0,1" Margin="0,3" BorderBrush="Black" CornerRadius="6,0,0,6" >
-                                                <ContentPresenter x:Name="ContentSite" ContentSource="Header" Width="100"
-                                                                  Margin="5,10" />
+                                                <ContentPresenter x:Name="ContentSite" ContentSource="Header" Width="100" Height="60" TextBlock.FontSize="14"
+                                                                  TextBlock.TextAlignment="Center" 
+                                                                  Margin="10" />
                                             </Border>
                                         </Grid>
                                         <ControlTemplate.Triggers>
@@ -63,7 +73,7 @@
                                         <Setter.Value>
                                             <DataTemplate>
                                                 <TextBlock FontWeight="Bold" TextWrapping="Wrap" 
-                                                           Text="{Binding}" FontSize="12" TextAlignment="Center"
+                                                           Text="{Binding}" 
                                                            Foreground="White" />
                                             </DataTemplate>
                                         </Setter.Value>
@@ -73,28 +83,76 @@
                                     <Setter Property="HeaderTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <TextBlock TextWrapping="Wrap" Text="{Binding}" FontSize="12"
-                                                           TextAlignment="Center" Foreground="#142F5A"/>
+                                                <TextBlock TextWrapping="Wrap" Text="{Binding}" 
+                                                            Foreground="#142F5A"/>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>-->
+                    </TabControl.Resources>
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem">
+                            <Setter Property="Header" Value="{Binding TabName}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TabItem" >
+                                        <Grid>
+                                            <Border Name="Border" BorderThickness="1,1,0,1" Margin="0,3" BorderBrush="Black" CornerRadius="6,0,0,6" >
+                                                <ContentPresenter x:Name="ContentSite" ContentSource="Header" Width="100" Height="60" TextBlock.FontSize="14"
+                                                                  TextBlock.TextAlignment="Center" 
+                                                                  Margin="10" />
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#142F5A" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="False">
+                                                <Setter TargetName="Border" Property="Background" Value="#FFCCD4F8" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="HeaderTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <TextBlock FontWeight="Bold" TextWrapping="Wrap" 
+                                                           Text="{Binding}" 
+                                                           Foreground="White" />
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="HeaderTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <TextBlock TextWrapping="Wrap" Text="{Binding}" 
+                                                            Foreground="#142F5A"/>
                                             </DataTemplate>
                                         </Setter.Value>
                                     </Setter>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
-                    </TabControl.Resources>
-
-                    <TabItem Header="Dozenten-Daten bearbeiten" x:Name="Dozenten"  >
+                    </TabControl.ItemContainerStyle>
+                    <!--<TabItem Header="Dozenten-Daten bearbeiten" x:Name="Dozenten"  >
                         <views:DozentView />
                     </TabItem>
-                    <TabItem Header="Studierende-Daten bearbeiten" x:Name="Studierende" DataContext="{Binding Studentviewmodel}">
+                    <TabItem Header="Studierende-Daten bearbeiten" x:Name="Studierende">
                         <views:StudentView />
                     </TabItem>
-                    <TabItem Header="Firmen-Daten bearbeiten" x:Name="Firmen" DataContext="{Binding Firmenviewmodel}">
+                    <TabItem Header="Firmen-Daten bearbeiten" x:Name="Firmen" >
                         <views:FirmenView />
                     </TabItem>
                     <TabItem Header="Studierende eines Dozent"/>
                     <TabItem Header="Studierende einer Firma"/>
-                    <TabItem Header="Offene oder überfällige Praktika"/>
+                    <TabItem Header="Offene oder überfällige Praktika"/>-->
                 </TabControl>
             </Border>
         </Grid>

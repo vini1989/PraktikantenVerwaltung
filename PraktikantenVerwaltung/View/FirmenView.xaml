@@ -6,8 +6,7 @@
              xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
              xmlns:converter="clr-namespace:PraktikantenVerwaltung.Converter"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1200"
-             DataContext="{Binding Main.Firmenviewmodel, Source={StaticResource Locator}}">
+             d:DesignHeight="600" d:DesignWidth="1000">
 
     <UserControl.Resources>
         <converter:BoolInverterConverter x:Key="BoolInverterConverter" />
@@ -29,7 +28,7 @@
         </Grid>
 
         <!--Firmen suchen and list firma details-->
-        <Grid Grid.Row="1" Width="800" HorizontalAlignment="Left">
+        <Grid Grid.Row="1"  HorizontalAlignment="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*" />
@@ -85,7 +84,7 @@
 
                     <!--Firma-->
                     <Label Grid.Column="0" Grid.Row="1" Content="Firma :"/>
-                    <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Width="200" HorizontalAlignment="Left" Margin="10"
+                    <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Width="200" HorizontalAlignment="Left" 
                              Text="{Binding SelectedFirmen.Firma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--Strasse und Hausnummer-->
@@ -94,7 +93,7 @@
                             <AccessText TextWrapping="Wrap" Text="Straße und Hausnummer :" />
                         </Label.Content>
                     </Label>
-                    <TextBox x:Name="txtStraßeHausnum" Grid.Column="1" Grid.Row="2" Margin="10" Width="300" HorizontalAlignment="Left"
+                    <TextBox x:Name="txtStraßeHausnum" Grid.Column="1" Grid.Row="2" Width="300" HorizontalAlignment="Left"
                              Text="{Binding SelectedFirmen.StrHausnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--PLZ und Ort-->
@@ -105,10 +104,10 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="txtPlz" Grid.Column="0"  Width="200" HorizontalAlignment="Left" Margin="10"
+                        <TextBox x:Name="txtPlz" Grid.Column="0"  Width="200" HorizontalAlignment="Left" 
                                  Text="{Binding SelectedFirmen.Plz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Grid.Column="1" Content="Ort :" HorizontalAlignment="Right"/>
-                        <TextBox x:Name="txtOrt" Grid.Column="2"  Width="200" HorizontalAlignment="Left" Margin="10"
+                        <TextBox x:Name="txtOrt" Grid.Column="2"  Width="200" HorizontalAlignment="Left" 
                                  Text="{Binding SelectedFirmen.Ort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
 
@@ -120,21 +119,21 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="txtTel" Grid.Column="0"  Width="200" HorizontalAlignment="Left" Margin="10"
+                        <TextBox x:Name="txtTel" Grid.Column="0"  Width="200" HorizontalAlignment="Left" 
                                  Text="{Binding SelectedFirmen.Telefon,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Label Grid.Column="1" Content="Fax :" HorizontalAlignment="Right"/>
-                        <TextBox x:Name="txtFax" Grid.Column="2"  Width="200" HorizontalAlignment="Left" Margin="10"
+                        <TextBox x:Name="txtFax" Grid.Column="2"  Width="200" HorizontalAlignment="Left" 
                                  Text="{Binding SelectedFirmen.FaxNr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
 
                     <!--eMail-->
                     <Label Grid.Column="0" Grid.Row="5" Content="eMail :"/>
-                    <TextBox x:Name="txtEmail" Grid.Column="1" Grid.Row="5" Margin="10"  Width="300" HorizontalAlignment="Left"
+                    <TextBox x:Name="txtEmail" Grid.Column="1" Grid.Row="5" Width="300" HorizontalAlignment="Left"
                              Text="{Binding SelectedFirmen.Email,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--WWW-->
                     <Label Grid.Column="0" Grid.Row="6" Content="WWW :"/>
-                    <TextBox x:Name="txtWww" Grid.Column="1" Grid.Row="6" Margin="10"  Width="300" HorizontalAlignment="Left"
+                    <TextBox x:Name="txtWww" Grid.Column="1" Grid.Row="6" Width="300" HorizontalAlignment="Left"
                              Text="{Binding SelectedFirmen.WWW,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--National and International-->

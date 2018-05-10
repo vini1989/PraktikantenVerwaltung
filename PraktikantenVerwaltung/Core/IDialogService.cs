@@ -15,5 +15,7 @@ namespace PraktikantenVerwaltung.Core
         bool ShowQuestion(string Message, string Title);
         void ShowWarning(string Message, string Title);
         void AddDozentView();
+        void AddStudentView();
+        void AddPraktikaView();
     }
 }

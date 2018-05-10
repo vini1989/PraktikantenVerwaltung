@@ -1,4 +1,5 @@
 using GalaSoft.MvvmLight;
+using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
 
 namespace PraktikantenVerwaltung.ViewModel
@@ -13,7 +14,7 @@ namespace PraktikantenVerwaltung.ViewModel
         private DozentViewModel _dozentviewmodel; // Dozent ViewModel
         private StudentViewModel _studentviewmodel; // Student ViewModel
         private FirmenViewModel _firmenviewmodel; // Firmen ViewModel
-        private int _selectedTab = 0; // opens with Tab Dozenten-Daten bearbeiten by default
+        private int _selectedTab; // opens with Tab Dozenten-Daten bearbeiten by default
 
         public ObservableCollection<ViewModelBase> VmCollection 
         {
@@ -24,7 +25,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
-        public DozentViewModel Dozentviewmodel 
+        public DozentViewModel DozentViewModel
         {
             get { return _dozentviewmodel; }
             set
@@ -33,7 +34,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
-        public StudentViewModel Studentviewmodel
+        public StudentViewModel StudentViewModel
         {
             get { return _studentviewmodel; }
             set
@@ -42,7 +43,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
-        public FirmenViewModel Firmenviewmodel
+        public FirmenViewModel FirmenViewModel
         {
             get { return _firmenviewmodel; }
             set
@@ -58,7 +59,6 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _selectedTab, value);
-                ViewModelLocator.Cleanup();
             }
         }
 
@@ -67,20 +67,21 @@ namespace PraktikantenVerwaltung.ViewModel
         /// </summary>
         public MainViewModel(DozentViewModel dozentViewModel, StudentViewModel studentViewModel, FirmenViewModel firmenViewModel)
         {
-            Dozentviewmodel = dozentViewModel;
-            Studentviewmodel = studentViewModel;
-            Firmenviewmodel = firmenViewModel;
+            SelectedTab = 0;
+
+            DozentViewModel = dozentViewModel;
+            StudentViewModel = studentViewModel;
+            FirmenViewModel = firmenViewModel;
             VmCollection = new ObservableCollection<ViewModelBase>();
-            VmCollection.Add(Dozentviewmodel);
-            VmCollection.Add(Studentviewmodel);
-            VmCollection.Add(Firmenviewmodel);
+            VmCollection.Add(DozentViewModel);
+            VmCollection.Add(StudentViewModel);
+            VmCollection.Add(FirmenViewModel);
 
         }
 
         public override void Cleanup()
         {
             base.Cleanup();
-            ViewModelLocator.Cleanup();
         }
     }
 }
