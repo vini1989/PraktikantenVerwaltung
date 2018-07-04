@@ -11,5 +11,7 @@ namespace PraktikantenVerwaltung.Core
     public interface IPraktikaDB
     {
         Praktika UpdatePraktika(Praktika editedPraktika);
+        List<Student> GetStudentsOfFirma(int firmenId);
+        List<Student> GetStudentsOfDozent(int dozentId);
     }
 }

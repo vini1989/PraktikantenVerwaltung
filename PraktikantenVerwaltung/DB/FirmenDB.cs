@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using PraktikantenVerwaltung.Model;
 using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Infrastructure;
+using System.Windows;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 
 namespace PraktikantenVerwaltung.DB
 {
@@ -46,15 +50,6 @@ namespace PraktikantenVerwaltung.DB
 
         }
 
-        public Firmen GetFirmen(int id)
-        {
-            var getfirmen = from f in _db.Firmens
-                            where f.FirmenId == id
-                            select f;
-            var firma = getfirmen.Any() ? getfirmen.Single() : null;
-            return firma;
-        }
-
         public Firmen UpdateFirmen(Firmen editedFirmen)
         {
             var updatedFirmen = (from f in _db.Firmens
@@ -70,7 +65,19 @@ namespace PraktikantenVerwaltung.DB
             updatedFirmen.WWW = editedFirmen.WWW;
             updatedFirmen.National = editedFirmen.National;
 
-            _db.SaveChanges();
+            try
+                {
+                _db.Entry(updatedFirmen).State = EntityState.Modified;
+                _db.SaveChanges();
+                    MessageBox.Show("Firma wurde erfolgreich speichert!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
+
+                }
+            catch (DbUpdateConcurrencyException ex)
+                {
+                    // Update the values of the entity that failed to save from the database 
+                    ex.Entries.Single().Reload();
+                    MessageBox.Show("Der Datensatz, an dem Sie arbeiten, wurde von einem anderen Benutzer geändert. Die neuen Werte für diesen Datensatz werden jetzt aktualisiert." + Environment.NewLine + "Änderungen, die Sie vorgenommen haben, wurden nicht gespeichert. Bitte erneut einreichen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             return updatedFirmen;
         }
 
@@ -84,21 +91,31 @@ namespace PraktikantenVerwaltung.DB
             return delFirmen;
         }
 
-        public ObservableCollection<string> GetAllFirmaNames()
+        public void RefreshDBContext()
         {
-            var FirmaNames = (from f in _db.Firmens
-                                select f.Firma).Distinct();
-            ObservableCollection<string> AllFirmaNames = new ObservableCollection<string>(FirmaNames);
-            return AllFirmaNames;
+            var objectContext = ((IObjectContextAdapter)_db).ObjectContext;
+            var refreshableObjects = objectContext.ObjectStateManager
+                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
+                .Where(entry => entry.EntityKey != null)
+                .Select(e => e.Entity)
+                .ToArray();
+
+            objectContext.Refresh(RefreshMode.StoreWins, refreshableObjects);
         }
 
-        public ObservableCollection<string> GetAllOrtNames(string SelectedFirma)
+        public TEntity RefreshEntity<TEntity>(TEntity entity)
+            where TEntity : class
         {
-            var OrtNames = (from f in _db.Firmens
-                            where f.Firma == SelectedFirma
-                            select f.Ort).Distinct();
-            ObservableCollection<string> AllOrtNames = new ObservableCollection<string>(OrtNames);
-            return AllOrtNames;
+            try
+            {
+                _db.Entry(entity).Reload();
+                return entity;
+            }
+
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
     }

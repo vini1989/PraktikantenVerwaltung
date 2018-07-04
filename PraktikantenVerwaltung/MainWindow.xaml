@@ -45,52 +45,12 @@
                         <DataTemplate DataType="{x:Type vm:FirmenViewModel}">
                             <views:FirmenView />
                         </DataTemplate>
-                        <!--<Style TargetType="TabItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TabItem" >
-                                        <Grid>
-                                            <Border Name="Border" BorderThickness="1,1,0,1" Margin="0,3" BorderBrush="Black" CornerRadius="6,0,0,6" >
-                                                <ContentPresenter x:Name="ContentSite" ContentSource="Header" Width="100" Height="60" TextBlock.FontSize="14"
-                                                                  TextBlock.TextAlignment="Center" 
-                                                                  Margin="10" />
-                                            </Border>
-                                        </Grid>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="Border" Property="Background" Value="#142F5A" />
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="False">
-                                                <Setter TargetName="Border" Property="Background" Value="#FFCCD4F8" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="HeaderTemplate">
-                                        <Setter.Value>
-                                            <DataTemplate>
-                                                <TextBlock FontWeight="Bold" TextWrapping="Wrap" 
-                                                           Text="{Binding}" 
-                                                           Foreground="White" />
-                                            </DataTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="False">
-                                    <Setter Property="HeaderTemplate">
-                                        <Setter.Value>
-                                            <DataTemplate>
-                                                <TextBlock TextWrapping="Wrap" Text="{Binding}" 
-                                                            Foreground="#142F5A"/>
-                                            </DataTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>-->
+                        <DataTemplate DataType="{x:Type vm:StudentsOfFirmaViewModel}">
+                            <views:StudentsOfFirmaView />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:StudentsOfDozentViewModel}">
+                            <views:StudentsOfDozentView />
+                        </DataTemplate>
                     </TabControl.Resources>
                     <TabControl.ItemContainerStyle>
                         <Style TargetType="TabItem">
@@ -141,18 +101,6 @@
                             </Style.Triggers>
                         </Style>
                     </TabControl.ItemContainerStyle>
-                    <!--<TabItem Header="Dozenten-Daten bearbeiten" x:Name="Dozenten"  >
-                        <views:DozentView />
-                    </TabItem>
-                    <TabItem Header="Studierende-Daten bearbeiten" x:Name="Studierende">
-                        <views:StudentView />
-                    </TabItem>
-                    <TabItem Header="Firmen-Daten bearbeiten" x:Name="Firmen" >
-                        <views:FirmenView />
-                    </TabItem>
-                    <TabItem Header="Studierende eines Dozent"/>
-                    <TabItem Header="Studierende einer Firma"/>
-                    <TabItem Header="Offene oder überfällige Praktika"/>-->
                 </TabControl>
             </Border>
         </Grid>

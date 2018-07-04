@@ -43,6 +43,10 @@
       <HintPath>..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DotNetKit.Wpf.AutoCompleteComboBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetKit.Wpf.AutoCompleteComboBox.1.2.0\lib\net45\DotNetKit.Wpf.AutoCompleteComboBox.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -63,8 +67,43 @@
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MessageBoxManager">
+      <HintPath>..\..\..\..\..\Downloads\messageboxmanager\MessageBoxManager\bin\Release\MessageBoxManager.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.DataVisualization.DLL</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Design, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.Design.DLL</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.ProcessingObjectModel.DLL</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebDesign, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.WebDesign.DLL</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.WebForms.DLL</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.11.0.3366.16\lib\Microsoft.ReportViewer.WinForms.DLL</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.11.0.1\lib\net20\Microsoft.SqlServer.Types.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -88,15 +127,18 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FilteredCombobox.cs" />
     <Compile Include="Converter\BoolInverterConverter.cs" />
     <Compile Include="Core\DIManager.cs" />
     <Compile Include="Core\IDialogService.cs" />
@@ -205,6 +247,78 @@
     <Compile Include="Migrations\201805100922546_PraktikaValidation.Designer.cs">
       <DependentUpon>201805100922546_PraktikaValidation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805121213071_FirmenDataValidation.cs" />
+    <Compile Include="Migrations\201805121213071_FirmenDataValidation.Designer.cs">
+      <DependentUpon>201805121213071_FirmenDataValidation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805122034257_DozentIdFKPraktika.cs" />
+    <Compile Include="Migrations\201805122034257_DozentIdFKPraktika.Designer.cs">
+      <DependentUpon>201805122034257_DozentIdFKPraktika.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805130854200_Praktika_DozentValidation.cs" />
+    <Compile Include="Migrations\201805130854200_Praktika_DozentValidation.Designer.cs">
+      <DependentUpon>201805130854200_Praktika_DozentValidation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805130915026_Praktika_ValidationChangedinVM.cs" />
+    <Compile Include="Migrations\201805130915026_Praktika_ValidationChangedinVM.Designer.cs">
+      <DependentUpon>201805130915026_Praktika_ValidationChangedinVM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805130934053_Praktika_ValidationTeilPrakNr.cs" />
+    <Compile Include="Migrations\201805130934053_Praktika_ValidationTeilPrakNr.Designer.cs">
+      <DependentUpon>201805130934053_Praktika_ValidationTeilPrakNr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805130955514_Praktika_NoValidationTeilPrakNr.cs" />
+    <Compile Include="Migrations\201805130955514_Praktika_NoValidationTeilPrakNr.Designer.cs">
+      <DependentUpon>201805130955514_Praktika_NoValidationTeilPrakNr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805131047385_Dozent_NoRegExp.cs" />
+    <Compile Include="Migrations\201805131047385_Dozent_NoRegExp.Designer.cs">
+      <DependentUpon>201805131047385_Dozent_NoRegExp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806060954430_Dozent_RowVersion.cs" />
+    <Compile Include="Migrations\201806060954430_Dozent_RowVersion.Designer.cs">
+      <DependentUpon>201806060954430_Dozent_RowVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806061506471_RowVersion.cs" />
+    <Compile Include="Migrations\201806061506471_RowVersion.Designer.cs">
+      <DependentUpon>201806061506471_RowVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806092043493_PraktikaRowVersion_Removed.cs" />
+    <Compile Include="Migrations\201806092043493_PraktikaRowVersion_Removed.Designer.cs">
+      <DependentUpon>201806092043493_PraktikaRowVersion_Removed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806100948421_RowVersion_Praktika.cs" />
+    <Compile Include="Migrations\201806100948421_RowVersion_Praktika.Designer.cs">
+      <DependentUpon>201806100948421_RowVersion_Praktika.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806101005140_PraktikumAbslvt_Praktika.cs" />
+    <Compile Include="Migrations\201806101005140_PraktikumAbslvt_Praktika.Designer.cs">
+      <DependentUpon>201806101005140_PraktikumAbslvt_Praktika.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806101020247_Firmen_updated.cs" />
+    <Compile Include="Migrations\201806101020247_Firmen_updated.Designer.cs">
+      <DependentUpon>201806101020247_Firmen_updated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806101201117_PraktikumAbslvtstring_Praktika.cs" />
+    <Compile Include="Migrations\201806101201117_PraktikumAbslvtstring_Praktika.Designer.cs">
+      <DependentUpon>201806101201117_PraktikumAbslvtstring_Praktika.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806101306127_Praktika_IsOkAdded.cs" />
+    <Compile Include="Migrations\201806101306127_Praktika_IsOkAdded.Designer.cs">
+      <DependentUpon>201806101306127_Praktika_IsOkAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806101335377_Praktika_Validation.cs" />
+    <Compile Include="Migrations\201806101335377_Praktika_Validation.Designer.cs">
+      <DependentUpon>201806101335377_Praktika_Validation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806101339327_Praktika_ValidationRemoved.cs" />
+    <Compile Include="Migrations\201806101339327_Praktika_ValidationRemoved.Designer.cs">
+      <DependentUpon>201806101339327_Praktika_ValidationRemoved.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807041622410_DozentName.cs" />
+    <Compile Include="Migrations\201807041622410_DozentName.Designer.cs">
+      <DependentUpon>201807041622410_DozentName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Dozent.cs" />
     <Compile Include="Model\DozentNames.cs" />
@@ -213,15 +327,22 @@
     <Compile Include="Model\Student.cs" />
     <Compile Include="Model\StudentDetail.cs" />
     <Compile Include="Service\DialogService.cs" />
+    <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="ViewModel\AddDozentViewModel.cs" />
+    <Compile Include="ViewModel\AddFirmaViewModel.cs" />
     <Compile Include="ViewModel\AddPraktikaViewModel.cs" />
     <Compile Include="ViewModel\AddStudentViewModel.cs" />
     <Compile Include="ViewModel\DozentViewModel.cs" />
     <Compile Include="ViewModel\FirmenViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\StudentsOfDozentViewModel.cs" />
+    <Compile Include="ViewModel\StudentsOfFirmaViewModel.cs" />
     <Compile Include="ViewModel\StudentViewModel.cs" />
     <Compile Include="View\AddDozentView.xaml.cs">
       <DependentUpon>AddDozentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddFirmaView.xaml.cs">
+      <DependentUpon>AddFirmaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AddPraktikaView.xaml.cs">
       <DependentUpon>AddPraktikaView.xaml</DependentUpon>
@@ -234,6 +355,15 @@
     </Compile>
     <Compile Include="View\FirmenView.xaml.cs">
       <DependentUpon>FirmenView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ReportView.xaml.cs">
+      <DependentUpon>ReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StudentsOfDozentView.xaml.cs">
+      <DependentUpon>StudentsOfDozentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StudentsOfFirmaView.xaml.cs">
+      <DependentUpon>StudentsOfFirmaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\StudentView.xaml.cs">
       <DependentUpon>StudentView.xaml</DependentUpon>
@@ -254,6 +384,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AddFirmaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AddPraktikaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -267,6 +401,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FirmenView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StudentsOfDozentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StudentsOfFirmaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -361,6 +507,60 @@
     <EmbeddedResource Include="Migrations\201805100922546_PraktikaValidation.resx">
       <DependentUpon>201805100922546_PraktikaValidation.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805121213071_FirmenDataValidation.resx">
+      <DependentUpon>201805121213071_FirmenDataValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805122034257_DozentIdFKPraktika.resx">
+      <DependentUpon>201805122034257_DozentIdFKPraktika.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805130854200_Praktika_DozentValidation.resx">
+      <DependentUpon>201805130854200_Praktika_DozentValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805130915026_Praktika_ValidationChangedinVM.resx">
+      <DependentUpon>201805130915026_Praktika_ValidationChangedinVM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805130934053_Praktika_ValidationTeilPrakNr.resx">
+      <DependentUpon>201805130934053_Praktika_ValidationTeilPrakNr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805130955514_Praktika_NoValidationTeilPrakNr.resx">
+      <DependentUpon>201805130955514_Praktika_NoValidationTeilPrakNr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805131047385_Dozent_NoRegExp.resx">
+      <DependentUpon>201805131047385_Dozent_NoRegExp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806060954430_Dozent_RowVersion.resx">
+      <DependentUpon>201806060954430_Dozent_RowVersion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806061506471_RowVersion.resx">
+      <DependentUpon>201806061506471_RowVersion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806092043493_PraktikaRowVersion_Removed.resx">
+      <DependentUpon>201806092043493_PraktikaRowVersion_Removed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806100948421_RowVersion_Praktika.resx">
+      <DependentUpon>201806100948421_RowVersion_Praktika.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806101005140_PraktikumAbslvt_Praktika.resx">
+      <DependentUpon>201806101005140_PraktikumAbslvt_Praktika.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806101020247_Firmen_updated.resx">
+      <DependentUpon>201806101020247_Firmen_updated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806101201117_PraktikumAbslvtstring_Praktika.resx">
+      <DependentUpon>201806101201117_PraktikumAbslvtstring_Praktika.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806101306127_Praktika_IsOkAdded.resx">
+      <DependentUpon>201806101306127_Praktika_IsOkAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806101335377_Praktika_Validation.resx">
+      <DependentUpon>201806101335377_Praktika_Validation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806101339327_Praktika_ValidationRemoved.resx">
+      <DependentUpon>201806101339327_Praktika_ValidationRemoved.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807041622410_DozentName.resx">
+      <DependentUpon>201807041622410_DozentName.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -380,6 +580,25 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Pictures\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.1\nativeBinaries\x64\msvcr100.dll">
+      <Link>SqlServerTypes\x64\msvcr100.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.1\nativeBinaries\x64\SqlServerSpatial110.dll">
+      <Link>SqlServerTypes\x64\SqlServerSpatial110.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.1\nativeBinaries\x86\msvcr100.dll">
+      <Link>SqlServerTypes\x86\msvcr100.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\packages\Microsoft.SqlServer.Types.11.0.1\nativeBinaries\x86\SqlServerSpatial110.dll">
+      <Link>SqlServerTypes\x86\SqlServerSpatial110.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SqlServerTypes\readme.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -11,6 +11,7 @@ using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Windows;
 
 namespace PraktikantenVerwaltung.ViewModel
 {
@@ -20,26 +21,23 @@ namespace PraktikantenVerwaltung.ViewModel
     public class DozentViewModel : ViewModelBase
     {
         #region DozentViewModel properties
-
-        private AddDozentViewModel _addDozentViewModel; 
+ 
         private IDozentDB _dozentDB;
-        private ObservableCollection<Dozent> _dozentList; 
-        private Dozent _selectedDozent;
-        private Dozent _tempselectedDozent;
         private IDialogService _dialogservice;
 
-        public RelayCommand ShowAddDozentCommand { get; private set; } 
-        public RelayCommand SaveDozentCommand { get; private set; } 
-        public RelayCommand DeleteDozentCommand { get; private set; }
-
-    
+        /// <summary>
+        /// Tab Name
+        /// </summary>
         public string TabName
         {
             get { return "Dozenten-Daten bearbeiten"; }
         }
 
 
-        //Dozent collection
+        /// <summary>
+        /// Dozent list
+        /// </summary>
+        private ObservableCollection<Dozent> _dozentList;
         public ObservableCollection<Dozent> DozentList
         {
             get { return _dozentList; }
@@ -50,17 +48,10 @@ namespace PraktikantenVerwaltung.ViewModel
 
         }
 
-        // AddDozentViewModel property
-        public AddDozentViewModel AddDozentViewModel
-        {
-            get { return _addDozentViewModel; }
-            set
-            {
-                Set(ref _addDozentViewModel, value);
-            }
-        }
-
-        //Selected item from datagrid
+        /// <summary>
+        /// Selected Dozent
+        /// </summary>
+        private Dozent _selectedDozent;
         public Dozent SelectedDozent
         {
             get { return _selectedDozent; }
@@ -68,52 +59,66 @@ namespace PraktikantenVerwaltung.ViewModel
             {
                 Set(ref _selectedDozent, value);
                 if(value != null)
-                    value.CopyTo(TempSelectedDozent);                
+                    value.CopyTo(CurrentDozent);
+                DeleteDozentCommand.RaiseCanExecuteChanged();             
             }
         }
 
-        //Copy of SelectedDozent
-        public Dozent TempSelectedDozent
+        /// <summary>
+        /// Current selected Dozent
+        /// </summary>
+        private Dozent _currentDozent;
+        public Dozent CurrentDozent
         {
-            get { return _tempselectedDozent; }
+            get { return _currentDozent; }
             set
             {
-                Set(ref _tempselectedDozent, value);
+                Set(ref _currentDozent, value);
             }
         }
+
+        /// <summary>
+        /// Commands
+        /// </summary>
+        public RelayCommand ShowAddDozentCommand { get; private set; }
+        public RelayCommand SaveDozentCommand { get; private set; }
+        public RelayCommand CancelDozentCommand { get; private set; }
+        public RelayCommand DeleteDozentCommand { get; private set; }
+        public RelayCommand RefreshCommand { get; private set; }
 
         #endregion
 
         #region Ctor
 
         // Initializes a new instance of the DozentViewModel class.
-        public DozentViewModel(IDozentDB dozentDB, IDialogService dialogservice, AddDozentViewModel adddozentviewmodel)
+        public DozentViewModel(IDozentDB dozentDB, IDialogService dialogservice)
         {
             try
             {
 
                 _dozentDB = dozentDB;
                 _dialogservice = dialogservice;
-                AddDozentViewModel = adddozentviewmodel;
-                TempSelectedDozent = new Dozent();
+                CurrentDozent = new Dozent();
 
-                // To get list of all Dozents from dozents table
+                // Get list of all Dozents from dozents table
                 DozentList = new ObservableCollection<Dozent>();
                 DozentList = _dozentDB.GetAllDozents();
                 
-                //To open new window to add dozent
+                //Open new window to add new dozent
                 ShowAddDozentCommand = new RelayCommand(ShowAddDozentViewExecute);
                 SaveDozentCommand = new RelayCommand(SaveDozentExecute, CanSaveDozent);
+                CancelDozentCommand = new RelayCommand(CancelDozentExecute);
                 DeleteDozentCommand = new RelayCommand(DeleteDozentExecute, CanDeleteDozent);
+                RefreshCommand = new RelayCommand(RefreshExecute);
 
                 SelectedDozent = DozentList[0];
 
-                TempSelectedDozent.IsOkChanged += OnTempSelectedDozentPropertyChanged;
+                CurrentDozent.IsOkChanged += OnTempSelectedDozentPropertyChanged;
 
             }
             catch(Exception e)
             {
-                throw e;
+                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -121,7 +126,9 @@ namespace PraktikantenVerwaltung.ViewModel
 
         #region DozentViewModel members
 
-        //Opens the AddDozentView
+        /// <summary>
+        /// Open the AddDozentView window
+        /// </summary>
         private void ShowAddDozentViewExecute()
         {
             //Registers for incoming Dozent object messages
@@ -131,15 +138,17 @@ namespace PraktikantenVerwaltung.ViewModel
             _dialogservice.AddDozentView();
         }
 
-        //Checks if Dozent already exists in database
+        /// <summary>
+        /// Checks if Dozent already exists in Dozents table
+        /// </summary>
         private void CheckDozentExists(Dozent dozent)
         {            
             bool DozentExists = _dozentDB.DozentExists(dozent);
 
             if (DozentExists)
             {
-                var createDuplicate = _dialogservice.ShowQuestion("Dozent existiert bereits. Trotzdem hinzufügen?", "Bestätigung");
-                if (createDuplicate)
+                var createDuplicate = MessageBox.Show("Dozent existiert bereits. Trotzdem hinzufügen?", "Bestätigung", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (createDuplicate == MessageBoxResult.Yes)
                 {
                     CreateDozent(dozent);
                 }
@@ -154,7 +163,9 @@ namespace PraktikantenVerwaltung.ViewModel
             Cleanup();
         }
 
-        //Adds dozent to DB and ObservableCollection
+        /// <summary>
+        /// Adds new dozent to Dozents table and ObservableCollection
+        /// </summary>
         private void CreateDozent(Dozent dozent)
         {
             //Add new dozent to DB and retreive it
@@ -163,64 +174,102 @@ namespace PraktikantenVerwaltung.ViewModel
             //Add new dozent to DozentList ObservableCollection
             DozentList.Add(DozentAdded);
 
-            _dialogservice.ShowMessage("Dozent wurde erfolgreich hinzufügt!", "Erfolg");
+            MessageBox.Show("Dozent wurde erfolgreich hinzufügt!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
 
             SelectedDozent = DozentAdded;
 
         }
 
-        //Saves updated Dozent to database
+        /// <summary>
+        /// Saves updated Dozent to database
+        /// </summary>
         private void SaveDozentExecute()
         {
-            bool DozentExists = _dozentDB.DozentExists(TempSelectedDozent);
+            bool DozentExists = _dozentDB.DozentExists(CurrentDozent);
             if (DozentExists)
             {
-                var createDuplicate = _dialogservice.ShowQuestion("Dozent existiert bereits. Trotzdem speichern?", "Bestätigung");
-                if (createDuplicate)
+                var createDuplicate = MessageBox.Show("Dozent existiert bereits. Trotzdem speichern?", "Bestätigung", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (createDuplicate == MessageBoxResult.Yes)
                 {
-                    Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+                    Dozent updatedDozent = _dozentDB.UpdateDozent(CurrentDozent);
                     SelectedDozent = updatedDozent;
                 }
                 else
                 {
-                    TempSelectedDozent.DozentNachname = SelectedDozent.DozentNachname;
-                    TempSelectedDozent.DozentVorname = SelectedDozent.DozentVorname;
-                    TempSelectedDozent.AkadGrad = SelectedDozent.AkadGrad;
+                    SelectedDozent.CopyTo(CurrentDozent);
                 }
             }
             else
             {
-                Dozent updatedDozent = _dozentDB.UpdateDozent(TempSelectedDozent);
+                Dozent updatedDozent = _dozentDB.UpdateDozent(CurrentDozent);
                 SelectedDozent = updatedDozent;
             }
-  
         }
 
-        //Executes SaveDozent if true
+        /// <summary>
+        /// Executes SaveDozent if true
+        /// </summary>
         private bool CanSaveDozent()
         {
-            return TempSelectedDozent.IsOk;
+            return CurrentDozent.IsOk;
         }
 
-        //Deletes Dozent from database
+        /// <summary>
+        /// Executes SaveDozent if true
+        /// </summary>
+        private void CancelDozentExecute()
+        {
+            SelectedDozent.CopyTo(CurrentDozent);
+        }
+
+        /// <summary>
+        /// Deletes Dozent from database
+        /// </summary>
         private void DeleteDozentExecute()
         {
-            Dozent deletedDozent = _dozentDB.DeleteDozent(TempSelectedDozent);
-            DozentList.Remove(deletedDozent);
+            var deleteDozent = MessageBox.Show("Sind Sie sicher, dass Sie löschen möchten?", "Bestätigung", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if(deleteDozent == MessageBoxResult.Yes)
+            {
+                Dozent deletedDozent = _dozentDB.DeleteDozent(CurrentDozent);
+                DozentList.Remove(deletedDozent);
+            }
         }
 
-        //Executes DeleteDozentExecute if true
+        /// <summary>
+        /// Executes DeleteDozentExecute if true
+        /// </summary>
         private bool CanDeleteDozent()
         {
-            return (TempSelectedDozent != null);
+            return (SelectedDozent != null);
         }
 
-        //Enables or disables Save Dozent button
+        /// <summary>
+        /// Enables or disables Save Dozent button
+        /// </summary>
         private void OnTempSelectedDozentPropertyChanged(bool IsOk)
         {
             SaveDozentCommand.RaiseCanExecuteChanged();
         }
 
+        private void RefreshExecute()
+        {
+            _dozentDB.RefreshDBContext(); //Refresh DBContext
+
+            DozentList = _dozentDB.GetAllDozents(); //Get all Dozents into DozentList
+
+            SelectedDozent = _dozentDB.RefreshEntity(SelectedDozent); //Update the currently selected dozent
+
+            //If currently selected Dozent had already been deleted in database by another user, then set to the first item in list
+            if (SelectedDozent == null)
+            {
+                MessageBox.Show("Die ausgewählten Daten sind nicht mehr in der Datenbank verfügbar.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                SelectedDozent = DozentList[0];
+            }
+        }
+
+        /// <summary>
+        /// Cleanup
+        /// </summary>
         public override void Cleanup()
         {
             Messenger.Default.Unregister(this);

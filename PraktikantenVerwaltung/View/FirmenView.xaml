@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
              xmlns:converter="clr-namespace:PraktikantenVerwaltung.Converter"
+             xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
 
@@ -13,6 +14,27 @@
     </UserControl.Resources>
 
 <Grid>
+        <Grid.Resources>
+            <ControlTemplate x:Key="MyErrorTemplate">
+                <DockPanel>
+                    <Border BorderBrush="Orange" BorderThickness="1">
+                        <AdornedElementPlaceholder />
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource MyErrorTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+    
         <!--Heading and Content-->
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -24,7 +46,11 @@
 
             <!--Title Firmendaten-->
             <Label x:Name="lblheading" Content="Firmendaten" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   FontFamily="Verdana" FontSize="20" FontWeight="Bold" Foreground="#142F5A"/>
+                   FontFamily="Calibri" FontSize="22" FontWeight="Bold" Foreground="#142F5A"/>
+
+            <!--Button Refresh-->
+            <Button x:Name="btnRefresh" Content="Aktualisieren" Width="100" HorizontalAlignment="Right"
+                                    Command="{Binding Path= RefreshCommand}"/>
         </Grid>
 
         <!--Firmen suchen and list firma details-->
@@ -36,11 +62,10 @@
             <StackPanel Orientation="Horizontal" Grid.Row="0">
                 <!--Suchen-->
                 <Label x:Name="lblSuchen" Content="Suchen: "/>
-                <ComboBox x:Name="cmbFirSuchen" Width="200" Height="30" Margin="10" IsEnabled="{Binding ViewMode}" 
-                          ItemsSource="{Binding FirmenList,UpdateSourceTrigger=PropertyChanged}"
-                          SelectedItem="{Binding SelectedFirmen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True"
-                          IsTextSearchEnabled="True" TextSearch.TextPath="Firma">
-                    <ComboBox.ItemTemplate>
+                <dotNetKitControls:AutoCompleteComboBox x:Name="cmbFirSuchen" Width="200" Height="30" Margin="10" 
+                          ItemsSource="{Binding FirmenList,UpdateSourceTrigger=PropertyChanged}" TextSearch.TextPath="FirmaOrt"
+                          SelectedItem="{Binding SelectedFirmen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True">
+                    <dotNetKitControls:AutoCompleteComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
                                 <TextBlock.Text>
@@ -51,10 +76,10 @@
                                 </TextBlock.Text>
                             </TextBlock>
                         </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    </dotNetKitControls:AutoCompleteComboBox.ItemTemplate>
+                </dotNetKitControls:AutoCompleteComboBox>
                 <Button x:Name="btnAddFirmen" Content="Neue Firma" Margin="10" Width="120"
-                        Command="{Binding AddFirmenCommand}"/>
+                        Command="{Binding ShowAddFirmenCommand}"/>
             </StackPanel>
             <GroupBox x:Name="grpboxstammdaten" Grid.Row="1" Margin="10" BorderBrush="#142F5A">
                 <GroupBox.Header>
@@ -79,13 +104,13 @@
 
                     <!--Firmen-Nr-->
                     <Label Grid.Column="0" Grid.Row="0" Content="Firmen-Nr :"/>
-                    <TextBlock x:Name="txtFirmenNr" Grid.Column="1" Grid.Row="0" Width="100"  HorizontalAlignment="Left" Margin="10"
-                               Text="{Binding SelectedFirmen.FirmenId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock x:Name="txtFirmenNr" Grid.Column="1" Grid.Row="0" Width="200"  HorizontalAlignment="Left" Margin="10"
+                               Text="{Binding CurrentFirmen.FirmenId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--Firma-->
                     <Label Grid.Column="0" Grid.Row="1" Content="Firma :"/>
-                    <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Width="200" HorizontalAlignment="Left" 
-                             Text="{Binding SelectedFirmen.Firma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox x:Name="txtFirma" Grid.Column="1" Grid.Row="1" Width="300" HorizontalAlignment="Left" 
+                             Text="{Binding CurrentFirmen.Firma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                     <!--Strasse und Hausnummer-->
                     <Label Grid.Column="0" Grid.Row="2">
@@ -94,7 +119,7 @@
                         </Label.Content>
                     </Label>
                     <TextBox x:Name="txtStraßeHausnum" Grid.Column="1" Grid.Row="2" Width="300" HorizontalAlignment="Left"
-                             Text="{Binding SelectedFirmen.StrHausnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding CurrentFirmen.StrHausnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--PLZ und Ort-->
                     <Label Grid.Column="0" Grid.Row="3" Content="PLZ :"/>
@@ -105,10 +130,10 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="txtPlz" Grid.Column="0"  Width="200" HorizontalAlignment="Left" 
-                                 Text="{Binding SelectedFirmen.Plz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding CurrentFirmen.Plz, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         <Label Grid.Column="1" Content="Ort :" HorizontalAlignment="Right"/>
                         <TextBox x:Name="txtOrt" Grid.Column="2"  Width="200" HorizontalAlignment="Left" 
-                                 Text="{Binding SelectedFirmen.Ort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding CurrentFirmen.Ort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                     </Grid>
 
                     <!--Telefon und Fax-->
@@ -120,28 +145,28 @@
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="txtTel" Grid.Column="0"  Width="200" HorizontalAlignment="Left" 
-                                 Text="{Binding SelectedFirmen.Telefon,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding CurrentFirmen.Telefon,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         <Label Grid.Column="1" Content="Fax :" HorizontalAlignment="Right"/>
                         <TextBox x:Name="txtFax" Grid.Column="2"  Width="200" HorizontalAlignment="Left" 
-                                 Text="{Binding SelectedFirmen.FaxNr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding CurrentFirmen.FaxNr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                     </Grid>
 
                     <!--eMail-->
                     <Label Grid.Column="0" Grid.Row="5" Content="eMail :"/>
                     <TextBox x:Name="txtEmail" Grid.Column="1" Grid.Row="5" Width="300" HorizontalAlignment="Left"
-                             Text="{Binding SelectedFirmen.Email,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding CurrentFirmen.Email,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--WWW-->
                     <Label Grid.Column="0" Grid.Row="6" Content="WWW :"/>
                     <TextBox x:Name="txtWww" Grid.Column="1" Grid.Row="6" Width="300" HorizontalAlignment="Left"
-                             Text="{Binding SelectedFirmen.WWW,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Text="{Binding CurrentFirmen.WWW,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--National and International-->
                     <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal" >
                         <RadioButton x:Name="RadNat" Content="National" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,10,0"
-                                     IsChecked="{Binding SelectedFirmen.National, UpdateSourceTrigger=PropertyChanged}"/>
+                                     IsChecked="{Binding CurrentFirmen.National, UpdateSourceTrigger=PropertyChanged}"/>
                         <RadioButton x:Name="RadInt" Content="International" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,10,0" 
-                                     IsChecked="{Binding SelectedFirmen.National, Converter={StaticResource BoolInverterConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                                     IsChecked="{Binding CurrentFirmen.National, Converter={StaticResource BoolInverterConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                     
 

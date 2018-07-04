@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Messaging;
+using System.Windows;
 
 namespace PraktikantenVerwaltung.ViewModel
 {
@@ -22,6 +23,9 @@ namespace PraktikantenVerwaltung.ViewModel
         private Student _selectedStudent;
         private Student _tempselectedStudent = new Student();
         private Praktika _currentPraktika = new Praktika();
+        private ObservableCollection<Student> _studentList;
+        private ObservableCollection<Firmen> _firmenList;
+        private ObservableCollection<Dozent> _dozentNamesList;
         private IStudentDB _studentDB;
         private IPraktikaDB _praktikaDB;
         private IFirmenDB _firmenDB;
@@ -36,6 +40,7 @@ namespace PraktikantenVerwaltung.ViewModel
         }
         
         //Student Commands
+        public RelayCommand RefreshCommand { get; private set; }
         public RelayCommand NewStudentCommand { get; private set; }
         public RelayCommand SaveStudentCommand { get; private set; }
         public RelayCommand CancelStudentCommand { get; private set; }
@@ -72,6 +77,22 @@ namespace PraktikantenVerwaltung.ViewModel
                 Set(ref _tempselectedStudent, value);                
             }
         }
+
+        //Selected Dozent
+        //private Dozent _selectedDozent;
+        //public Dozent SelectedDozent
+        //{
+        //    get { return _selectedDozent; }
+        //    set
+        //    {
+        //        Set(ref _selectedDozent, value);
+        //        if (value != null)
+        //        {
+        //            CurrentPraktika.Dozent = value.DozentNachname + " " + value.DozentVorname;
+        //            CurrentPraktika.DozentId = value.DozentId;
+        //        }
+        //    }
+        //}
 
         public Praktika CurrentPraktika
         {
@@ -131,13 +152,23 @@ namespace PraktikantenVerwaltung.ViewModel
 
         public ObservableCollection<string> StudiengangItems { get; private set; } // Studiengang combobox items
 
-        public ObservableCollection<Student> StudentList { get; private set; }
+        public ObservableCollection<Student> StudentList
+        {
+            get { return _studentList; }
+            set { Set(ref _studentList, value); }
+        }
 
-        public ObservableCollection<Firmen> FirmaList { get; private set; }
+        public ObservableCollection<Firmen> FirmaList
+        {
+            get { return _firmenList; }
+            set { Set(ref _firmenList, value); }
+        }
 
-        public ObservableCollection<DozentNames> DozentList { get; private set; }
-
-
+        public ObservableCollection<Dozent> DozentList
+        {
+            get { return _dozentNamesList; }
+            set { Set(ref _dozentNamesList, value); }
+        }
 
 
         #endregion
@@ -156,6 +187,7 @@ namespace PraktikantenVerwaltung.ViewModel
                 _dialogservice = dialogservice;
 
                 //Student Commands
+                RefreshCommand = new RelayCommand(RefreshExecute);
                 NewStudentCommand = new RelayCommand(NewStudentExecute);
                 SaveStudentCommand = new RelayCommand(SaveStudentExecute, CanSaveStudent);
                 CancelStudentCommand = new RelayCommand(CancelStudentExecute);
@@ -165,16 +197,20 @@ namespace PraktikantenVerwaltung.ViewModel
                 NewPraktikaCommand = new RelayCommand(NewPraktikaExecute, CanNewPraktikaExecute);
                 NextCommand = new RelayCommand(NextExecute, CanNextExecute);
                 PreviousCommand = new RelayCommand(PreviousExecute, CanPreviousExecute);
-                SavePraktikaCommand = new RelayCommand(SavePraktikaExecute, CanSavePraktika);
+                SavePraktikaCommand = new RelayCommand(SavePraktikaExecute);
                 CancelPraktikaCommand = new RelayCommand(CancelPraktikaExecute);
 
+                StudentList = new ObservableCollection<Student>();
                 StudentList = _studentDB.GetAllStudents();
 
+                FirmaList = new ObservableCollection<Firmen>();
                 FirmaList = _firmenDB.GetAllFirmen();
-                DozentList = _dozentDB.GetAllDozentNames();
 
+                DozentList = new ObservableCollection<Dozent>();
+                DozentList = _dozentDB.GetAllDozents();
+
+               
                 SelectedStudent = StudentList[0];
-
 
                 TempSelectedStudent.IsOkChanged += OnTempSelectedStudentPropertyChanged;
 
@@ -198,6 +234,28 @@ namespace PraktikantenVerwaltung.ViewModel
         #endregion
 
         #region Student members
+
+        private void RefreshExecute()
+        {
+            _studentDB.RefreshDBContext(); //Refresh DBContext
+            _firmenDB.RefreshDBContext();
+            _dozentDB.RefreshDBContext();
+
+            StudentList = _studentDB.GetAllStudents(); //Get all students into StudentList
+            FirmaList = _firmenDB.GetAllFirmen(); //Get all Firmen into FirmaList
+            DozentList = _dozentDB.GetAllDozents(); //Get all DozentNames into DozentList
+
+            if(StudentList.Contains(SelectedStudent))
+            {
+                SelectedStudent = _studentDB.RefreshEntity(SelectedStudent); //Refresh the currently selected student
+            }
+            //If currently selected Student had already been deleted in database by another user, then set to the first item in list
+            else
+            {
+                MessageBox.Show("Die ausgewählten Daten sind nicht mehr in der Datenbank verfügbar.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                SelectedStudent = StudentList[0];
+            }
+        }
 
         private void NewStudentExecute()
         {
@@ -287,7 +345,6 @@ namespace PraktikantenVerwaltung.ViewModel
             try
             {
                 Student updatedStudent = _studentDB.UpdateStudent(TempSelectedStudent);
-                _dialogservice.ShowMessage("Student wurde erfolgreich speichert!", "Erfolg");
                 SelectedStudent = updatedStudent;
             }
             catch(Exception e)
@@ -304,11 +361,10 @@ namespace PraktikantenVerwaltung.ViewModel
 
         private void CancelStudentExecute()
         {
-            TempSelectedStudent.MatrikelNr = SelectedStudent.MatrikelNr;
-            TempSelectedStudent.StudentVorname = SelectedStudent.StudentVorname;
-            TempSelectedStudent.StudentNachname = SelectedStudent.StudentNachname;
-            TempSelectedStudent.Studiengang = SelectedStudent.Studiengang;
-            TempSelectedStudent.Immatrikuliert = SelectedStudent.Immatrikuliert;
+            if (SelectedStudent != null)
+                SelectedStudent.CopyTo(TempSelectedStudent);
+            else
+                SelectedStudent = StudentList[0];
         }
 
         private void DeleteStudentExecute()
@@ -422,8 +478,7 @@ namespace PraktikantenVerwaltung.ViewModel
             try
             {
                 Praktika updatedPraktika = _praktikaDB.UpdatePraktika(CurrentPraktika);
-                _dialogservice.ShowMessage("Praktikum wurde erfolgreich speichert!", "Erfolg");
-                //SelectedStudent. = updatedStudent;
+                CurrentPraktika = updatedPraktika;
             }
             catch (Exception e)
             {
@@ -432,13 +487,10 @@ namespace PraktikantenVerwaltung.ViewModel
 
         }
 
-        private bool CanSavePraktika()
-        {
-            return true;
-        }
 
         private void CancelPraktikaExecute()
         {
+                SelectedStudent.Praktikas.ElementAt(SelectedPraktikaIndex).CopyTo(CurrentPraktika);
 
         }
 

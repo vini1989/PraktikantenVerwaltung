@@ -9,10 +9,13 @@ using PraktikantenVerwaltung.Core;
 using GalaSoft.MvvmLight.Messaging;
 using PraktikantenVerwaltung.Model;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace PraktikantenVerwaltung.ViewModel
 {
-    public class AddPraktikaViewModel : ViewModelBase
+    public class AddPraktikaViewModel : ViewModelBase, IDataErrorInfo
     {
         /// <summary>
         /// This class contains properties that the AddPraktikaView can data bind to.
@@ -29,14 +32,56 @@ namespace PraktikantenVerwaltung.ViewModel
             set { Set(ref _newPraktika, value); }
         }
 
-        public RelayCommand AddCommand { get; set; } //Command to add new student into students table
-        public RelayCommand CancelCommand { get; set; } //Command to cancel/close window
+        //TeilPraktikum Nr
+        private int _teilPraktikumNr;
 
-        public ObservableCollection<Firmen> FirmaList { get; private set; }
+        [Required(ErrorMessage = "TeilPraktikum Nr ist erforderlich")]
+        [Range(0, int.MaxValue, ErrorMessage = "TeilPraktikum Nr ist ungültig")]
+        public int TeilPraktikumNr
+        {
+            get { return _teilPraktikumNr; }
+            set
+            {
+                Set(ref _teilPraktikumNr, value);
+                NewPraktika.TeilPraktikumNr = value;
 
-        public ObservableCollection<DozentNames> DozentList { get; private set; }
+            }
+        }
 
+        //Selected Dozent
+        private Dozent _selectedDozent;
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Dozent ist erforderlich")]
+        public Dozent SelectedDozent
+        {
+            get { return _selectedDozent; }
+            set
+            {
+                Set(ref _selectedDozent, value);
+                if (value != null)
+                {
+                    NewPraktika.Dozent = value.DozentNachname + " " + value.DozentVorname;
+                    NewPraktika.DozentId = value.DozentId;
+                }          
+            }
+        }
+
+        //Selected Firma
+        private string _selectedFirma;
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Firma ist erforderlich")]
+        public string SelectedFirma
+        {
+            get { return _selectedFirma; }
+            set
+            {
+                Set(ref _selectedFirma, value);
+                if (value != null)
+                    NewPraktika.FirmaName = value;
+            }
+        }
+
+        //Selected Ort
         private Firmen _selectedOrtItem;
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Ort ist erforderlich")]
         public Firmen SelectedOrtItem
         {
             get { return _selectedOrtItem; }
@@ -44,9 +89,24 @@ namespace PraktikantenVerwaltung.ViewModel
             {
                 Set(ref _selectedOrtItem, value);
                 if (value != null)
+                {
+                    NewPraktika.OrtName = value.Ort;
                     NewPraktika.FirmenNr = value.FirmenId;
+                }
+                    
             }
         }
+
+        public RelayCommand AddCommand { get; set; } //Command to add new student into students table
+        public RelayCommand CancelCommand { get; set; } //Command to cancel/close window
+
+        public ObservableCollection<Firmen> FirmaList { get; private set; }
+
+        public ObservableCollection<Dozent> DozentList { get; private set; }
+
+        //public ObservableCollection<DozentNames> DozentList { get; private set; }
+
+
 
         #endregion
 
@@ -67,12 +127,15 @@ namespace PraktikantenVerwaltung.ViewModel
                 NewPraktika.Ende = DateTime.Today;
 
                 FirmaList = _firmenDB.GetAllFirmen();
-                DozentList = _dozentDB.GetAllDozentNames();
+                DozentList = _dozentDB.GetAllDozents();
+                //DozentList = _dozentDB.GetAllDozentNames();
+
+
 
                 AddCommand = new RelayCommand(AddPraktika, CanAddStudent);
                 CancelCommand = new RelayCommand(Cancel);
 
-                NewPraktika.IsOkChanged += OnPraktikaPropertyChanged;
+                //NewPraktika.IsOkChanged += OnPraktikaPropertyChanged;
 
             }
             catch (Exception e)
@@ -97,7 +160,8 @@ namespace PraktikantenVerwaltung.ViewModel
         //To enable Add button
         private bool CanAddStudent()
         {
-            return NewPraktika.IsOk;
+            return IsOk;
+            //return NewPraktika.IsOk;
         }
 
         //To close window
@@ -118,6 +182,96 @@ namespace PraktikantenVerwaltung.ViewModel
 
             base.Cleanup();
         }
+
+        #endregion
+
+        #region IDataErrorInfo members
+
+        public string Error => string.Empty;
+        public string this[string propertyName]
+        {
+            get
+            {
+                CollectErrors();
+                if (Errors.Any())
+                {
+                    HasErrors = true;
+                    AddCommand.RaiseCanExecuteChanged();
+                }
+                    
+                else
+                {
+                    HasErrors = false;
+                    AddCommand.RaiseCanExecuteChanged();
+                }
+                return Errors.ContainsKey(propertyName) ? Errors[propertyName] : string.Empty;
+            }
+        }
+        #endregion
+
+        #region DataValidation members
+
+        //A Dictionary to store errors with Property name as key
+        private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
+
+        private static List<PropertyInfo> _propertyInfos;
+        protected List<PropertyInfo> PropertyInfos
+        {
+            get
+            {
+                return _propertyInfos ?? (_propertyInfos =
+                                GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                             .Where(prop =>
+                                prop.IsDefined(typeof(RequiredAttribute), true) ||
+                                prop.IsDefined(typeof(RangeAttribute), true))
+                             .ToList());
+            }
+        }
+
+        private bool TryValidateProperty(PropertyInfo propertyInfo, List<string> propertyErrors)
+        {
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(this) { MemberName = propertyInfo.Name };
+            var propertyValue = propertyInfo.GetValue(this);
+
+            // Validate the property
+            var isValid = Validator.TryValidateProperty(propertyValue, context, results);
+
+            if (results.Any()) { propertyErrors.AddRange(results.Select(c => c.ErrorMessage)); }
+
+            return isValid;
+        }
+
+        private void CollectErrors()
+        {
+            Errors.Clear();
+            PropertyInfos.ForEach(prop =>
+            {
+                //Validate generically
+                var errors = new List<string>();
+                var isValid = TryValidateProperty(prop, errors);
+                if (!isValid)
+                    //A dictionary to store the errors and the key is the name of the property, then add only the first error encountered. 
+                    Errors.Add(prop.Name, errors.First());
+            });
+
+            
+        }
+
+
+        public bool HasErrors { get; set; }
+
+        public bool IsOk => !HasErrors;
+        //private bool _IsOk;
+        //public bool IsOk
+        //{
+        //    get { return _IsOk; }
+        //    set
+        //    {
+        //        Set(ref _IsOk, value);
+        //        IsOkChanged(value);
+        //    }
+        //}
 
         #endregion
     }

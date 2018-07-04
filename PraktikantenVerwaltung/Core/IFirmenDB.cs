@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PraktikantenVerwaltung.Model;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Infrastructure;
 
 namespace PraktikantenVerwaltung.Core
 {
@@ -13,10 +14,9 @@ namespace PraktikantenVerwaltung.Core
         bool FirmenExists(Firmen firmen);
         Firmen CreateFirmen(Firmen firmen);
         ObservableCollection<Firmen> GetAllFirmen();
-        Firmen GetFirmen(int id);
         Firmen UpdateFirmen(Firmen editedFirmen);
         Firmen DeleteFirmen(Firmen firmen);
-        ObservableCollection<string> GetAllFirmaNames();
-        ObservableCollection<string> GetAllOrtNames(string SelectedFirma);
+        void RefreshDBContext();
+        TEntity RefreshEntity<TEntity>(TEntity entity) where TEntity : class;
     }
 }

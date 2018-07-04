@@ -49,6 +49,12 @@ namespace PraktikantenVerwaltung.Service
             adddozentview.ShowDialog(); 
         }
 
+        public void AddFirmaView()
+        {
+            AddFirmaView addFirmaView = new AddFirmaView();
+            addFirmaView.ShowDialog();
+        }
+
         public void AddStudentView()
         {
             AddStudentView addstudentview = new AddStudentView();

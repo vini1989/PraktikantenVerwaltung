@@ -10,6 +10,7 @@
 
     <Grid>
         <Grid.Resources>
+            <!--Data Validation errors are displayed with orange border-->
             <ControlTemplate x:Key="MyErrorTemplate">
                 <DockPanel>
                     <Border BorderBrush="Orange" BorderThickness="1">
@@ -18,6 +19,17 @@
                 </DockPanel>
             </ControlTemplate>
             <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="2" />
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource MyErrorTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="ComboBox">
                 <Setter Property="Margin" Value="10" />
                 <Setter Property="Padding" Value="2" />
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -41,7 +53,11 @@
 
             <!--Title Dozentendaten-->
             <Label x:Name="lblheading" Content="Dozentendaten" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   FontFamily="Verdana" FontSize="20" FontWeight="Bold" Foreground="#142F5A"/>
+                   FontFamily="Calibri" FontSize="22" FontWeight="Bold" Foreground="#142F5A"/>
+
+            <!--Button Refresh-->
+            <Button x:Name="btnRefresh" Content="Aktualisieren" Width="100" HorizontalAlignment="Right"
+                                    Command="{Binding Path= RefreshCommand}"/>
         </Grid>
 
         <!--Content-->
@@ -53,17 +69,8 @@
 
 
             <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <!--<Label x:Name="lblSearch" Grid.Column="0" Content="Search Dozent :" VerticalAlignment="Center"/>
-                <TextBox x:Name="txtSearch" Grid.Column="1" Width="300" Padding="5" Margin="10"
-                         HorizontalAlignment="Left"/>-->
-                <Button x:Name="btnAdd" Grid.Row="0" Content="Dozent Hinzufügen" Command="{Binding ShowAddDozentCommand}"  Margin="10" 
-                          Width="120" IsDefault="True" HorizontalAlignment="Right" HorizontalContentAlignment="Center"/>
 
-
+                <!--Datagrid - Dozent list-->
                 <DataGrid Name="dozentlist" Grid.Row="1" VerticalAlignment="Top" ItemsSource="{Binding DozentList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" 
                       Grid.Column="0" SelectedItem="{Binding SelectedDozent, UpdateSourceTrigger=PropertyChanged}" IsSynchronizedWithCurrentItem="True" 
                       ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -78,7 +85,17 @@
             </Grid>
 
             <Grid Grid.Column="1">
-            <GroupBox Margin="10" Height="250"  BorderBrush="#142F5A" VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--Button - Dozent Hinzufügen-->
+                <Button x:Name="btnAdd" Grid.Row="0" Content="Neuer Dozent" Command="{Binding ShowAddDozentCommand}"  Margin="15,5"
+                           IsDefault="True" HorizontalAlignment="Right" HorizontalContentAlignment="Center"/>
+
+                <!--Dozenten Daten bearbeiten groupbox-->
+                <GroupBox Margin="10" Height="250" Grid.Row="1"  BorderBrush="#142F5A" VerticalAlignment="Top">
                 <GroupBox.Header>
                     Dozenten Daten bearbeiten
                 </GroupBox.Header>
@@ -93,18 +110,31 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center"/>
-                    <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center" />
-                    <TextBox x:Name="txtName" Grid.Row="0" Grid.Column="1"  
-                             Text="{Binding TempSelectedDozent.DozentNachname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
-                    <TextBox x:Name="txtVorname" Grid.Row="1" Grid.Column="1" 
-                             Text="{Binding TempSelectedDozent.DozentVorname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                    <TextBox x:Name="txtAkadGrad" Grid.Row="2" Grid.Column="1" Text="{Binding TempSelectedDozent.AkadGrad, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <Grid Grid.Row="4" Grid.Column="1">
-                        <StackPanel Orientation="Horizontal">
+
+                        <!--Name-->
+                        <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center"/>
+                        <TextBox x:Name="txtName" Grid.Row="0" Grid.Column="1"  
+                             Text="{Binding CurrentDozent.DozentNachname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
+                        <!--Vorname-->
+                        <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
+                        <TextBox x:Name="txtVorname" Grid.Row="1" Grid.Column="1" 
+                             Text="{Binding CurrentDozent.DozentVorname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+
+                        <!--Akademischer Grad-->
+                        <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center" />
+                        <TextBox x:Name="txtAkadGrad" Grid.Row="2" Grid.Column="1" Text="{Binding CurrentDozent.AkadGrad, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <!--Delete button-->
+                        <Grid Grid.Row="4" Grid.Column="0">
+                            <Button x:Name="btnDelete" Content="Löschen" Command="{Binding DeleteDozentCommand}" HorizontalAlignment="Left"/>
+                        </Grid>
+
+                        <!--Save and Cancel button-->
+                        <Grid Grid.Row="4" Grid.Column="1">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button x:Name="btnSave" Content="Speichern" Command="{Binding SaveDozentCommand}"/>
-                            <Button x:Name="btnDelete" Content="Löschen" Command="{Binding DeleteDozentCommand}"/>
+                            <Button x:Name="btnCancel" Content="Abbrechen" Command="{Binding CancelDozentCommand}"/>
                         </StackPanel>
                     </Grid>
                 </Grid>

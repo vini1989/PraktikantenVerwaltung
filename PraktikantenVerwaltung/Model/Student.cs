@@ -71,8 +71,23 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _immatrikuliert, value); }
         }
 
+        /// <summary>
+        /// Student Fullname 
+        /// </summary>
+        public string StudentName
+        {
+            get { return String.Format("{0} {1}", StudentNachname, StudentVorname); }
+        }
+
         //Navigation properties
         public virtual ICollection<Praktika> Praktikas { get; set; }
+
+        /// <summary>
+        /// Optimistic Concurrency check 
+        /// Timestamp property
+        /// </summary>
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         #endregion
 

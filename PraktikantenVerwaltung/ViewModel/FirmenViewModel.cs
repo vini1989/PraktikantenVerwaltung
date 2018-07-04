@@ -11,27 +11,34 @@ using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using System.Windows;
 
 namespace PraktikantenVerwaltung.ViewModel
 {
-    #region FirmenViewModel properties
+    /// <summary>
+    /// This class contains properties that the Firmen View can data bind to.
+    /// </summary>
+    
     public class FirmenViewModel : ViewModelBase
     {
+        #region FirmenViewModel properties
+
         private ObservableCollection<Firmen> _firmenList;
         private Firmen _selectedFirmen;
-        private bool _viewMode;
-        private bool _addMode;
+        private Firmen _currentFirmen;
         private IFirmenDB _firmenDB;
         private IDialogService _dialogservice;
+
+        public RelayCommand ShowAddFirmenCommand { get; private set; } //Command to add new Firma details
+        public RelayCommand SaveFirmenCommand { get; private set; } //Command to save Firma into Firmen table
+        public RelayCommand CancelFirmenCommand { get; private set; } //Command to cancel action
+        public RelayCommand DeleteFirmenCommand { get; private set; } //Command to dekete Firma from Firmen table
+        public RelayCommand RefreshCommand { get; private set; }
 
         public string TabName
         {
             get { return "Firmen-Daten bearbeiten"; }
         }
-        public RelayCommand AddFirmenCommand { get; private set; } //Command to add new Firma details
-        public RelayCommand SaveFirmenCommand { get; private set; } //Command to save Firma into Firmen table
-        public RelayCommand CancelFirmenCommand { get; private set; } //Command to cancel action
-        public RelayCommand DeleteFirmenCommand { get; private set; } //Command to dekete Firma from Firmen table
 
         public Firmen SelectedFirmen
         {
@@ -39,18 +46,19 @@ namespace PraktikantenVerwaltung.ViewModel
             set
             {
                 Set(ref _selectedFirmen, value);
+                if (value != null)
+                    value.CopyTo(CurrentFirmen);
             }
         }
-        public bool ViewMode
-        {
-            get { return _viewMode; }
-            set { Set(ref _viewMode, value); }
-        }
 
-        public bool AddMode
+        //Copy of SelectedDozent
+        public Firmen CurrentFirmen
         {
-            get { return _addMode; }
-            set { Set(ref _addMode, value); }
+            get { return _currentFirmen; }
+            set
+            {
+                Set(ref _currentFirmen, value);
+            }
         }
 
         public ObservableCollection<Firmen> FirmenList //List of Firma Names in Search box
@@ -59,8 +67,11 @@ namespace PraktikantenVerwaltung.ViewModel
             set { Set(ref _firmenList, value); }
         }
 
+        #endregion
 
-        // Initializes a new instance of the AddDozentViewModel class.
+        #region Ctor
+
+        // Initializes a new instance of the FirmenViewModel class.
         public FirmenViewModel(IFirmenDB firmenDB, IDialogService dialogservice)
         {
             try
@@ -68,14 +79,15 @@ namespace PraktikantenVerwaltung.ViewModel
                 _firmenDB = firmenDB;
                 _dialogservice = dialogservice;
 
-                ViewMode = true;
-                AddMode = false;
+                CurrentFirmen = new Firmen();
+
                 FirmenList = new ObservableCollection<Firmen>();
                 FirmenList = _firmenDB.GetAllFirmen();
+
                 SelectedFirmen = FirmenList[0];
 
                 //Command to Add new Firmen details
-                AddFirmenCommand = new RelayCommand(AddFirma);
+                ShowAddFirmenCommand = new RelayCommand(ShowAddFirmaView);
 
                 // Command to Save Firmen details to FirmenDB 
                 SaveFirmenCommand = new RelayCommand(SaveFirmen, CanSaveFirmen);
@@ -85,6 +97,10 @@ namespace PraktikantenVerwaltung.ViewModel
 
                 //Command to delete Firma from table
                 DeleteFirmenCommand = new RelayCommand(DeleteFirma, CanDeleteFirma);
+
+                RefreshCommand = new RelayCommand(RefreshExecute);
+
+                CurrentFirmen.IsOkChanged += OnCurrentFirmenPropertyChanged;
             }
             catch(Exception e)
             {
@@ -92,127 +108,108 @@ namespace PraktikantenVerwaltung.ViewModel
             }
         }
 
-        private void AddFirma()
+        #endregion
+
+        #region FirmenViewModel members
+
+        private void ShowAddFirmaView()
         {
-            ViewMode = false;
-            AddMode = true;
-            Firmen newfirma = new Firmen();
-            SelectedFirmen = newfirma;
+            //Registers for incoming Firmen object messages
+            Messenger.Default.Register<Firmen>(this, CheckFirmaExists);
+
+            //Opens the Add Firma View
+            _dialogservice.AddFirmaView();
+        }
+
+        //Checks if Dozent already exists in database
+        private void CheckFirmaExists(Firmen newFirma)
+        {
+            bool FirmaExists = _firmenDB.FirmenExists(newFirma);
+
+            if (FirmaExists)
+            {
+                _dialogservice.ShowError("Firma Name und Ort existiert bereits.", "Error");
+
+            }
+            else
+            {
+                CreateFirmen(newFirma);
+            }
+
+            Messenger.Default.Send(new NotificationMessage("CloseAddFirmaView"));
+            Cleanup();
         }
 
         private void SaveFirmen()
         {
-            if (AddMode)
+            if (Equals(SelectedFirmen.Firma, CurrentFirmen.Firma) && Equals(SelectedFirmen.Ort, CurrentFirmen.Ort))
             {
-                AddNewFirma();
+                UpdateFirma();
             }
             else
             {
-                SaveExistingFirma();
+                //Check if Firma Name and Ort already exists in DB
+                bool FirmaExists = _firmenDB.FirmenExists(CurrentFirmen);
 
-            }
-
-        }
-
-        private void AddNewFirma()
-        {
-            //Firmen firmen = new Firmen();
-            //firmen.Firma = SelectedFirmen.Firma;
-            //firmen.StrHausnum = SelectedFirmen.StrHausnum;
-            //firmen.Plz = SelectedFirmen.Plz;
-            //firmen.Ort = SelectedFirmen.Ort;
-            //firmen.Telefon = SelectedFirmen.Telefon;
-            //firmen.FaxNr = SelectedFirmen.FaxNr;
-            //firmen.Email = SelectedFirmen.Email;
-            //firmen.WWW = SelectedFirmen.WWW;
-            //firmen.National = SelectedFirmen.National;
-
-            //Check if dozent exist and add to DB
-            CheckFirmenExists(SelectedFirmen);
-            AddMode = false;
-            ViewMode = true;
-
-        }
-
-        private void CheckFirmenExists(Firmen firmen)
-        {
-            //Check if Firma already exists in DB
-            bool FirmenExists = _firmenDB.FirmenExists(firmen);
-
-            if (FirmenExists)
-            {
-                var createDuplicate = _dialogservice.ShowQuestion("Firma existiert bereits. Trotzdem hinzufügen?", "Bestätigung");
-                if (createDuplicate)
+                if (!FirmaExists)
                 {
-                    CreateFirmen(firmen);
+                    UpdateFirma();
                 }
                 else
                 {
-                    SelectedFirmen = FirmenList[0];
+                    _dialogservice.ShowError("Firma Name und Ort existiert bereits! Firma nicht speichert.", "Error");
+
+                    SelectedFirmen.CopyTo(CurrentFirmen);
                 }
 
             }
-            else
-            {
-                CreateFirmen(firmen);
-            }
 
-            this.Cleanup();
         }
+
 
         //To add Firma to DB 
         private void CreateFirmen(Firmen firmen)
         {
-            //Add new firma to DB 
-            Firmen FirmenAdded = _firmenDB.CreateFirmen(firmen);
+            try
+            {
+                //Add new firma to DB 
+                Firmen FirmenAdded = _firmenDB.CreateFirmen(firmen);
 
-            //Add new Firmen to ObservableCollection
-            FirmenList.Add(FirmenAdded);
+                //Add new Firmen to ObservableCollection
+                FirmenList.Add(FirmenAdded);
 
-            _dialogservice.ShowMessage("Firma wurde erfolgreich hinzufügt!", "Erfolg");
+                _dialogservice.ShowMessage("Firma wurde erfolgreich hinzufügt!", "Erfolg");
 
-            SelectedFirmen = FirmenAdded;
-
-            //TempSelectedFirmen.FirmenId = FirmenAdded.FirmenId;
+                SelectedFirmen = FirmenAdded;
+            }
+            catch (Exception e)
+            {
+                _dialogservice.ShowError("Firma wurde nicht hinzufügt. Error: " + e.Message, "Error");
+            }
 
         }
 
-        private void SaveExistingFirma()
+        private void UpdateFirma()
         {
-            bool FirmenExists = _firmenDB.FirmenExists(SelectedFirmen);
-            if (FirmenExists)
+            try
             {
-                var createDuplicate = _dialogservice.ShowQuestion("Firma existiert bereits. Trotzdem editieren?", "Bestätigung");
-                if (!createDuplicate)
-                {
-                    Firmen oldFirma = _firmenDB.GetFirmen(SelectedFirmen.FirmenId);
-                    SelectedFirmen = oldFirma;
-                    RaisePropertyChanged("SelectedFirmen");
-                    _dialogservice.ShowMessage("Firma nicht speichert!", "Erfolg");
-                }
-                else
-                {
-                    Firmen updatedFirmen = _firmenDB.UpdateFirmen(SelectedFirmen);
-                    SelectedFirmen = updatedFirmen;
-                    _dialogservice.ShowMessage("Firma wurde erfolgreich speichert!", "Erfolg");
-                }
+                Firmen updatedFirma = _firmenDB.UpdateFirmen(CurrentFirmen);
+                SelectedFirmen = updatedFirma;
             }
-            else
+            catch (Exception e)
             {
-                Firmen updatedFirmen = _firmenDB.UpdateFirmen(SelectedFirmen);
-                SelectedFirmen = updatedFirmen;
-                _dialogservice.ShowMessage("Firma wurde erfolgreich speichert!", "Erfolg");
+                _dialogservice.ShowError("Firma wurde nicht speichert. Error: " + e.Message, "Error");
             }
         }
 
         private bool CanSaveFirmen()
         {
-            return IsOk;
+            return CurrentFirmen.IsOk;
         }
 
         private void CancelFirmaAction()
         {
-            SelectedFirmen = FirmenList[0];
+            SelectedFirmen.CopyTo(CurrentFirmen);
         }
 
         private void DeleteFirma()
@@ -224,76 +221,38 @@ namespace PraktikantenVerwaltung.ViewModel
 
         private bool CanDeleteFirma()
         {
-            return ViewMode;
-        }
-        #endregion
-
-        #region IDataErrorInfo members
-
-        public string Error => string.Empty;
-        public string this[string propertyName]
-        {
-            get
-            {
-                CollectErrors();
-                return Errors.ContainsKey(propertyName) ? Errors[propertyName] : string.Empty;
-            }
-        }
-        #endregion
-
-        #region DataValidation members
-
-        //A Dictionary to store errors with Property name as key
-        private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
-
-        private static List<PropertyInfo> _propertyInfos;
-        protected List<PropertyInfo> PropertyInfos
-        {
-            get
-            {
-                return _propertyInfos ?? (_propertyInfos =
-                                GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                             .Where(prop =>
-                                prop.IsDefined(typeof(RequiredAttribute), true) ||
-                                prop.IsDefined(typeof(RegularExpressionAttribute), true))
-                             .ToList());
-            }
+            return (SelectedFirmen != null);
         }
 
-        private bool TryValidateProperty(PropertyInfo propertyInfo, List<string> propertyErrors)
+        //Enables or disables Save Firma button
+        private void OnCurrentFirmenPropertyChanged(bool IsOk)
         {
-            var results = new List<ValidationResult>();
-            var context = new ValidationContext(this) { MemberName = propertyInfo.Name };
-            var propertyValue = propertyInfo.GetValue(this);
-
-            // Validate the property
-            var isValid = Validator.TryValidateProperty(propertyValue, context, results);
-
-            if (results.Any()) { propertyErrors.AddRange(results.Select(c => c.ErrorMessage)); }
-
-            return isValid;
-        }
-
-        private void CollectErrors()
-        {
-            Errors.Clear();
-            PropertyInfos.ForEach(prop =>
-            {
-                //Validate generically
-                var errors = new List<string>();
-                var isValid = TryValidateProperty(prop, errors);
-                if (!isValid)
-                    //A dictionary to store the errors and the key is the name of the property, then add only the first error encountered. 
-                    Errors.Add(prop.Name, errors.First());
-            });
             SaveFirmenCommand.RaiseCanExecuteChanged();
         }
 
+        private void RefreshExecute()
+        {
+            _firmenDB.RefreshDBContext(); //Refresh DBContext
 
-        public bool HasErrors => Errors.Any();
-        public bool IsOk => !HasErrors;
+            FirmenList = _firmenDB.GetAllFirmen(); //Get all Firmen into FirmenList
 
+            SelectedFirmen = _firmenDB.RefreshEntity(SelectedFirmen); //Refresh the currently selected firmen
+
+            //If currently selected Firmen had already been deleted in database by another user, then set to the first item in list
+            if (SelectedFirmen == null)
+            {
+                MessageBox.Show("Die ausgewählten Daten sind nicht mehr in der Datenbank verfügbar.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                SelectedFirmen = FirmenList[0];
+            }
+                
+        }
+
+        public override void Cleanup()
+        {
+            Messenger.Default.Unregister(this);
+            base.Cleanup();
+        }
         #endregion
 
-}
+    }
 }

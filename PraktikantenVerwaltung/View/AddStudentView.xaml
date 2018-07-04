@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PraktikantenVerwaltung.View"
         mc:Ignorable="d"
-        Title="Neuer Student hinzufügen" Height="400" Width="500" WindowStartupLocation="CenterScreen">
+        Title="Neuer Student Hinzufügen" Height="400" Width="500" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.Resources>
             <ControlTemplate x:Key="MyErrorTemplate">

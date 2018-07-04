@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using PraktikantenVerwaltung.Model;
 using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity;
 
 namespace PraktikantenVerwaltung.DB
 {
@@ -16,6 +20,15 @@ namespace PraktikantenVerwaltung.DB
         public StudentDB(PraktikantenVerwaltungContext Db)
         {
             _db = Db;
+
+        }
+
+        public void Refresh()
+        {
+            foreach (var entity in _db.ChangeTracker.Entries())
+            {
+                entity.Reload();
+            }
 
         }
 
@@ -46,15 +59,6 @@ namespace PraktikantenVerwaltung.DB
         }
 
 
-        public Student GetStudent(int id)
-        {
-            var getstudent = from s in _db.Students
-                             where s.MatrikelNr == id
-                             select s;
-            var student = getstudent.Any() ? getstudent.Single() : null;
-            return student;
-        }
-
         public Student UpdateStudent(Student editedStudent)
         {
             var updatedStudent = (from s in _db.Students
@@ -65,8 +69,20 @@ namespace PraktikantenVerwaltung.DB
             updatedStudent.StudentVorname = editedStudent.StudentVorname;
             updatedStudent.Studiengang = editedStudent.Studiengang;
             updatedStudent.Immatrikuliert = editedStudent.Immatrikuliert;
-            //updatedStudent.PraktikaList = editedStudent.PraktikaList;
-            _db.SaveChanges();
+            try
+            {
+                
+                _db.Entry(updatedStudent).State = EntityState.Modified;
+                _db.SaveChanges();
+                MessageBox.Show("Student wurde erfolgreich speichert!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Update the values of the entity that failed to save from the database 
+                ex.Entries.Single().Reload();
+                MessageBox.Show("Der Datensatz, an dem Sie arbeiten, wurde von einem anderen Benutzer geändert. Die neuen Werte für diesen Datensatz werden jetzt aktualisiert." + Environment.NewLine + "Änderungen, die Sie vorgenommen haben, wurden nicht gespeichert. Bitte aktualisieren erneut einreichen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             return updatedStudent;
         }
 
@@ -90,6 +106,43 @@ namespace PraktikantenVerwaltung.DB
             return student;
         }
 
-        
+        public void RefreshDBContext()
+        {
+            var objectContext = ((IObjectContextAdapter)_db).ObjectContext;
+            var refreshableObjects = objectContext.ObjectStateManager
+                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
+                .Where(entry => entry.EntityKey != null)
+                .Select(e => e.Entity)
+                .ToArray();
+
+            objectContext.Refresh(RefreshMode.StoreWins, refreshableObjects);
+
+            // refresh each refreshable object
+            foreach (var @object in refreshableObjects)
+            {
+                // refresh each collection of the object
+                objectContext.ObjectStateManager.GetRelationshipManager(@object).GetAllRelatedEnds().Where(r => r.IsLoaded).ToList().ForEach(c => c.Load());
+
+                // refresh the object
+                objectContext.Refresh(RefreshMode.StoreWins, @object);
+            }
+        }
+
+        public TEntity RefreshEntity<TEntity>(TEntity entity)
+            where TEntity : class
+        {
+            try
+            {
+                _db.Entry(entity).Reload();
+                return entity;
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
     }
 }

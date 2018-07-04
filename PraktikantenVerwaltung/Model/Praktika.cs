@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace PraktikantenVerwaltung.Model
 {
-    public class Praktika :ViewModelBase, IDataErrorInfo
+    public class Praktika :ViewModelBase
     {
         //Praktika Id - Primary Key
         private int _praktikaId;
@@ -21,16 +21,17 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _praktikaId, value); }
         }
 
-        //Navigation properties - Foreign Key
+        //Navigation properties - Foreign Key - Students table
         public int StudentId { get; set; }
         public virtual Student Student { get; set; }
+
+        //Navigation properties - Foreign Key - Dozents table
+        public int DozentId { get; set; }
+        public virtual Dozent DozentDetail { get; set; }
 
 
         //TeilPraktikum Nr
         private int _teilPraktikumNr;
-
-        [Required(ErrorMessage = "TeilPraktikum Nr ist erforderlich")]
-        [Range(1, int.MaxValue, ErrorMessage = "TeilPraktikum Nr ist ungültig")]
         public int TeilPraktikumNr
         {
             get { return _teilPraktikumNr; }
@@ -63,7 +64,6 @@ namespace PraktikantenVerwaltung.Model
 
         //Firma
         private string _firmaName;
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Firma ist erforderlich")]
         public string FirmaName
         {
             get { return _firmaName; }
@@ -72,7 +72,6 @@ namespace PraktikantenVerwaltung.Model
 
         //Ort
         private string _ortName;
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Ort ist erforderlich")]
         public string OrtName
         {
             get { return _ortName; }
@@ -84,7 +83,6 @@ namespace PraktikantenVerwaltung.Model
 
         //Dozent
         private string _dozent;
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Dozent ist erforderlich")]
         public string Dozent
         {
             get { return _dozent; }
@@ -179,6 +177,13 @@ namespace PraktikantenVerwaltung.Model
             set { Set(ref _betreuerEmail, value); }
         }
 
+        ///// <summary>
+        ///// Optimistic Concurrency check 
+        ///// Timestamp property
+        ///// </summary>
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public void CopyTo(Praktika currentPraktika)
         {
             if (currentPraktika == null)
@@ -205,99 +210,5 @@ namespace PraktikantenVerwaltung.Model
             currentPraktika.BetreuerEmail = BetreuerEmail;
 
         }
-
-        #region Events
-
-        public event Action<bool> IsOkChanged = new Action<bool>(It => { });
-
-        #endregion
-
-        #region IDataErrorInfo members
-
-        public string Error => string.Empty;
-        public string this[string propertyName]
-        {
-            get
-            {
-                CollectErrors();
-                if (Errors.Any())
-                {
-                    HasErrors = true;
-                    IsOk = !HasErrors;
-                }
-                else
-                {
-                    HasErrors = false;
-                    IsOk = !HasErrors;
-                }
-
-                return Errors.ContainsKey(propertyName) ? Errors[propertyName] : string.Empty;
-            }
-        }
-        #endregion
-
-        #region DataValidation members
-
-        //A Dictionary to store errors with Property name as key
-        private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
-
-        private static List<PropertyInfo> _propertyInfos;
-        protected List<PropertyInfo> PropertyInfos
-        {
-            get
-            {
-                return _propertyInfos ?? (_propertyInfos =
-                                GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                             .Where(prop =>
-                                prop.IsDefined(typeof(RequiredAttribute), true) ||
-                                prop.IsDefined(typeof(RangeAttribute), true))
-                             .ToList());
-            }
-        }
-
-        private bool TryValidateProperty(PropertyInfo propertyInfo, List<string> propertyErrors)
-        {
-            var results = new List<ValidationResult>();
-            var context = new ValidationContext(this) { MemberName = propertyInfo.Name };
-            var propertyValue = propertyInfo.GetValue(this);
-
-            // Validate the property
-            var isValid = Validator.TryValidateProperty(propertyValue, context, results);
-
-            if (results.Any()) { propertyErrors.AddRange(results.Select(c => c.ErrorMessage)); }
-
-            return isValid;
-        }
-
-        private void CollectErrors()
-        {
-            Errors.Clear();
-            PropertyInfos.ForEach(prop =>
-            {
-                //Validate generically
-                var errors = new List<string>();
-                var isValid = TryValidateProperty(prop, errors);
-                if (!isValid)
-                    //A dictionary to store the errors and the key is the name of the property, then add only the first error encountered. 
-                    Errors.Add(prop.Name, errors.First());
-            });
-        }
-
-
-        public bool HasErrors { get; private set; }
-
-
-        private bool _IsOk;
-        public bool IsOk
-        {
-            get { return _IsOk; }
-            set
-            {
-                Set(ref _IsOk, value);
-                IsOkChanged(value);
-            }
-        }
-
-        #endregion
     }
 }

@@ -23,15 +23,24 @@ namespace PraktikantenVerwaltung
             DIManager.Instance.Register<DozentViewModel, DozentViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<StudentViewModel, StudentViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<FirmenViewModel, FirmenViewModel>(LifeCycle.Transient);
+            DIManager.Instance.Register<StudentsOfFirmaViewModel, StudentsOfFirmaViewModel>(LifeCycle.Transient);
+            DIManager.Instance.Register<StudentsOfDozentViewModel, StudentsOfDozentViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<AddDozentViewModel, AddDozentViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<AddStudentViewModel, AddStudentViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<AddPraktikaViewModel, AddPraktikaViewModel>(LifeCycle.Transient);
-            DIManager.Instance.Register<PraktikantenVerwaltungContext, PraktikantenVerwaltungContext>(LifeCycle.Singletone);
+            DIManager.Instance.Register<AddFirmaViewModel, AddFirmaViewModel>(LifeCycle.Transient);
+            DIManager.Instance.Register<PraktikantenVerwaltungContext, PraktikantenVerwaltungContext>(LifeCycle.Transient);
             DIManager.Instance.Register<IDialogService, DialogService>(LifeCycle.Singletone);
-            DIManager.Instance.Register<IDozentDB, DozentDB>(LifeCycle.Singletone);
-            DIManager.Instance.Register<IStudentDB, StudentDB>(LifeCycle.Singletone);
-            DIManager.Instance.Register<IFirmenDB, FirmenDB>(LifeCycle.Singletone);
-            DIManager.Instance.Register<IPraktikaDB, PraktikaDB>(LifeCycle.Singletone);
+            DIManager.Instance.Register<IDozentDB, DozentDB>(LifeCycle.Transient);
+            DIManager.Instance.Register<IStudentDB, StudentDB>(LifeCycle.Transient);
+            DIManager.Instance.Register<IFirmenDB, FirmenDB>(LifeCycle.Transient);
+            DIManager.Instance.Register<IPraktikaDB, PraktikaDB>(LifeCycle.Transient);
+
+            System.Windows.Forms.MessageBoxManager.Yes = "Ja";
+            System.Windows.Forms.MessageBoxManager.No = "Nein";
+            System.Windows.Forms.MessageBoxManager.OK = "OK";
+            System.Windows.Forms.MessageBoxManager.Cancel = "Abbrechen";
+            System.Windows.Forms.MessageBoxManager.Register();
         }
 
         public void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

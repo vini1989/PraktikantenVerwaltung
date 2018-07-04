@@ -29,6 +29,29 @@ namespace PraktikantenVerwaltung.View
             DataContext = DIManager.Instance.Resolve<StudentViewModel>();
         }
 
+        //private void Cmb_KeyUp(object sender, KeyEventArgs e)
+        //{
+        //    CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(cmbSrchName.ItemsSource);
+
+        //    itemsViewOriginal.Filter = ((o) =>
+        //    {
+        //        if (String.IsNullOrEmpty(cmbSrchName.Text)) return true;
+        //        else
+        //        {
+        //            if ((o.ToString().ToLower().StartsWith(cmbSrchName.Text))) return true;
+        //            else return false;
+        //        }
+        //    });
+
+        //    itemsViewOriginal.Refresh();
+
+        //    // if datasource is a DataView, then apply RowFilter as below and replace above logic with below one
+        //    /* 
+        //     DataView view = (DataView) Cmb.ItemsSource; 
+        //     view.RowFilter = ("Name like '*" + Cmb.Text + "*'"); 
+        //    */
+        //}
+
         //private void cmbSrchName_KeyUp(object sender, KeyEventArgs e)
         //{
         //    CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(cmbSrchName.ItemsSource);
@@ -47,17 +70,17 @@ namespace PraktikantenVerwaltung.View
         //}
 
 
-        private void StudentNamesViewSource_Filter(object sender, FilterEventArgs e)
-        {
-            Student student = e.Item as Student;
-            if(student != null)
-            {
-                if (student.StudentNachname.Contains(cmbSrchName.Text))
-                    e.Accepted = true;
-                else
-                    e.Accepted = false;
-            }
-        }
+        //private void StudentNamesViewSource_Filter(object sender, FilterEventArgs e)
+        //{
+        //    Student student = e.Item as Student;
+        //    if (student != null)
+        //    {
+        //        if (student.StudentNachname.Contains(cmbSrchName.Text))
+        //            e.Accepted = true;
+        //        else
+        //            e.Accepted = false;
+        //    }
+        //}
 
         //private void cmbSrchMatr_KeyDown(object sender, KeyEventArgs e)
         //{

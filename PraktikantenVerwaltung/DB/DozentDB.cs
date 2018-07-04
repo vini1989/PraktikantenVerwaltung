@@ -7,6 +7,10 @@ using PraktikantenVerwaltung.Model;
 using PraktikantenVerwaltung.Core;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
+using System.Data.Entity.Infrastructure;
+using System.Windows;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 
 namespace PraktikantenVerwaltung.DB
 {
@@ -26,7 +30,6 @@ namespace PraktikantenVerwaltung.DB
                             where d.DozentNachname == dozent.DozentNachname &&
                                 d.DozentVorname == dozent.DozentVorname &&
                                 (d.AkadGrad == dozent.AkadGrad) 
-                                //(d.AkadGrad.Equals(string.Empty)) == (dozent.AkadGrad.Equals(string.Empty))
                             select d;
             var dozentExists = getdozent.Any() ? true : false;
 
@@ -35,7 +38,6 @@ namespace PraktikantenVerwaltung.DB
 
         public Dozent CreateDozent(Dozent dozent)
         {
-
             var dozentnew = _db.Dozents.Add(dozent);
             _db.SaveChanges();
             return dozentnew;
@@ -84,7 +86,20 @@ namespace PraktikantenVerwaltung.DB
             updatedDozent.DozentVorname = editedDozent.DozentVorname;
             updatedDozent.AkadGrad = editedDozent.AkadGrad;
 
-            _db.SaveChanges();
+            try
+            {
+                _db.Entry(updatedDozent).State = EntityState.Modified;
+                _db.SaveChanges();
+                MessageBox.Show("Dozent wurde erfolgreich speichert!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                // Update the values of the entity that failed to save from the database 
+                ex.Entries.Single().Reload();
+                MessageBox.Show("Der Datensatz, an dem Sie arbeiten, wurde von einem anderen Benutzer geändert. Die neuen Werte für diesen Datensatz werden jetzt aktualisiert." + Environment.NewLine + "Änderungen, die Sie vorgenommen haben, wurden nicht gespeichert. Bitte erneut einreichen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
             return updatedDozent;
         }
 
@@ -96,6 +111,33 @@ namespace PraktikantenVerwaltung.DB
             _db.Dozents.Remove(delDozent);
             _db.SaveChanges();
             return delDozent;
+        }
+
+        public void RefreshDBContext()
+        {
+            var objectContext = ((IObjectContextAdapter)_db).ObjectContext;
+            var refreshableObjects = objectContext.ObjectStateManager
+                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
+                .Where(entry => entry.EntityKey != null)
+                .Select(e => e.Entity)
+                .ToArray();
+
+            objectContext.Refresh(RefreshMode.StoreWins, refreshableObjects);
+        }
+
+        public TEntity RefreshEntity<TEntity>(TEntity entity)
+            where TEntity : class
+        {
+            try
+            {
+                _db.Entry(entity).Reload();
+                return entity;
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 

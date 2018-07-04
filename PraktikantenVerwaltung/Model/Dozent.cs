@@ -14,55 +14,83 @@ namespace PraktikantenVerwaltung.Model
     {
         #region Dozent properties
 
+        /// <summary>
+        ///  Dozent Id
+        /// </summary>
         private int _dozentId;
-        private string _dozentVorname ;
-        private string _dozentNachname ;
-        private string _akadGrad ;
-
-        //Dozent Id
         public int DozentId
         {
             get { return _dozentId; }
             set { Set(ref _dozentId, value); }
         }
 
-        //Dozent Vorname
+        /// <summary>
+        /// Dozent Vorname
+        /// </summary>
+        private string _dozentVorname;
         [Required(AllowEmptyStrings = false, ErrorMessage = "Vorname ist erforderlich")]
-        [RegularExpression("^[a-zA-ZÄäÖöÜüß ]*$", ErrorMessage = "Bitte geben Sie nur Alphabete ein")]
         public string DozentVorname
         {
             get { return _dozentVorname; }
             set { Set(ref _dozentVorname, value); }
         }
 
-        //Dozent Nachname
+        /// <summary>
+        /// Dozent Nachname
+        /// </summary>
+        private string _dozentNachname;
         [Required(AllowEmptyStrings = false, ErrorMessage = "Nachname ist erforderlich")]
-        [RegularExpression("^[a-zA-ZÄäÖöÜüß ]*$", ErrorMessage = "Bitte geben Sie nur Alphabete ein")]
         public string DozentNachname
         {
             get { return _dozentNachname; }
             set { Set(ref _dozentNachname, value); }
         }
 
-        //Dozent Akadamischer Grad
+        /// <summary>
+        /// Dozent Akadamischer Grad
+        /// </summary>
+        private string _akadGrad;
         public string AkadGrad
         {
             get { return _akadGrad; }
             set { Set(ref _akadGrad, value); }
         }
 
+        /// <summary>
+        /// Dozent Fullname 
+        /// </summary>
+        public string DozentName
+        {
+            get { return String.Format("{0} {1}", DozentNachname, DozentVorname); }
+        }
+
+        /// <summary>
+        /// Navigation properties - Praktikas table
+        /// </summary>
+        public virtual ICollection<Praktika> Praktikas { get; set; }
+
+        /// <summary>
+        /// Optimistic Concurrency check 
+        /// Timestamp property
+        /// </summary>
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         #endregion
 
-        //Copy values between SelectedDozent and TempSelectedDozent
+        /// <summary>
+        /// Copy values 
+        /// </summary>
+        /// <param name="target"></param>
         public void CopyTo(Dozent target)
         {
             if (target == null)
                 throw new ArgumentNullException();
 
+            target.DozentId = DozentId;
             target.DozentNachname = DozentNachname;
             target.DozentVorname = DozentVorname;
             target.AkadGrad = AkadGrad;
-            target.DozentId = DozentId;
         }
 
         #region Events
@@ -97,7 +125,9 @@ namespace PraktikantenVerwaltung.Model
 
         #region DataValidation members
 
-        //A Dictionary to store errors with Property name as key
+        /// <summary>
+        /// A Dictionary to store errors with Property name as key
+        /// </summary>
         private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
 
         private static List<PropertyInfo> _propertyInfos;
@@ -108,19 +138,20 @@ namespace PraktikantenVerwaltung.Model
                 return _propertyInfos ?? (_propertyInfos =
                                 GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                              .Where(prop =>
-                                prop.IsDefined(typeof(RequiredAttribute), true) ||
-                                prop.IsDefined(typeof(RegularExpressionAttribute), true))
+                                prop.IsDefined(typeof(RequiredAttribute), true))
                              .ToList());
             }
         }
 
+        /// <summary>
+        /// Validate the property
+        /// </summary>
         private bool TryValidateProperty(PropertyInfo propertyInfo, List<string> propertyErrors)
         {
             var results = new List<ValidationResult>();
             var context = new ValidationContext(this) { MemberName = propertyInfo.Name };
             var propertyValue = propertyInfo.GetValue(this);
 
-            // Validate the property
             var isValid = Validator.TryValidateProperty(propertyValue, context, results);
 
             if (results.Any()) { propertyErrors.AddRange(results.Select(c => c.ErrorMessage)); }

@@ -10,12 +10,15 @@ namespace PraktikantenVerwaltung.Core
 {
     public interface IStudentDB
     {
+        void Refresh();
         Student CreateStudent(Student student);
         bool StudentExists(Student student);
         ObservableCollection<Student> GetAllStudents();
-        Student GetStudent(int id);
         Student UpdateStudent(Student editedStudent);
         Student DeleteStudent(Student student);
         Student AddPraktika(Praktika praktika);
+        void RefreshDBContext();
+        TEntity RefreshEntity<TEntity>(TEntity entity)
+            where TEntity : class;
     }
 }

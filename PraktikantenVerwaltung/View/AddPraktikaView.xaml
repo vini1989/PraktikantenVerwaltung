@@ -7,8 +7,9 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
+        xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Neuer Praktikum hinzufügen" Height="600" Width="600" WindowStartupLocation="CenterScreen">
+        Title="Neuer Praktikum Hinzufügen" Height="600" Width="600" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <!--Firma List CollectionViewSource-->
         <CollectionViewSource Source="{Binding FirmaList, UpdateSourceTrigger=PropertyChanged}" x:Key="Firmascvs">
@@ -67,7 +68,7 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <Label x:Name="lblprakNr" Content="Teilpraktikum-Nr :"/>
                         <TextBox x:Name="txtprakNr" Width="50" Margin="3"
-                                         Text="{Binding NewPraktika.TeilPraktikumNr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                                         Text="{Binding TeilPraktikumNr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                     </StackPanel>
                 </Grid>
 
@@ -111,12 +112,12 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label x:Name="lblFirma" Content="Firma :" Grid.Column="0" />
-                    <ComboBox x:Name="cmbFirmas" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                    <dotNetKitControls:AutoCompleteComboBox x:Name="cmbFirmas" Grid.Column="1" Margin="2" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
                                   ItemsSource="{Binding Source={StaticResource Firmascvs}, Path=Groups}"
-                                  DisplayMemberPath="Name" SelectedValuePath="Name"
-                                  SelectedValue="{Binding NewPraktika.FirmaName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
-                                  IsSynchronizedWithCurrentItem="True"
-                                  />
+                                  DisplayMemberPath="Name" IsSynchronizedWithCurrentItem="True"
+                              SelectedValuePath="Name" TextSearch.TextPath="Name"
+                                  SelectedValue="{Binding SelectedFirma, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
                 </Grid>
 
                 <!--Ort-->
@@ -126,13 +127,14 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label x:Name="lblOrt" Content="Ort :" Grid.Column="0" />
-                    <ComboBox x:Name="cmbOrts" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
-                                  ItemsSource="{Binding ElementName=cmbFirmas, Path=SelectedItem.Items}"
-                                  DisplayMemberPath="Ort" SelectedValuePath="Ort"
-                                  SelectedValue="{Binding NewPraktika.OrtName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
-                                  SelectedItem="{Binding SelectedOrtItem, UpdateSourceTrigger=PropertyChanged}"
+                    <dotNetKitControls:AutoCompleteComboBox x:Name="cmbOrts" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                                  ItemsSource="{Binding ElementName=cmbFirmas, Path=SelectedItem.Items}" TextSearch.TextPath="Ort"
+                                  DisplayMemberPath="Ort" SelectedItem="{Binding SelectedOrtItem, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   IsSynchronizedWithCurrentItem="True"
                                   />
+                    <!--SelectedValuePath="Ort"
+                                  SelectedValue="{Binding NewPraktika.OrtName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                                  SelectedItem="{Binding SelectedOrtItem, UpdateSourceTrigger=PropertyChanged}"-->
                 </Grid>
 
                 <!--Dozent-->
@@ -142,10 +144,23 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label x:Name="lblDozent" Content="Dozent :" Grid.Column="0" />
-                    <ComboBox x:Name="cmboxDozent" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
-                                      ItemsSource="{Binding DozentList}" DisplayMemberPath="DozentFullName" SelectedValuePath="DozentFullName"
-                                      SelectedValue="{Binding NewPraktika.Dozent, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" IsSynchronizedWithCurrentItem="True">
-                    </ComboBox>
+                    <dotNetKitControls:AutoCompleteComboBox x:Name="cmboxDozent" Grid.Column="1" Margin="3" Width="300" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                                      ItemsSource="{Binding DozentList, UpdateSourceTrigger=PropertyChanged}" 
+                                       SelectedItem="{Binding SelectedDozent, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                                                            IsSynchronizedWithCurrentItem="True" TextSearch.TextPath="DozentName">
+                        <dotNetKitControls:AutoCompleteComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="DozentNachname"/>
+                                            <Binding Path="DozentVorname"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </dotNetKitControls:AutoCompleteComboBox.ItemTemplate>
+                    </dotNetKitControls:AutoCompleteComboBox>
 
                 </Grid>
 
@@ -237,7 +252,8 @@
                         <!--Praktikum Absolviert-->
                         <Grid Grid.Row="13">
                             <StackPanel Orientation="Horizontal">
-                                <Label x:Name="lblPrakAbsol" Content="Praktikum absolviert :" Grid.Column="0" />
+                                <TextBlock x:Name="lblPrakAbsol" Text="Praktikum absolviert : (DD/MM/YYYY)" Grid.Column="0" FontWeight="Bold"
+                                                   VerticalAlignment="Center" TextWrapping="Wrap" Width="130"/>
                                 <TextBox x:Name="txtPrakAbsol" Grid.Column="1" Margin="7" Width="100"
                                                  Text="{Binding NewPraktika.PraktikumAbsolvt , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                             </StackPanel>

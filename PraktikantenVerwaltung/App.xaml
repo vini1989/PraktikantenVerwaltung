@@ -44,6 +44,12 @@
                 </Setter>
             </Style>
 
+            <Style TargetType="{x:Type DataGridRow}">
+                <Style.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#142F5A"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+                </Style.Resources>
+            </Style>
             <Style TargetType="Label">
                 <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="FontWeight" Value="Bold" />
@@ -61,7 +67,7 @@
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" FontWeight="Bold" FontSize="16" Foreground="#142F5A"/>
+                            <TextBlock Text="{Binding}" FontWeight="Bold" FontSize="18" Foreground="#142F5A" FontFamily="Calibri"/>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
