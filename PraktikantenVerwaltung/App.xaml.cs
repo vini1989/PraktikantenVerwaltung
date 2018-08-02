@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using PraktikantenVerwaltung.Core;
 using PraktikantenVerwaltung.ViewModel;
+using PraktikantenVerwaltung.Model;
 using PraktikantenVerwaltung.DB;
 using PraktikantenVerwaltung.Service;
 
@@ -29,6 +30,8 @@ namespace PraktikantenVerwaltung
             DIManager.Instance.Register<AddStudentViewModel, AddStudentViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<AddPraktikaViewModel, AddPraktikaViewModel>(LifeCycle.Transient);
             DIManager.Instance.Register<AddFirmaViewModel, AddFirmaViewModel>(LifeCycle.Transient);
+            DIManager.Instance.Register<PrintReportViewModel, PrintReportViewModel>(LifeCycle.Singletone);
+            DIManager.Instance.Register<ReportViewModel, ReportViewModel>(LifeCycle.Singletone);
             DIManager.Instance.Register<PraktikantenVerwaltungContext, PraktikantenVerwaltungContext>(LifeCycle.Transient);
             DIManager.Instance.Register<IDialogService, DialogService>(LifeCycle.Singletone);
             DIManager.Instance.Register<IDozentDB, DozentDB>(LifeCycle.Transient);

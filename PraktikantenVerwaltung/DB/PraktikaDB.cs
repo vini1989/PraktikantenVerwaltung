@@ -73,14 +73,23 @@ namespace PraktikantenVerwaltung.DB
             return studentsList;
         }
 
-        public List<Student> GetStudentsOfDozent(int dozentId)
+        public List<Praktika> GetStudentsOfDozent(int dozentId)
         {
             var dozents = from p in _db.Praktikas
                           where p.DozentId == dozentId
                           orderby p.Student.MatrikelNr ascending
-                          select p.Student;
-            var dozentsList = new List<Student>(dozents);
+                          select p;
+            var dozentsList = new List<Praktika>(dozents);
             return dozentsList;
         }
+        //public List<Student> GetStudentsOfDozent(int dozentId)
+        //{
+        //    var dozents = from p in _db.Praktikas
+        //                  where p.DozentId == dozentId
+        //                  orderby p.Student.MatrikelNr ascending
+        //                  select p.Student;
+        //    var dozentsList = new List<Student>(dozents);
+        //    return dozentsList;
+        //}
     }
 }

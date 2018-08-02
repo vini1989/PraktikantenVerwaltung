@@ -45,6 +45,7 @@ namespace PraktikantenVerwaltung.ViewModel
         public RelayCommand SaveStudentCommand { get; private set; }
         public RelayCommand CancelStudentCommand { get; private set; }
         public RelayCommand DeleteStudentCommand { get; private set; }
+        public RelayCommand PrintReportCommand { get; private set; }
 
         //Praktika Commands
         public RelayCommand NewPraktikaCommand { get; private set; }
@@ -192,6 +193,7 @@ namespace PraktikantenVerwaltung.ViewModel
                 SaveStudentCommand = new RelayCommand(SaveStudentExecute, CanSaveStudent);
                 CancelStudentCommand = new RelayCommand(CancelStudentExecute);
                 DeleteStudentCommand = new RelayCommand(DeleteStudentExecute, CanDeleteStudent);
+                PrintReportCommand = new RelayCommand(PrintReportExecute, CanPrintReportExecute);
 
                 //Praktika Commands
                 NewPraktikaCommand = new RelayCommand(NewPraktikaExecute, CanNewPraktikaExecute);
@@ -275,7 +277,7 @@ namespace PraktikantenVerwaltung.ViewModel
 
             if (StudentExists)
             {
-                _dialogservice.ShowError("Student Matrikel Nr existiert bereits.", "Error");
+                MessageBox.Show("Student Matrikel Nr existiert bereits.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
             }
             else
@@ -297,7 +299,7 @@ namespace PraktikantenVerwaltung.ViewModel
                 //Add new Student to ObservableCollection
                 StudentList.Add(StudentAdded);
 
-                _dialogservice.ShowMessage("Student wurde erfolgreich hinzufügt!", "Erfolg");
+                MessageBox.Show("Student wurde erfolgreich hinzufügt!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
 
                 Messenger.Default.Send(new NotificationMessage("CloseAddStudentView"));
 
@@ -305,7 +307,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
             catch(Exception e)
             {
-                _dialogservice.ShowError("Student wurde nicht hinzufügt. Error: " + e.Message, "Error");
+                MessageBox.Show("Student wurde nicht hinzufügt. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }
@@ -327,7 +329,7 @@ namespace PraktikantenVerwaltung.ViewModel
                 }
                 else
                 {
-                    _dialogservice.ShowError("Student Matrikel Nr existiert bereits! Student nicht speichert.", "Error");
+                    MessageBox.Show("Student Matrikel Nr existiert bereits! Student nicht speichert.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                         TempSelectedStudent.MatrikelNr = SelectedStudent.MatrikelNr;
                         TempSelectedStudent.StudentVorname = SelectedStudent.StudentVorname;
@@ -349,7 +351,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
             catch(Exception e)
             {
-                _dialogservice.ShowError("Student wurde nicht speichert. Error: " + e.Message, "Error");
+                MessageBox.Show("Student wurde nicht speichert. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
@@ -374,11 +376,11 @@ namespace PraktikantenVerwaltung.ViewModel
                 Student deletedStudent = _studentDB.DeleteStudent(TempSelectedStudent);
                 bool IsSuccess = StudentList.Remove(deletedStudent);
                 if (IsSuccess)
-                    _dialogservice.ShowMessage("Student wurde erfolgreich gelöscht!", "Erfolg");
+                    MessageBox.Show("Student wurde erfolgreich gelöscht!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
             }
             catch(Exception e)
             {
-                _dialogservice.ShowError("Student wurde nicht gelöscht. Error: " + e.Message, "Error");
+                MessageBox.Show("Student wurde nicht gelöscht. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }
@@ -391,6 +393,33 @@ namespace PraktikantenVerwaltung.ViewModel
         private void OnTempSelectedStudentPropertyChanged(bool IsOk)
         {
             SaveStudentCommand.RaiseCanExecuteChanged();
+        }
+
+        private void PrintReportExecute()
+        {
+            DIManager.Instance.Resolve<ReportViewModel>();
+            var printStudent = new PrintStudentDetail();
+            printStudent.StudentNachname = SelectedStudent.StudentNachname;
+            printStudent.StudentVorname = SelectedStudent.StudentVorname;
+            printStudent.MatrikelNr = SelectedStudent.MatrikelNr;
+            printStudent.Studiengang = SelectedStudent.Studiengang;
+            printStudent.PraktikumsBeginn = CurrentPraktika.Beginn;
+            printStudent.PraktikumsEnde = CurrentPraktika.Ende;
+            printStudent.Unternehmen = CurrentPraktika.FirmaName + " - " + CurrentPraktika.OrtName;
+            printStudent.Ansprechpartner = CurrentPraktika.BetreuerNachname + " " + CurrentPraktika.BetreuerVorname;
+            printStudent.Email = CurrentPraktika.BetreuerEmail;
+            printStudent.Genehmigung = CurrentPraktika.Genehmigung;
+            printStudent.Betreuer = CurrentPraktika.Dozent;
+            printStudent.PraktikumAbsolvt = !(string.IsNullOrEmpty(CurrentPraktika.PraktikumAbsolvt)) ;
+
+            Messenger.Default.Send(printStudent);
+
+            _dialogservice.PrintReportView();
+        }
+
+        private bool CanPrintReportExecute()
+        {
+            return true;
         }
 
         #endregion
@@ -437,14 +466,14 @@ namespace PraktikantenVerwaltung.ViewModel
             {
                 NewPraktika.StudentId = SelectedStudent.StudentId;
                 Student newPraktikaAdded = _studentDB.AddPraktika(NewPraktika);
-                _dialogservice.ShowMessage("Praktikum wurde erfolgreich hinzufügt!", "Erfolg");
+                MessageBox.Show("Praktikum wurde erfolgreich hinzufügt!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
                 Messenger.Default.Send(new NotificationMessage("CloseAddPraktikaView"));
                 SelectedStudent = newPraktikaAdded;
 
             }
             catch(Exception e)
             {
-                _dialogservice.ShowError("Praktika wurde nicht hinzufügt. Error: " + e.Message, "Error");
+                MessageBox.Show("Praktika wurde nicht hinzufügt. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }
@@ -482,7 +511,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
             catch (Exception e)
             {
-                _dialogservice.ShowError("Praktikum wurde nicht speichert. Error: " + e.Message, "Error");
+                MessageBox.Show("Praktikum wurde nicht speichert. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }

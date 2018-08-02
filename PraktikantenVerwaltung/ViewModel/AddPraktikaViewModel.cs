@@ -128,14 +128,12 @@ namespace PraktikantenVerwaltung.ViewModel
 
                 FirmaList = _firmenDB.GetAllFirmen();
                 DozentList = _dozentDB.GetAllDozents();
-                //DozentList = _dozentDB.GetAllDozentNames();
 
 
 
                 AddCommand = new RelayCommand(AddPraktika, CanAddStudent);
                 CancelCommand = new RelayCommand(Cancel);
-
-                //NewPraktika.IsOkChanged += OnPraktikaPropertyChanged;
+               
 
             }
             catch (Exception e)

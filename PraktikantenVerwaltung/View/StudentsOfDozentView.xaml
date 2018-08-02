@@ -50,10 +50,11 @@
         <DataGrid Name="studentlist" Grid.Row="2" Margin="10" VerticalAlignment="Top" ItemsSource="{Binding StudentList, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" 
                       ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Matrikel Nr" Binding="{Binding MatrikelNr}"  Width="*"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding StudentNachname}"  Width="*"/>
-                <DataGridTextColumn Header="Vorname" Binding="{Binding StudentVorname}" Width="*"/>
-                <DataGridTextColumn Header="Studiengang" Binding="{Binding Studiengang}" Width="*"/>
+                <DataGridTextColumn Header="Matrikel Nr" Binding="{Binding MatrikelNr, UpdateSourceTrigger=PropertyChanged}"  Width="*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding StudentNachname, UpdateSourceTrigger=PropertyChanged}"  Width="*"/>
+                <DataGridTextColumn Header="Vorname" Binding="{Binding StudentVorname, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTextColumn Header="Praktikumsstatus" Binding="{Binding PraktikumStatus, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                <DataGridTextColumn Header="Absolviert" Binding="{Binding PraktikumAbsolvt, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

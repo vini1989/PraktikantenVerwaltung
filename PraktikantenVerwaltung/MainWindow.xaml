@@ -13,14 +13,16 @@
         <Border BorderBrush="Black" DockPanel.Dock="Top" BorderThickness="2">
             <Grid Background="#142F5A" Height="70" TextBlock.FontFamily="Verdana" >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="290"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Margin="2">
+                <Border Background="White">
+                <Image Grid.Column="0">
                     <Image.Source>
-                        <BitmapImage  UriSource="/Pictures/Logo.png"/>
+                        <BitmapImage  UriSource="/Pictures/Logo-FH-Kiel.jpg"/>
                     </Image.Source>
                 </Image>
+                </Border>
                 <TextBlock Grid.Column="1" FontWeight="Medium" FontSize="18"  VerticalAlignment="Center" 
                            Foreground="White" Margin="50,0,0,0" Padding="5">
                         Praktikanten-Verwaltung<LineBreak/>

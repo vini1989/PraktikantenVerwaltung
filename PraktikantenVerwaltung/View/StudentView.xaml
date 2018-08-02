@@ -74,7 +74,8 @@
                    FontFamily="Calibri" FontSize="22" FontWeight="Bold" Foreground="#142F5A"/>
 
             <!--Button Bericht drucken-->
-            <Button x:Name="btnprint" Content="Bericht drucken" Margin="10" Width="100" HorizontalAlignment="Left"  />
+            <Button x:Name="btnprint" Content="Bericht drucken" Margin="10" Width="100" HorizontalAlignment="Left" 
+                    Command="{Binding Path= PrintReportCommand }"/>
 
             <!--Button Refresh-->
             <Button x:Name="btnRefresh" Content="Aktualisieren" Margin="762,10,138,10" Width="100" 

@@ -12,6 +12,6 @@ namespace PraktikantenVerwaltung.Core
     {
         Praktika UpdatePraktika(Praktika editedPraktika);
         List<Student> GetStudentsOfFirma(int firmenId);
-        List<Student> GetStudentsOfDozent(int dozentId);
+        List<Praktika> GetStudentsOfDozent(int dozentId);
     }
 }

@@ -21,7 +21,7 @@ namespace PraktikantenVerwaltung.ViewModel
         #region StudentsOfDozentViewModel properties
 
         private ObservableCollection<Dozent> _dozentList;
-        private List<Student> _studentList;
+        private List<StudentPraktikaOpenPending> _studentList;
         private Dozent _selectedDozent;
         private IDozentDB _dozentDB;
         private IPraktikaDB _praktikaDB;
@@ -49,7 +49,7 @@ namespace PraktikantenVerwaltung.ViewModel
             set { Set(ref _dozentList, value); }
         }
 
-        public List<Student> StudentList
+        public List<StudentPraktikaOpenPending> StudentList
         {
             get { return _studentList; }
             set { Set(ref _studentList, value); }
@@ -88,9 +88,26 @@ namespace PraktikantenVerwaltung.ViewModel
             {
                 var mylist = _praktikaDB.GetStudentsOfDozent(SelectedDozent.DozentId);
                 if (mylist.Any())
-                    StudentList = mylist;
+                {
+                    StudentList = new List<StudentPraktikaOpenPending>();
+                    foreach(var praktika in mylist)
+                    {
+                        var student = new StudentPraktikaOpenPending();
+                        student.MatrikelNr = praktika.Student.MatrikelNr;
+                        student.StudentNachname = praktika.Student.StudentNachname;
+                        student.StudentVorname = praktika.Student.StudentVorname;
+                        student.PraktikumAbsolvt = praktika.PraktikumAbsolvt;
+                        student.PraktikumStatus = UpdateStatus(praktika.PraktikumAbsolvt, praktika.Ende);
+                        StudentList.Add(student);
+                    }
+                    
+                }
                 else
+                {
                     MessageBox.Show("Es wurden keine Studenten gefunden", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    StudentList = new List<StudentPraktikaOpenPending>();
+                }
+                    
             }
             catch (Exception e)
             {
@@ -101,6 +118,20 @@ namespace PraktikantenVerwaltung.ViewModel
         private bool CanSearchExecute()
         {
             return SelectedDozent != null;
+        }
+
+        private string UpdateStatus(string absolviert, DateTime ende)
+        {
+            if (!string.IsNullOrEmpty(absolviert))
+                return "Absolviert";
+            else
+            {
+                var deadlineDate = new DateTime();
+                deadlineDate = ende.AddDays(28);
+                if (DateTime.Today <= deadlineDate)
+                    return "Open";
+                else return "Überfällig";
+            }
         }
 
         #endregion

@@ -1,6 +1,4 @@
-﻿using PraktikantenVerwaltung.Model;
-using PraktikantenVerwaltung.Core;
-using PraktikantenVerwaltung.ViewModel;
+﻿using PraktikantenVerwaltung.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +11,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PraktikantenVerwaltung.ViewModel;
 
 namespace PraktikantenVerwaltung.View
 {
     /// <summary>
-    /// Interaction logic for StudentView.xaml
+    /// Interaction logic for PrintReportView.xaml
     /// </summary>
-    public partial class StudentView : UserControl
+    public partial class PrintReportView : Window
     {
-        public StudentView()
+        public PrintReportView()
         {
             InitializeComponent();
-            DataContext = DIManager.Instance.Resolve<StudentViewModel>();
+            DataContext = DIManager.Instance.Resolve<PrintReportViewModel>();
         }
-
     }
 }

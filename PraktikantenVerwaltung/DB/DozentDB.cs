@@ -72,12 +72,12 @@ namespace PraktikantenVerwaltung.DB
                                       DozentFullName = d.DozentNachname + " " + d.DozentVorname
 
                                   }).ToList();
-            ObservableCollection<DozentNames> AllDozentNames = new ObservableCollection<DozentNames>(getdozentnames);
+        ObservableCollection<DozentNames> AllDozentNames = new ObservableCollection<DozentNames>(getdozentnames);
             return AllDozentNames;
         }
 
 
-        public Dozent UpdateDozent(Dozent editedDozent)
+    public Dozent UpdateDozent(Dozent editedDozent)
         {
             var updatedDozent = (from d in _db.Dozents
                                  where d.DozentId == editedDozent.DozentId
@@ -97,7 +97,8 @@ namespace PraktikantenVerwaltung.DB
             {
                 // Update the values of the entity that failed to save from the database 
                 ex.Entries.Single().Reload();
-                MessageBox.Show("Der Datensatz, an dem Sie arbeiten, wurde von einem anderen Benutzer geändert. Die neuen Werte für diesen Datensatz werden jetzt aktualisiert." + Environment.NewLine + "Änderungen, die Sie vorgenommen haben, wurden nicht gespeichert. Bitte erneut einreichen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Der Datensatz, an dem Sie arbeiten, wurde von einem anderen Benutzer geändert. Die neuen Werte für diesen Datensatz werden jetzt aktualisiert." + 
+                    Environment.NewLine + "Änderungen, die Sie vorgenommen haben, wurden nicht gespeichert. Bitte erneut einreichen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return updatedDozent;

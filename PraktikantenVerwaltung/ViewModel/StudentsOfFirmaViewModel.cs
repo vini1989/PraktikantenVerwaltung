@@ -87,11 +87,16 @@ namespace PraktikantenVerwaltung.ViewModel
         {
             try
             {
+
                 var mylist = _praktikaDB.GetStudentsOfFirma(SelectedFirmen.FirmenId);
                 if (mylist.Any())
                     StudentList = mylist;
                 else
+                {
                     MessageBox.Show("Es wurden keine Studenten gefunden", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    StudentList = new List<Student>();
+                }
+                    
             }
             catch (Exception e)
             {

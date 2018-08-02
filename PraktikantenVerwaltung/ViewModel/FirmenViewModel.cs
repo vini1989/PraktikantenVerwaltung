@@ -128,7 +128,7 @@ namespace PraktikantenVerwaltung.ViewModel
 
             if (FirmaExists)
             {
-                _dialogservice.ShowError("Firma Name und Ort existiert bereits.", "Error");
+                MessageBox.Show("Firma Name und Ort existiert bereits.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
             }
             else
@@ -157,7 +157,7 @@ namespace PraktikantenVerwaltung.ViewModel
                 }
                 else
                 {
-                    _dialogservice.ShowError("Firma Name und Ort existiert bereits! Firma nicht speichert.", "Error");
+                    MessageBox.Show("Firma Name und Ort existiert bereits! Firma nicht speichert.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                     SelectedFirmen.CopyTo(CurrentFirmen);
                 }
@@ -178,13 +178,13 @@ namespace PraktikantenVerwaltung.ViewModel
                 //Add new Firmen to ObservableCollection
                 FirmenList.Add(FirmenAdded);
 
-                _dialogservice.ShowMessage("Firma wurde erfolgreich hinzufügt!", "Erfolg");
+                MessageBox.Show("Firma wurde erfolgreich hinzufügt!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.None);
 
                 SelectedFirmen = FirmenAdded;
             }
             catch (Exception e)
             {
-                _dialogservice.ShowError("Firma wurde nicht hinzufügt. Error: " + e.Message, "Error");
+                MessageBox.Show("Firma wurde nicht hinzufügt. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }
@@ -198,7 +198,7 @@ namespace PraktikantenVerwaltung.ViewModel
             }
             catch (Exception e)
             {
-                _dialogservice.ShowError("Firma wurde nicht speichert. Error: " + e.Message, "Error");
+                MessageBox.Show("Firma wurde nicht speichert. Error: " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
