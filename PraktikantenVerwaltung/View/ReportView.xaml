@@ -38,9 +38,9 @@
             <Border BorderThickness="0,0,1,1" BorderBrush="Gray" Grid.Row="2" Grid.Column="1"/>
             <Border BorderThickness="0,0,1,1" BorderBrush="Gray" Grid.Row="3" Grid.Column="2"/>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding PrintStudent.StudentNachname, Mode=OneWay}" Margin="5" FontSize="14" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PrintStudent.StudentVorname, Mode=OneWay}" Margin="5"  FontSize="14" VerticalAlignment="Center"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding PrintStudent.MatrikelNr, Mode=OneWay}" Margin="5"  FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock x:Name="txtName" Grid.Row="0" Grid.Column="0" Text="{Binding PrintStudent.StudentNachname, Mode=OneWay}" Margin="5" FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock x:Name="txtVorname" Grid.Row="0" Grid.Column="1" Text="{Binding PrintStudent.StudentVorname, Mode=OneWay}" Margin="5"  FontSize="14" VerticalAlignment="Center"/>
+            <TextBlock x:Name="Matrikel" Grid.Row="0" Grid.Column="2" Text="{Binding PrintStudent.MatrikelNr, Mode=OneWay}" Margin="5"  FontSize="14" VerticalAlignment="Center"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Margin="5"  FontSize="14"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Text="Vorname" Margin="5"  FontSize="14"/>
             <TextBlock Grid.Row="2" Grid.Column="2" Text="Matrikel-Nr." Margin="5" FontSize="14"/>
@@ -64,12 +64,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Content="BA BWL Präsenz" Grid.Row="0" Grid.Column="0" IsChecked="{Binding BWLPrasenz, Mode=OneWay}"  FontSize="14" VerticalContentAlignment="Center"  />
-                <CheckBox Content="BA BWL online" Grid.Row="0" Grid.Column="1" IsChecked="{Binding BWLOnline, Mode=OneWay}"  FontSize="14" VerticalContentAlignment="Center" />
-                <CheckBox Content="BA online TZ" Grid.Row="0" Grid.Column="2" IsChecked="{Binding TZOnline, Mode=OneWay}" FontSize="14" VerticalContentAlignment="Center"/>
-                <CheckBox Content="BA W-Inf. Präsenz" Grid.Row="1" Grid.Column="0" IsChecked="{Binding WInfPrasenz, Mode=OneWay}" FontSize="14" VerticalContentAlignment="Center" />
-                <CheckBox Content="BA W-Inf. online" Grid.Row="1" Grid.Column="1" IsChecked="{Binding WInfOnline, Mode=OneWay}"  FontSize="14" VerticalContentAlignment="Center" />
-                <CheckBox Content="MA BWL non-konsekutiv" Grid.Row="1" Grid.Column="2" IsChecked="{Binding MABWL, Mode=OneWay}" FontSize="14" VerticalContentAlignment="Center" />
+                <CheckBox x:Name="chkBwlPra" Content="BA BWL Präsenz" Grid.Row="0" Grid.Column="0" IsChecked="{Binding BWLPrasenz, Mode=OneWay}"  FontSize="14" VerticalContentAlignment="Center"  />
+                <CheckBox x:Name="chkBwlOnl" Content="BA BWL online" Grid.Row="0" Grid.Column="1" IsChecked="{Binding BWLOnline, Mode=OneWay}"  FontSize="14" VerticalContentAlignment="Center" />
+                <CheckBox x:Name="chkTzOnl" Content="BA online TZ" Grid.Row="0" Grid.Column="2" IsChecked="{Binding TZOnline, Mode=OneWay}" FontSize="14" VerticalContentAlignment="Center"/>
+                <CheckBox x:Name="chkInfPra" Content="BA W-Inf. Präsenz" Grid.Row="1" Grid.Column="0" IsChecked="{Binding WInfPrasenz, Mode=OneWay}" FontSize="14" VerticalContentAlignment="Center" />
+                <CheckBox x:Name="chkInfOnl" Content="BA W-Inf. online" Grid.Row="1" Grid.Column="1" IsChecked="{Binding WInfOnline, Mode=OneWay}"  FontSize="14" VerticalContentAlignment="Center" />
+                <CheckBox x:Name="chkBwlNonkon" Content="MA BWL non-konsekutiv" Grid.Row="1" Grid.Column="2" IsChecked="{Binding MABWL, Mode=OneWay}" FontSize="14" VerticalContentAlignment="Center" />
             </Grid>
         </Grid>
 
@@ -82,10 +82,10 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Praktikumsbeginn: "  FontSize="14"/>
-            <TextBlock Grid.Column="1" Text="{Binding PrintStudent.PraktikumsBeginn, StringFormat=dd-MM-yyyy, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtBeginn" Grid.Column="1" Text="{Binding PrintStudent.PraktikumsBeginn, StringFormat=dd-MM-yyyy, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="1" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
             <TextBlock Grid.Column="2" Text="Praktikumsende: " HorizontalAlignment="Right" Margin="15,0" FontSize="14"/>
-            <TextBlock Grid.Column="3" Text="{Binding PrintStudent.PraktikumsEnde, StringFormat=dd-MM-yyyy, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtEnde" Grid.Column="3" Text="{Binding PrintStudent.PraktikumsEnde, StringFormat=dd-MM-yyyy, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="3" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
         </Grid>
         
@@ -96,7 +96,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Unternehmen: " FontSize="14" />
-            <TextBlock Grid.Column="1" Text="{Binding PrintStudent.Unternehmen, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtUnternehmn" Grid.Column="1" Text="{Binding PrintStudent.Unternehmen, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="1" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
         </Grid>
 
@@ -107,7 +107,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Ansprechpartner: "  FontSize="14"/>
-            <TextBlock Grid.Column="1" Text="{Binding PrintStudent.Ansprechpartner, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtAnsprech" Grid.Column="1" Text="{Binding PrintStudent.Ansprechpartner, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="1" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
         </Grid>
 
@@ -118,7 +118,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="E-Mail: "  FontSize="14"/>
-            <TextBlock Grid.Column="1" Text="{Binding PrintStudent.Email, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtEmail" Grid.Column="1" Text="{Binding PrintStudent.Email, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="1" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
         </Grid>
 
@@ -129,7 +129,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Antrag genehmigt: "  FontSize="14"/>
-            <TextBlock Grid.Column="1" Text="{Binding PrintStudent.Genehmigung, StringFormat=dd-MM-yyyy, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtAntragGeheh" Grid.Column="1" Text="{Binding PrintStudent.Genehmigung, StringFormat=dd-MM-yyyy, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="1" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
         </Grid>
 
@@ -140,12 +140,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Betreuer: "  FontSize="14"/>
-            <TextBlock Grid.Column="1" Text="{Binding PrintStudent.Betreuer, Mode=OneWay}" FontSize="14"/>
+            <TextBlock x:Name="txtBetreuer" Grid.Column="1" Text="{Binding PrintStudent.Betreuer, Mode=OneWay}" FontSize="14"/>
             <Line Grid.Column="1" Stretch="Uniform" Stroke="Gray" StrokeThickness="1" X1="0" Y1="0" X2="1"  Y2="0" VerticalAlignment="Bottom" />
         </Grid>
 
         <!--Praktikum absolviert-->
-            <CheckBox Margin="0,5"  HorizontalAlignment="Left" VerticalContentAlignment="Center" Height="30"
+        <CheckBox x:Name="chkAbsolviert" Margin="0,5"  HorizontalAlignment="Left" VerticalContentAlignment="Center" Height="30"
                   IsChecked="{Binding Path= PrintStudent.PraktikumAbsolvt, Mode=OneWay}">
                 <TextBlock Text="Praktikum erfolgreich absolviert"  FontSize="14"/>
             </CheckBox>

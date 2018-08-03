@@ -47,28 +47,28 @@
                 
                 <!--Matrikel-Nr-->
                 <Label Grid.Row="0" Grid.Column="0" Content="Matrikel-Nr :"  VerticalAlignment="Center" />
-                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Student.MatrikelNr, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
+                <TextBox x:Name="txtMatrikel" Grid.Row="0" Grid.Column="2" Text="{Binding Student.MatrikelNr, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
 
                 <!--Name-->
                 <Label Grid.Row="1" Grid.Column="0" Content="Name :"  VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Student.StudentNachname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox x:Name="txtName" Grid.Row="1" Grid.Column="2" Text="{Binding Student.StudentNachname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                 <!--Vorname-->
                 <Label Grid.Row="2" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center" />
-                <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Student.StudentVorname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox x:Name="txtVorname" Grid.Row="2" Grid.Column="2" Text="{Binding Student.StudentVorname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                 <!--Studiengang-->
                 <Label Grid.Row="3" Grid.Column="0" Content="Studiengang :"  VerticalAlignment="Center" />
-                <ComboBox Grid.Row="3" Grid.Column="2" Margin="10" ItemsSource="{Binding StudiengangItems, UpdateSourceTrigger=PropertyChanged}"
+                <ComboBox x:Name="cmbStudiengang" Grid.Row="3" Grid.Column="2" Margin="10" ItemsSource="{Binding StudiengangItems, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding Student.Studiengang}"/>
 
                 <!--Immatrikuliert-->
                 <Label Grid.Row="4" Grid.Column="0" Content="Immatrikuliert :"  VerticalAlignment="Center"/>
-                <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Student.Immatrikuliert, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox x:Name="txtImmat" Grid.Row="4" Grid.Column="2" Text="{Binding Student.Immatrikuliert, UpdateSourceTrigger=PropertyChanged}"/>
 
 
-                <Button x:Name="AddStudent" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Center" Command="{Binding AddCommand}" Content="Hinzufügen"/>
-                <Button x:Name="Cancel" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Right" Command="{Binding CancelCommand}" Content="Cancel" />
+                <Button x:Name="btnAdd" x:Name="AddStudent" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Center" Command="{Binding AddCommand}" Content="Hinzufügen"/>
+                <Button  x:Name="btnCancel"x:Name="Cancel" Grid.Row="5" Grid.Column="2" HorizontalAlignment="Right" Command="{Binding CancelCommand}" Content="Cancel" />
             </Grid>
         </GroupBox>
     </Grid>

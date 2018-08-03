@@ -46,9 +46,9 @@
                 <Label Grid.Row="0" Grid.Column="0" Content="Name :"  VerticalAlignment="Center" />
                 <Label Grid.Row="1" Grid.Column="0" Content="Vorname :"  VerticalAlignment="Center"/>
                 <Label Grid.Row="2" Grid.Column="0" Content="Akademischer Grad :"  VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Dozent.DozentNachname, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Dozent.DozentVorname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Dozent.AkadGrad, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox x:Name="txtName"  Grid.Row="0" Grid.Column="1" Text="{Binding Dozent.DozentNachname, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" />
+                <TextBox x:Name="txtVorname" Grid.Row="1" Grid.Column="1" Text="{Binding Dozent.DozentVorname, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox x:Name="txtAkadGrad" Grid.Row="2" Grid.Column="1" Text="{Binding Dozent.AkadGrad, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                 <Button x:Name="AddDozent" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Command="{Binding AddCommand}" Content="Hinzufügen"/>
                 <Button x:Name="Cancel" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" Command="{Binding CancelCommand}" Content="Cancel"/>
             </Grid>

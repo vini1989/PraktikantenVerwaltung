@@ -13,7 +13,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Button Content="Print" Height="25" HorizontalAlignment="Right" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=Report, Mode=OneWay}"/>
+                <Button x:Name="btnPrint" Content="Print" Height="25" HorizontalAlignment="Right" Command="{Binding PrintCommand}" CommandParameter="{Binding ElementName=Report, Mode=OneWay}"/>
         </Grid>
         
         <Grid Grid.Row="1">
